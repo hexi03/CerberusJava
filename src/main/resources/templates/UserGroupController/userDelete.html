@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete User</title>
+</head>
+<body>
+<h2>Delete User</h2>
+
+<form method="post" th:action="@{/UserGroup/userDelete/{id}(id=${model.id.id})}">
+    <input id="id" name="id" th:field="${model.id.id}" type="hidden"/>
+
+    <p>Are you sure you want to delete user with ID: <span th:text="${model.id.id}"></span> and Name: <span
+            th:text="${model.name}"></span>?</p>
+
+    <button type="submit">Delete User</button>
+</form>
+</body>
+</html>

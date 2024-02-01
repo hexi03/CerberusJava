@@ -1,0 +1,23 @@
+<!-- UserGroupController/groupCreate.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Create Group</title>
+</head>
+<body>
+
+<h2>Create Group</h2>
+
+<h3>Create Group</h3>
+<form method="post" th:action="@{/UserGroup/groupCreate}" th:object="${model}">
+
+    <label>Name: <input th:field="*{name}" type="text"/></label><br/>
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+
+    <input type="submit" value="Create"/>
+</form>
+
+</body>
+</html>

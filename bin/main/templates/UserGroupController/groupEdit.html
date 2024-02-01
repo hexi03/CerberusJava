@@ -1,0 +1,23 @@
+<!-- UserGroupController/groupEdit.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit Group</title>
+</head>
+<body>
+
+<h2>Edit Group</h2>
+
+<!-- Форма для редактирования группы -->
+<form method="post" th:action="@{/UserGroup/groupEdit/{id}(id=${model.id})}" th:object="${model}">
+    <!-- Добавьте поля для ввода данных группы с текущими значениями -->
+    <input th:field="*{id}" type="hidden"/>
+    <label>Name: <input th:field="*{name}" type="text"/></label><br/>
+    <!-- Добавьте другие поля по вашему усмотрению -->
+    <input type="submit" value="Update"/>
+</form>
+
+</body>
+</html>

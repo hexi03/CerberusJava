@@ -1,0 +1,70 @@
+<!-- UserGroupController/index.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>User and Group Management</title>
+</head>
+<body>
+
+<h2>User and Group Management</h2>
+<p th:text="${model}"></p>
+<!-- Отображение списка пользователей -->
+<h3>Users</h3>
+<a th:href="@{/UserGroup/userCreate}">Create</a>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <!-- Добавьте другие поля по вашему усмотрению -->
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${model.users}">
+        <td th:text="${user.id.id}"></td>
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.email}"></td>
+        <!-- Добавьте другие поля по вашему усмотрению        -->
+        <td>
+            <a th:href="@{/UserGroup/userDetails/{id}(id=${user.id.id})}">Details</a> |
+            <a th:href="@{/UserGroup/userEdit/{id}(id=${user.id.id})}">Edit</a> |
+            <a th:href="@{/UserGroup/userDelete/{id}(id=${user.id.id})}">Delete</a>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+
+<!-- Отображение списка групп -->
+<h3>Groups</h3>
+<a th:href="@{/UserGroup/groupCreate}">Create</a>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <!-- Добавьте другие поля по вашему усмотрению -->
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="group : ${model.groups}">
+        <td th:text="${group.id.id}"></td>
+        <td th:text="${group.name}"></td>
+        <!-- Добавьте другие поля по вашему усмотрению -->
+        <td>
+            <a th:href="@{/UserGroup/groupDetails/{id}(id=${group.id.id})}">Details</a> |
+            <a th:href="@{/UserGroup/groupEdit/{id}(id=${group.id.id})}">Edit</a> |
+            <a th:href="@{/UserGroup/groupDelete/{id}(id=${group.id.id})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+</body>
+</html>

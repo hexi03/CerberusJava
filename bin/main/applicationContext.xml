@@ -1,0 +1,169 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/jdbc
+                           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- INFRASTRUCTURE -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <!-- Сканирование пакета, чтобы найти компоненты, такие как контроллер -->
+    <context:component-scan base-package="com.hexi.Cerberus"/>
+
+    <!-- Включение поддержки аннотаций контроллера -->
+    <mvc:annotation-driven/>
+
+    <!-- Установка дополнительных свойств для контроллеров -->
+    <mvc:default-servlet-handler/>
+
+    <mvc:cors>
+        <mvc:mapping path="/**"
+                     allowed-origins="*"
+                     allowed-headers="*"
+                     allowed-methods="*"/>
+
+    </mvc:cors>
+
+    <!-- Конфигурация Thymeleaf Template Resolver -->
+    <bean id="templateResolver" class="org.thymeleaf.templateresolver.ClassLoaderTemplateResolver">
+        <property name="prefix" value="templates/"/>
+        <property name="suffix" value=".html"/>
+        <property name="templateMode" value="HTML"/>
+    </bean>
+
+    <!-- Конфигурация Thymeleaf View Resolver -->
+    <bean id="viewResolver" class="org.thymeleaf.spring6.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="templateEngine"/>
+    </bean>
+
+    <!-- Конфигурация Thymeleaf Template Engine -->
+    <bean id="templateEngine" class="org.thymeleaf.spring6.SpringTemplateEngine">
+        <property name="templateResolver" ref="templateResolver"/>
+    </bean>
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/cerberus"/>
+        <property name="username" value="postgres"/>
+        <property name="password" value="r00t"/>
+        <property name="maximumPoolSize" value="10"/>
+
+        <property name="connectionTimeout" value="30000"/>
+        <property name="idleTimeout" value="600000"/>
+        <property name="maxLifetime" value="1800000"/>
+    </bean>
+
+    <bean id="JDBCTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- DOMAIN -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <bean id="UserRepository" class="com.hexi.Cerberus.domain.repository.impl.UserRepositoryImpl">
+        <constructor-arg name="jdbcTemplate" ref="JDBCTemplate"/>
+    </bean>
+
+    <bean id="GroupRepository" class="com.hexi.Cerberus.domain.repository.impl.GroupRepositoryImpl">
+        <constructor-arg name="jdbcTemplate" ref="JDBCTemplate"/>
+    </bean>
+
+    <bean id="GroupUserRelationRepository"
+          class="com.hexi.Cerberus.domain.repository.impl.GroupUserRelationRepositoryImpl">
+        <constructor-arg name="jdbcTemplate" ref="JDBCTemplate"/>
+    </bean>
+
+    <bean id="DepartmentRepository" class="com.hexi.Cerberus.domain.repository.impl.DepartmentRepositoryImpl">
+        <constructor-arg name="jdbcTemplate" ref="JDBCTemplate"/>
+    </bean>
+
+    <bean id="FactorySiteRepository" class="com.hexi.Cerberus.domain.repository.impl.FactorySiteRepositoryImpl">
+        <constructor-arg name="jdbcTemplate" ref="JDBCTemplate"/>
+    </bean>
+    <bean id="WareHouseRepository" class="com.hexi.Cerberus.domain.repository.impl.WareHouseRepositoryImpl">
+        <constructor-arg name="jdbcTemplate" ref="JDBCTemplate"/>
+    </bean>
+
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- DOMAIN SERVICES -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <bean id="DomainUserGroupService"
+          class="com.hexi.Cerberus.services.impl.UserGroupServiceImpl">
+        <constructor-arg name="userRepository" ref="UserRepository"/>
+        <constructor-arg name="groupRepository" ref="GroupRepository"/>
+        <constructor-arg name="groupUserRelationsRepository" ref="GroupUserRelationRepository"/>
+    </bean>
+
+    <bean id="DomainDepartmentService"
+          class="com.hexi.Cerberus.services.impl.DepartmentServiceImpl">
+        <constructor-arg name="departmentRepository" ref="DepartmentRepository"/>
+    </bean>
+
+    <bean id="DomainFactorySiteService"
+          class="com.hexi.Cerberus.services.impl.FactorySiteServiceImpl">
+        <constructor-arg name="departmentRepository" ref="DepartmentRepository"/>
+        <constructor-arg name="factorySiteRepository" ref="FactorySiteRepository"/>
+    </bean>
+
+    <bean id="DomainWareHouseService"
+          class="com.hexi.Cerberus.services.impl.WareHouseServiceImpl">
+        <constructor-arg name="departmentRepository" ref="DepartmentRepository"/>
+        <constructor-arg name="wareHouseRepository" ref="WareHouseRepository"/>
+    </bean>
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- APPLICATION SERVICES -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <bean class="org.mapstruct.factory.Mappers" factory-method="getMapper" id="ApplicationMapper">
+        <constructor-arg value="com.hexi.Cerberus.applicationServices.Mapper"/>
+    </bean>
+
+    <bean id="ApplicationUserGroupService"
+          class="com.hexi.Cerberus.applicationServices.impl.UserGroupModelServiceImpl">
+        <constructor-arg name="userGroupModelService" ref="DomainUserGroupService"/>
+        <constructor-arg name="mapper" ref="ApplicationMapper"/>
+    </bean>
+
+    <bean id="ApplicationDepartmentService"
+          class="com.hexi.Cerberus.applicationServices.impl.DepartmentServiceImpl">
+        <constructor-arg name="departmentService" ref="DomainDepartmentService"/>
+        <constructor-arg name="mapper" ref="ApplicationMapper"/>
+    </bean>
+
+    <bean id="ApplicationFactorySiteService"
+          class="com.hexi.Cerberus.applicationServices.impl.FactorySiteServiceImpl">
+        <constructor-arg name="factorySiteService" ref="DomainFactorySiteService"/>
+        <constructor-arg name="mapper" ref="ApplicationMapper"/>
+    </bean>
+
+    <bean id="ApplicationWareHouseService"
+          class="com.hexi.Cerberus.applicationServices.impl.WareHouseServiceImpl">
+        <constructor-arg name="wareHouseService" ref="DomainWareHouseService"/>
+        <constructor-arg name="mapper" ref="ApplicationMapper"/>
+    </bean>
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- WEB SERVICE -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!--
+        <bean id="GroupUserController"
+              class="com.hexi.Cerberus.webstatic.UserGroupController.UserGroupController">
+            <constructor-arg name="userGroupModelService" ref="ApplicationUserGroupService"/>
+        </bean>
+    -->
+    </beans>

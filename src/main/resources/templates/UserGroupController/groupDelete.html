@@ -1,0 +1,26 @@
+<!-- UserGroupController/groupDelete.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Delete Group</title>
+</head>
+<body>
+
+<h2>Delete Group</h2>
+<p th:text="${model}"></p>
+<!-- Отображение информации о группе, которую вы собираетесь удалить -->
+<p th:text="${model.id.id}"></p>
+<p th:text="${model.name}"></p>
+<!-- Добавьте другие поля по вашему усмотрению -->
+
+<!-- Форма для подтверждения удаления группы -->
+<form method="post" th:action="@{/UserGroup/groupDelete/{id}(id=${model.id.id})}">
+    <input id="id" name="id" th:field="*{id}" type="hidden"/>
+
+    <input type="submit" value="Delete"/>
+</form>
+
+</body>
+</html>
