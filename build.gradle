@@ -40,6 +40,9 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
 
+    implementation 'io.jsonwebtoken:jjwt:0.12.5'
+
+
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.1.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
@@ -51,12 +54,18 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-webmvc', version: '6.1.1'
     implementation 'org.springframework:spring-jdbc:6.1.1'
     testImplementation group: 'org.springframework', name: 'spring-test', version: '6.1.1'
+    implementation 'org.springframework.security:spring-security-core:6.1.1'
+    implementation group: 'org.springframework.security', name: 'spring-security-acl', version: '6.1.1'
 
+    implementation 'org.springframework.boot:spring-boot-starter-test:3.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-logging:3.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-tomcat:3.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-web:3.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.0'
 
 
 
@@ -75,7 +84,7 @@ dependencies {
 group = 'Cerberus'
 version = '0.0.1-SNAPSHOT'
 description = 'Cerberus'
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 
 tasks.named('test', Test) {

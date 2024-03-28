@@ -1,9 +1,20 @@
 package com.hexi.Cerberus.adapter.web.rest.FactorySite;
 
-import com.hexi.Cerberus.domain.commontypes.FactorySiteID;
+import com.hexi.Cerberus.adapter.web.rest.FactorySite.DTO.FactorySiteCreateDTO;
+import com.hexi.Cerberus.adapter.web.rest.FactorySite.DTO.FactorySiteDetailsDTO;
+import com.hexi.Cerberus.adapter.web.rest.FactorySite.DTO.FactorySiteUpdateDetailsDTO;
+import com.hexi.Cerberus.adapter.web.rest.FactorySite.DTO.FactorySiteUpdateSupplyDTO;
+import com.hexi.Cerberus.application.factorysite.service.FactorySiteManagementService;
+import com.hexi.Cerberus.domain.factorysite.FactorySite;
+import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.adapter.web.webstatic.UserGroupController.UserGroupController;
-import com.hexi.Cerberus.application.DTO.FactorySiteDTO;
-import com.hexi.Cerberus.application.FactorySiteService;
+import com.hexi.Cerberus.domain.factorysite.command.CreateFactorySiteCmd;
+import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteDetailsCmd;
+import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteSupplyCmd;
+import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
+import com.hexi.Cerberus.infrastructure.command.CommandId;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,56 +22,87 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
+import java.util.stream.Collectors;
+@DrivingAdapter
 @RequestMapping("/api/factorysite")
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
 @RestController
+@AllArgsConstructor
+@Slf4j
 public class FactorySiteController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(UserGroupController.class);
-    FactorySiteService factorySiteService;
+    public final FactorySiteManagementService factorySiteService;
+    public final DomainToDtoMapper domainToDtoMapper;
 
-
-    public FactorySiteController(FactorySiteService factorySiteService) {
-        this.factorySiteService = factorySiteService;
-    }
 
     @GetMapping("/fetch")
-    public ResponseEntity<List<FactorySiteDTO>> fetch(@RequestParam(required = false) FactorySiteID id) {
+    public ResponseEntity<List<FactorySiteDetailsDTO>> fetch(@RequestParam(required = false) FactorySiteID id) {
+        log.debug(id.toString());
         if (id != null) {
-            FactorySiteDTO factorySite = factorySiteService.getFactorySiteById(id);
-            return ResponseEntity.ok(new ArrayList<>(List.of(factorySite)));
+            log.debug("id == null: fetch all");
+            Optional<FactorySite> factorySite = factorySiteService.displayBy(id);
+            if(factorySite.isEmpty()) return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(List.of(domainToDtoMapper.factorySiteToDetailsDTO(factorySite.get())));
         }else{
-            List<FactorySiteDTO> factorySites = factorySiteService.getAllFactorySites();
+            log.debug("id != null: fetch id");
+            List<FactorySiteDetailsDTO> factorySites =
+                    factorySiteService
+                            .displayAllBy()
+                            .stream()
+                            .map(domainToDtoMapper::factorySiteToDetailsDTO)
+                            .collect(Collectors.toList());
             return ResponseEntity.ok(factorySites);
         }
     }
 
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createFactorySite(@RequestBody FactorySiteDTO dto) {
-        System.err.println(dto);
-        factorySiteService.createFactorySite(dto);
+    public ResponseEntity<Void> createFactorySite(@RequestBody FactorySiteCreateDTO dto) {
+        log.debug(dto.toString());
+        factorySiteService.create(
+                CreateFactorySiteCmd
+                        .builder()
+                        .id(CommandId.generate())
+                        .targetDepartmentId(dto.getDepartmentId())
+                        .name(dto.getName())
+                        .build()
+        );
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> updateFactorySite(@RequestBody FactorySiteDTO dto) {
-        factorySiteService.updateFactorySite(dto);
+    public ResponseEntity<Void> updateFactorySiteDetails(@RequestBody FactorySiteUpdateDetailsDTO dto) {
+        log.debug(dto.toString());
+        factorySiteService.updateDetails(
+                UpdateFactorySiteDetailsCmd
+                        .builder()
+                        .id(CommandId.generate())
+                        .factorySiteId(dto.getId())
+                        .name(dto.getName())
+                        .build()
+        );
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteFactorySite(@RequestParam FactorySiteID id) {
-        System.err.println(id);
-        factorySiteService.deleteFactorySite(id);
+        log.debug(id.toString());
+        factorySiteService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/updateSupply")
-    public ResponseEntity<Void> updateFactorySiteSupply(@RequestBody FactorySiteSupplyDTO dto) {
-        System.err.println(dto);
-        factorySiteService.updateFactorySiteSupply(dto);
+    public ResponseEntity<Void> updateFactorySiteSupply(@RequestBody FactorySiteUpdateSupplyDTO dto) {
+        log.debug(dto.toString());
+        factorySiteService.updateSupply(
+                UpdateFactorySiteSupplyCmd
+                        .builder()
+                        .id(CommandId.generate())
+                        .factorySiteId(dto.getId())
+                        .suppliers(dto.getSuppliers())
+                        .build()
+        );
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

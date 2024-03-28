@@ -20,21 +20,6 @@
     <label>Password: <input th:field="*{passwordHash}" type="text"/></label><br/>
     <span th:if="${#fields.hasErrors('passwordHash')}" th:errors="*{passwordHash}"></span>
 
-    <!--
-    <h3>Groups</h3>
-    <table>
-        <thead>
-        <tr>
-            <th>Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="group : *{groups}">
-            <td th:text="${group.id}"></td>
-        </tr>
-        </tbody>
-    </table>
-    -->
     <input type="submit" value="Create"/>
 </form>
 

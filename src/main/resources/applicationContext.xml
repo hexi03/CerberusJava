@@ -67,6 +67,17 @@
         <constructor-arg name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean id="aclProvider" class="org.springframework.security.acls.jdbc.JdbcAclProvider">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="aclEntryRepository" class="org.springframework.security.acls.jdbc.JdbcAclEntryRepository">
+        <property name="aclProvider" ref="aclProvider" />
+    </bean>
+
+    <bean id="aclVoter" class="com.example.security.AclVoter">
+        <property name="aclEntryRepository" ref="aclEntryRepository" />
+    </bean>
 
     <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
     <!-- DOMAIN -->
@@ -102,25 +113,25 @@
     <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <bean id="DomainUserGroupService"
-          class="com.hexi.Cerberus.domain.services.impl.UserGroupServiceImpl">
+          class="com.hexi.Cerberus.adapter.persistence.GroupJpaRepositoryImpl">
         <constructor-arg name="userRepository" ref="UserRepository"/>
         <constructor-arg name="groupRepository" ref="GroupRepository"/>
         <constructor-arg name="groupUserRelationsRepository" ref="GroupUserRelationRepository"/>
     </bean>
 
     <bean id="DomainDepartmentService"
-          class="com.hexi.Cerberus.domain.services.impl.DepartmentServiceImpl">
+          class="com.hexi.Cerberus.adapter.persistence.DepartmentJpaRepositoryImpl">
         <constructor-arg name="departmentRepository" ref="DepartmentRepository"/>
     </bean>
 
     <bean id="DomainFactorySiteService"
-          class="com.hexi.Cerberus.domain.services.impl.FactorySiteServiceImpl">
+          class="com.hexi.Cerberus.adapter.persistence.FactorySiteJpaRepositoryImpl">
         <constructor-arg name="departmentRepository" ref="DepartmentRepository"/>
         <constructor-arg name="factorySiteRepository" ref="FactorySiteRepository"/>
     </bean>
 
     <bean id="DomainWareHouseService"
-          class="com.hexi.Cerberus.domain.services.impl.WareHouseServiceImpl">
+          class="com.hexi.Cerberus.adapter.persistence.WareHouseJpaRepositoryImpl">
         <constructor-arg name="departmentRepository" ref="DepartmentRepository"/>
         <constructor-arg name="wareHouseRepository" ref="WareHouseRepository"/>
     </bean>
@@ -134,26 +145,26 @@
     </bean>
 
     <bean id="ApplicationUserGroupService"
-          class="com.hexi.Cerberus.application.impl.UserGroupModelServiceImpl">
+          class="com.hexi.Cerberus.application.service.impl.UserGroupModelServiceImpl">
         <constructor-arg name="userGroupModelService" ref="DomainUserGroupService"/>
         <constructor-arg name="mapper" ref="ApplicationMapper"/>
     </bean>
 
     <bean id="ApplicationDepartmentService"
-          class="com.hexi.Cerberus.application.impl.DepartmentServiceImpl">
+          class="com.hexi.Cerberus.application.service.impl.DepartmentServiceImpl">
         <constructor-arg name="departmentService" ref="DomainDepartmentService"/>
         <constructor-arg name="mapper" ref="ApplicationMapper"/>
     </bean>
 
     <bean id="ApplicationFactorySiteService"
-          class="com.hexi.Cerberus.application.impl.FactorySiteServiceImpl">
-        <constructor-arg name="factorySiteService" ref="DomainFactorySiteService"/>
+          class="com.hexi.Cerberus.application.service.impl.FactorySiteServiceImpl">
+        <constructor-arg name="factorySiteRepository" ref="DomainFactorySiteService"/>
         <constructor-arg name="mapper" ref="ApplicationMapper"/>
     </bean>
 
     <bean id="ApplicationWareHouseService"
-          class="com.hexi.Cerberus.application.impl.WareHouseServiceImpl">
-        <constructor-arg name="wareHouseService" ref="DomainWareHouseService"/>
+          class="com.hexi.Cerberus.application.service.impl.WareHouseServiceImpl">
+        <constructor-arg name="wareHouseRepository" ref="DomainWareHouseService"/>
         <constructor-arg name="mapper" ref="ApplicationMapper"/>
     </bean>
 

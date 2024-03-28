@@ -1,9 +1,18 @@
 package com.hexi.Cerberus.adapter.web.rest.Department;
 
-import com.hexi.Cerberus.domain.commontypes.DepartmentID;
+
+import com.hexi.Cerberus.adapter.web.rest.Department.DTO.*;
+
+import com.hexi.Cerberus.application.department.service.DepartmentManagementService;
+import com.hexi.Cerberus.domain.department.Department;
+import com.hexi.Cerberus.domain.department.DepartmentID;
 import com.hexi.Cerberus.adapter.web.webstatic.UserGroupController.UserGroupController;
-import com.hexi.Cerberus.application.DTO.DepartmentDTO;
-import com.hexi.Cerberus.application.DepartmentService;
+import com.hexi.Cerberus.domain.department.command.CreateDepartmentCmd;
+import com.hexi.Cerberus.domain.department.command.UpdateDepartmentDetailsCmd;
+import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
+import com.hexi.Cerberus.infrastructure.command.CommandId;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,50 +20,66 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
+import java.util.stream.Collectors;
+@DrivingAdapter
 @RequestMapping("/api/department")
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
 @RestController
+@AllArgsConstructor
+@Slf4j
 public class DepartmentController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(UserGroupController.class);
-    DepartmentService departmentService;
-
-
-    public DepartmentController(DepartmentService departmentService) {
-        this.departmentService = departmentService;
-    }
-
+    DepartmentManagementService departmentService;
+    DomainToDtoMapper domainToDtoMapper;
     @GetMapping("/fetch")
-    public ResponseEntity<List<DepartmentDTO>> fetch(@RequestParam(required = false) DepartmentID id) {
+    public ResponseEntity<List<DepartmentDetailsDTO>> fetch(@RequestParam(required = false) DepartmentID id) {
+        log.debug(id.toString());
         if (id != null) {
-            DepartmentDTO department = departmentService.getDepartmentById(id);
-            return ResponseEntity.ok(new ArrayList<>(List.of(department)));
+            Optional<Department> department = departmentService.displayBy(id);
+            if (department.isEmpty()) return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(List.of(domainToDtoMapper.departmentToDetailsDTO(department.get())));
         }else{
-            List<DepartmentDTO> departments = departmentService.getAllDepartments();
-            return ResponseEntity.ok(departments);
+            List<Department> departments = departmentService.displayAllBy();
+            return ResponseEntity.ok(
+                    departments
+                            .stream()
+                            .map(domainToDtoMapper::departmentToDetailsDTO)
+                            .collect(Collectors.toList())
+            );
         }
     }
     
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createDepartment(@RequestBody DepartmentDTO dto) {
-        System.err.println(dto);
-        departmentService.createDepartment(dto);
+    public ResponseEntity<Void> createDepartment(@RequestBody CreateDepartmentDTO dto) {
+        log.debug(dto.toString());
+        departmentService.create(
+                CreateDepartmentCmd
+                        .builder()
+                        .id(CommandId.generate())
+                        .name(dto.getName())
+                        .build());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> updateDepartment(@RequestBody DepartmentDTO dto) {
-        System.err.println(dto);
-        departmentService.updateDepartment(dto);
+    public ResponseEntity<Void> updateDepartment(@RequestBody UpdateDepartmentDTO dto) {
+        log.debug(dto.toString());
+        departmentService.updateDetails(UpdateDepartmentDetailsCmd
+                .builder()
+                .id(CommandId.generate())
+                .departmentId(dto.getId())
+                .name(dto.getName())
+                .build()
+        );
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteDepartment(@RequestParam DepartmentID id) {
-        System.err.println(id);
-        departmentService.deleteDepartment(id);
+        log.debug(id.toString());
+        departmentService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

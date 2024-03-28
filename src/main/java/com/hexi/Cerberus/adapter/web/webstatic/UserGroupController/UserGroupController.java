@@ -1,7 +1,7 @@
 package com.hexi.Cerberus.adapter.web.webstatic.UserGroupController;
 
-import com.hexi.Cerberus.domain.commontypes.GroupID;
-import com.hexi.Cerberus.domain.commontypes.UserID;
+import com.hexi.Cerberus.domain.group.GroupID;
+import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.adapter.web.webstatic.UserGroupController.ViewModels.GroupCreateModel;
 import com.hexi.Cerberus.adapter.web.webstatic.UserGroupController.ViewModels.GroupEditModel;
 import com.hexi.Cerberus.adapter.web.webstatic.UserGroupController.ViewModels.UserCreateModel;

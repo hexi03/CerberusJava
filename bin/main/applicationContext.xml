@@ -147,13 +147,13 @@
 
     <bean id="ApplicationFactorySiteService"
           class="com.hexi.Cerberus.applicationServices.impl.FactorySiteServiceImpl">
-        <constructor-arg name="factorySiteService" ref="DomainFactorySiteService"/>
+        <constructor-arg name="factorySiteRepository" ref="DomainFactorySiteService"/>
         <constructor-arg name="mapper" ref="ApplicationMapper"/>
     </bean>
 
     <bean id="ApplicationWareHouseService"
           class="com.hexi.Cerberus.applicationServices.impl.WareHouseServiceImpl">
-        <constructor-arg name="wareHouseService" ref="DomainWareHouseService"/>
+        <constructor-arg name="wareHouseRepository" ref="DomainWareHouseService"/>
         <constructor-arg name="mapper" ref="ApplicationMapper"/>
     </bean>
 

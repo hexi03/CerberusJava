@@ -1,6 +1,6 @@
 package com.hexi.Cerberus.adapter.web.webstatic.UserGroupController.ViewModels;
 
-import com.hexi.Cerberus.domain.commontypes.GroupID;
+import com.hexi.Cerberus.domain.group.GroupID;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
