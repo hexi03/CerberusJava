@@ -4,10 +4,10 @@ import com.hexi.Cerberus.application.department.service.DepartmentManagementServ
 import com.hexi.Cerberus.domain.department.Department;
 import com.hexi.Cerberus.domain.department.DepartmentFactory;
 import com.hexi.Cerberus.domain.department.DepartmentID;
+import com.hexi.Cerberus.domain.department.DepartmentUpdater;
 import com.hexi.Cerberus.domain.department.command.CreateDepartmentCmd;
 import com.hexi.Cerberus.domain.department.command.UpdateDepartmentDetailsCmd;
 import com.hexi.Cerberus.domain.department.repository.DepartmentRepository;
-import com.hexi.Cerberus.domain.department.DepartmentUpdater;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
@@ -26,17 +26,17 @@ public class DepartmentManagementServiceImpl implements DepartmentManagementServ
 
     @Override
     public Optional<Department> displayBy(DepartmentID id) {
-        return departmentRepository.displayById(id);
+        return departmentRepository.findById(id);
     }
 
     @Override
     public List<Department> displayAllBy(Query query) {
-        return departmentRepository.displayAll(query);
+        return departmentRepository.findAll(query);
     }
 
     @Override
     public List<Department> displayAllBy() {
-        return departmentRepository.displayAll();
+        return departmentRepository.findAll();
 
     }
 
@@ -55,9 +55,9 @@ public class DepartmentManagementServiceImpl implements DepartmentManagementServ
     @Override
     public void updateDetails(UpdateDepartmentDetailsCmd cmd) {
         cmd.validate().onFailedThrow();
-        Optional<Department> department = departmentRepository.displayById(cmd.getDepartmentId());
+        Optional<Department> department = departmentRepository.findById(cmd.getDepartmentId());
         department.orElseThrow(() -> new RuntimeException(String.format("There are no department with id %s", cmd.getDepartmentId().toString())));
-        departmentUpdater.updateBy(department.get(),cmd);
+        departmentUpdater.updateBy(department.get(), cmd);
         departmentRepository.update(department.get());
         messagePublisher.publish(department.get().edjectEvents());
     }

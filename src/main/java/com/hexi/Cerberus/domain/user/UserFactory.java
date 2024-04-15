@@ -1,9 +1,11 @@
 package com.hexi.Cerberus.domain.user;
 
 import com.hexi.Cerberus.domain.user.command.CreateUserCmd;
+import org.springframework.stereotype.Component;
 
-public class UserFactory {
-    public User from(CreateUserCmd cmd) {
-        return new User(new UserID(), cmd.getName(), cmd.getEmail(), cmd.getPasswordHash());
-    }
+@Component
+public interface UserFactory {
+    User from(CreateUserCmd cmd);
 }
+
+

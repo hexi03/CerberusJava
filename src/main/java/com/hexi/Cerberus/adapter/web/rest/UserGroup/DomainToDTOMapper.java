@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Mapper
 public interface DomainToDTOMapper {
 
-    default UserDetailsDTO mapUserToDetailsDto(User user){
+    default UserDetailsDTO mapUserToDetailsDto(User user) {
         return UserDetailsDTO
                 .builder()
                 .id(user.getId())
@@ -24,9 +24,11 @@ public interface DomainToDTOMapper {
                 )
                 .name(user.getName())
                 .build();
-    };
+    }
 
-    default GroupDetailsDTO mapGroupToDetailsDto(Group group){
+    ;
+
+    default GroupDetailsDTO mapGroupToDetailsDto(Group group) {
         return GroupDetailsDTO
                 .builder()
                 .id(group.getId())
@@ -39,5 +41,7 @@ public interface DomainToDTOMapper {
                 )
                 .name(group.getName())
                 .build();
-    };
+    }
+
+    ;
 }

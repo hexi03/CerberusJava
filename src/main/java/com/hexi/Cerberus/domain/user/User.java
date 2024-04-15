@@ -4,34 +4,18 @@ import com.hexi.Cerberus.domain.group.Group;
 import com.hexi.Cerberus.infrastructure.aggregate.AggregateRoot;
 import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
-import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-@Builder
-public class User implements SecuredEntity, AggregateRoot {
-    UserID id;
-    Collection<Group> groups = new ArrayList<>();
-    String name = "";
-    String email = "";
-    String passwordHash = "";
+
+public abstract class User implements SecuredEntity, AggregateRoot {
+
 
     List<DomainEvent> events = new ArrayList<>();
 
-    public User(
-            UserID id,
-            String name,
-            String email,
-            String passwordHash
-    ) {
-        this.id = id;
-        this.name = name;
-        this.passwordHash = passwordHash;
-        this.email = email;
-    }
 
     protected User() {
 
@@ -39,18 +23,20 @@ public class User implements SecuredEntity, AggregateRoot {
 
     //WARN do not use it manually, it is a part of Group -- User interaction
     public void attachToGroup(Group group) {
-        groups.add(group);
+        appendGroup(group);
     }
+
 
     //WARN do not use it manually, it is a part of Group -- User interaction
     public void detachFromGroup(Group group) {
-        Optional<Group> tmp_group = groups.stream().filter((u) -> u.getId() == group.getId()).findAny();
+        Optional<Group> tmp_group = getGroups().stream().filter((u) -> u.getId() == group.getId()).findAny();
         if (tmp_group.isEmpty()) throw new RuntimeException("User was not attached to group");
-        groups.remove(tmp_group);
+        disposeGroup(tmp_group.orElseThrow());
     }
 
+
     public boolean isAttachedToGroup(Group group) {
-        return groups.stream().filter((u) -> u.getId() == group.getId()).findAny().isPresent();
+        return getGroups().stream().filter((u) -> u.getId() == group.getId()).findAny().isPresent();
     }
 
     @Override
@@ -65,37 +51,26 @@ public class User implements SecuredEntity, AggregateRoot {
         return ev;
     }
 
-    public UserID getId() {
-        return this.id;
-    }
+    public abstract UserID getId();
 
-    public Collection<Group> getGroups() {
-        return this.groups;
-    }
+    public abstract Collection<Group> getGroups();
 
-    public String getName() {
-        return this.name;
-    }
+    public abstract String getName();
 
-    public String getEmail() {
-        return this.email;
-    }
+    public abstract void setName(String name);
 
-    public String getPasswordHash() {
-        return this.passwordHash;
-    }
+    public abstract String getEmail();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public abstract void setEmail(String email);
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public abstract String getPasswordHash();
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
+    public abstract void setPasswordHash(String passwordHash);
+
+
+    protected abstract void disposeGroup(Group group);
+
+    protected abstract void appendGroup(Group group);
 
     public boolean equals(final Object o) {
         if (o == this) return true;

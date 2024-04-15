@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @Getter
-public class FactorySiteReportFilterCriteria extends ReportFilterCriteria{
+public class FactorySiteReportFilterCriteria extends ReportFilterCriteria {
     FactorySiteID factorySite;
 
 }

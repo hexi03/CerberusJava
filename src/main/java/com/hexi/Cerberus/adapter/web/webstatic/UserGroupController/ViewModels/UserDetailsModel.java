@@ -19,7 +19,7 @@ public class UserDetailsModel {
     @UUID
     public UserID id;
     @NotNull
-    @Size(min = 3,max = 50)
+    @Size(min = 3, max = 50)
     public String name;
     @NotNull
     @Email

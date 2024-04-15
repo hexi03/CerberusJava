@@ -4,14 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.log.LogMessage;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.AclPermissionEvaluator;
-import org.springframework.security.acls.domain.DefaultPermissionFactory;
 import org.springframework.security.acls.domain.ObjectIdentityRetrievalStrategyImpl;
 import org.springframework.security.acls.domain.PermissionFactory;
 import org.springframework.security.acls.domain.SidRetrievalStrategyImpl;
 import org.springframework.security.acls.model.*;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -76,8 +73,7 @@ public class BehavioredAclPermissionEvaluator implements PermissionEvaluator {
     private Permission buildPermission(String permString) {
         try {
             return this.permissionFactory.buildFromName(permString);
-        }
-        catch (IllegalArgumentException notfound) {
+        } catch (IllegalArgumentException notfound) {
             return this.permissionFactory.buildFromName(permString.toUpperCase(Locale.ENGLISH));
         }
     }
@@ -93,9 +89,6 @@ public class BehavioredAclPermissionEvaluator implements PermissionEvaluator {
     public void setSidRetrievalStrategy(SidRetrievalStrategy sidRetrievalStrategy) {
         this.sidRetrievalStrategy = sidRetrievalStrategy;
     }
-
-
-
 
 
     private boolean checkPermission(Authentication authentication, ObjectIdentity oid, Object permission) {

@@ -15,11 +15,13 @@ public class WareHouseRegisteredEvent implements DomainEvent {
     EventId eventId;
     DepartmentID departmentId;
     WareHouseID wareHouseId;
-    public WareHouseRegisteredEvent(DepartmentID depId, WareHouseID whId){
+
+    public WareHouseRegisteredEvent(DepartmentID depId, WareHouseID whId) {
         departmentId = depId;
         wareHouseId = whId;
         eventId = EventId.generate();
     }
+
     @Override
     public EventId getId() {
         return null;

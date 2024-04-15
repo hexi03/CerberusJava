@@ -15,6 +15,7 @@ import org.springframework.security.acls.model.MutableAclService;
 
 import java.util.List;
 import java.util.Optional;
+
 @RequiredArgsConstructor
 public class UserManagementServiceImpl implements UserManagementService {
     public final UserRepository userRepository;
@@ -22,19 +23,20 @@ public class UserManagementServiceImpl implements UserManagementService {
     public final MutableAclService aclService;
     public final UserFactory userFactory;
     public final UserUpdater userUpdater;
+
     @Override
     public Optional<User> displayBy(UserID userID) {
-        return userRepository.displayById(userID);
+        return userRepository.findById(userID);
     }
 
     @Override
     public List<User> displayAllBy(Query query) {
-        return userRepository.displayAll(query);
+        return userRepository.findAll(query);
     }
 
     @Override
     public List<User> displayAllBy() {
-        return userRepository.displayAll();
+        return userRepository.findAll();
     }
 
     @Override
@@ -50,7 +52,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     public void updateDetails(UpdateUserDetailsCmd cmd) {
         cmd.validate().onFailedThrow();
-        Optional<User> user = userRepository.displayById(cmd.getUserId());
+        Optional<User> user = userRepository.findById(cmd.getUserId());
         user.orElseThrow(() -> new RuntimeException(String.format("There are no user with id %s", cmd.getUserId().toString())));
         userUpdater.updateBy(user.get(), cmd);
         userRepository.update(user.get());

@@ -12,6 +12,6 @@ public class GroupEditModel {
     @UUID
     public GroupID id;
     @NotNull
-    @Size(min = 3,max = 50)
+    @Size(min = 3, max = 50)
     public String name;
 }

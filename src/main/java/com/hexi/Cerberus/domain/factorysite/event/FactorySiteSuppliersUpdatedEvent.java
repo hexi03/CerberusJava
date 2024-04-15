@@ -10,13 +10,15 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class FactorySiteSuppliersUpdatedEvent extends FactorySiteStorageUpdatedEvent{
+public class FactorySiteSuppliersUpdatedEvent extends FactorySiteStorageUpdatedEvent {
     FactorySiteID factorySiteId;
     EventId id;
-    public FactorySiteSuppliersUpdatedEvent(FactorySiteID facId){
+
+    public FactorySiteSuppliersUpdatedEvent(FactorySiteID facId) {
         factorySiteId = facId;
         id = EventId.generate();
     }
+
     @Override
     public EventId getId() {
         return id;

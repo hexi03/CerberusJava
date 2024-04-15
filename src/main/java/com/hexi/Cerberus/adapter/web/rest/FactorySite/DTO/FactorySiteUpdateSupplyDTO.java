@@ -5,6 +5,7 @@ import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import lombok.Data;
 
 import java.util.List;
+
 @Data
 public class FactorySiteUpdateSupplyDTO {
     FactorySiteID id;

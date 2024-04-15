@@ -5,5 +5,5 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class WorkShiftReportFilterCriteria extends FactorySiteReportFilterCriteria{
+public class WorkShiftReportFilterCriteria extends FactorySiteReportFilterCriteria {
 }

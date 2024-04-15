@@ -36,15 +36,15 @@ public class RegistriesController {
 
     //USER
     @GetMapping("/fetchItem")
-    public ResponseEntity<List<ItemDetailsDTO>> fetchItem(@PathVariable(required = false) ItemID id){
-        if(id != null){
+    public ResponseEntity<List<ItemDetailsDTO>> fetchItem(@PathVariable(required = false) ItemID id) {
+        if (id != null) {
             return ResponseEntity.ok(itemManagementService
                     .displayAll()
                     .stream()
                     .map(domainToDTOMapper::mapItemToDetailsDto)
                     .collect(Collectors.toList())
             );
-        }else{
+        } else {
             Optional<Item> item = itemManagementService.displayBy(id);
             if (item.isEmpty()) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(
@@ -58,7 +58,7 @@ public class RegistriesController {
     }
 
     @PostMapping("/addItem")
-    public ResponseEntity<Void> addItem(CreateItemDTO dto){
+    public ResponseEntity<Void> addItem(CreateItemDTO dto) {
         itemManagementService.create(
                 CreateItemCmd
                         .builder()
@@ -72,7 +72,7 @@ public class RegistriesController {
     }
 
     @PutMapping("/updateItem")
-    public ResponseEntity<Void> updateItem(UpdateItemDTO dto){
+    public ResponseEntity<Void> updateItem(UpdateItemDTO dto) {
         itemManagementService.updateDetails(
                 UpdateItemCmd
                         .builder()
@@ -85,24 +85,23 @@ public class RegistriesController {
     }
 
     @DeleteMapping("/removeItem")
-    public ResponseEntity<Void> removeItem(ItemID id){
+    public ResponseEntity<Void> removeItem(ItemID id) {
         itemManagementService.setDeleted(id);
         return ResponseEntity.ok().build();
     }
 
 
-
     //GROUP
     @GetMapping("/fetchProduct")
-    public ResponseEntity<List<ProductDetailsDTO>> fetchProduct(@PathVariable(required = false) ProductID id){
-        if(id != null){
+    public ResponseEntity<List<ProductDetailsDTO>> fetchProduct(@PathVariable(required = false) ProductID id) {
+        if (id != null) {
             return ResponseEntity.ok(productManagementService
                     .displayAll()
                     .stream()
                     .map(domainToDTOMapper::mapProductToDetailsDto)
                     .collect(Collectors.toList())
             );
-        }else{
+        } else {
             Optional<Product> item = productManagementService.displayBy(id);
             if (item.isEmpty()) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(
@@ -116,7 +115,7 @@ public class RegistriesController {
     }
 
     @PostMapping("/addProduct")
-    public ResponseEntity<Void> addProduct(CreateProductDTO dto){
+    public ResponseEntity<Void> addProduct(CreateProductDTO dto) {
         productManagementService.create(
                 CreateProductCmd
                         .builder()
@@ -129,14 +128,14 @@ public class RegistriesController {
     }
 
     @PutMapping("/updateProduct")
-    public ResponseEntity<Void> updateProduct(UpdateProductDTO dto){
+    public ResponseEntity<Void> updateProduct(UpdateProductDTO dto) {
         productManagementService.updateDetails(
                 UpdateProductCmd
 
                         .builder()
                         .id(CommandId.generate())
                         .productId(dto.getId())
-                        .itemId(dto.getProductItemId())
+                        //.itemId(dto.getProductItemId())
                         .requirements(dto.getRequirements())
                         .build()
         );
@@ -144,11 +143,10 @@ public class RegistriesController {
     }
 
     @DeleteMapping("/removeProduct")
-    public ResponseEntity<Void> removeProduct(ProductID id){
+    public ResponseEntity<Void> removeProduct(ProductID id) {
         productManagementService.setDeleted(id);
         return ResponseEntity.ok().build();
     }
-
 
 
 }

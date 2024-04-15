@@ -15,31 +15,33 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
+
 @RequiredArgsConstructor
 public class ProductManagementServiceImpl implements ProductManagementService {
+
+    public final ProductRepository productRepository;
+    public final MessagePublisher messagePublisher;
+    public final ProductFactory productFactory;
+    public final ProductUpdater productUpdater;
 
     @Override
     public List<Product> displayByProductionItem(ItemID id) {
         return null;
     }
 
-    public final ProductRepository productRepository;
-    public final MessagePublisher messagePublisher;
-    public final ProductFactory productFactory;
-    public final ProductUpdater productUpdater;
     @Override
     public Optional<Product> displayBy(ProductID productID) {
-        return productRepository.displayById(productID);
+        return productRepository.findById(productID);
     }
 
     @Override
     public List<Product> displayAllBy(Query query) {
-        return productRepository.displayAll(query);
+        return productRepository.findAll(query);
     }
 
     @Override
     public List<Product> displayAll() {
-        return productRepository.displayAll();
+        return productRepository.findAll();
     }
 
     @Override
@@ -55,9 +57,9 @@ public class ProductManagementServiceImpl implements ProductManagementService {
     @Override
     public void updateDetails(UpdateProductCmd cmd) {
         cmd.validate().onFailedThrow();
-        Optional<Product> product = productRepository.displayById(cmd.getProductId());
+        Optional<Product> product = productRepository.findById(cmd.getProductId());
         product.orElseThrow(() -> new RuntimeException(String.format("There are no product with id %s", cmd.getProductId().toString())));
-        productUpdater.updateBy(product.get(),cmd);
+        productUpdater.updateBy(product.get(), cmd);
         productRepository.update(product.get());
         messagePublisher.publish(product.get().edjectEvents());
 
@@ -65,7 +67,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     @Override
     public void setDeleted(ProductID id) {
-        Optional<Product> product = productRepository.displayById(id);
+        Optional<Product> product = productRepository.findById(id);
         product.orElseThrow(() -> new RuntimeException(String.format("There are no warehouse with id %s", id.toString())));
         messagePublisher.publish(product.get().edjectEvents());
         productRepository.update(product.get());

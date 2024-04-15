@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @DrivingAdapter
 @RequestMapping("/api/warehouse")
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
@@ -33,16 +34,16 @@ public class WareHouseController {
 
     public final WareHouseManagementService wareHouseService;
     public final DomainToDtoMapper domainToDtoMapper;
-    
+
     @GetMapping("/fetch")
     public ResponseEntity<List<WareHouseDetailsDTO>> fetch(@RequestParam(required = false) WareHouseID id) {
         log.debug(id.toString());
         if (id != null) {
             log.debug("id == null: fetch all");
             Optional<WareHouse> wareHouse = wareHouseService.displayBy(id);
-            if(wareHouse.isEmpty()) return ResponseEntity.notFound().build();
+            if (wareHouse.isEmpty()) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(List.of(domainToDtoMapper.wareHouseToDetailsDTO(wareHouse.get())));
-        }else{
+        } else {
             log.debug("id != null: fetch id");
             List<WareHouseDetailsDTO> wareHouses =
                     wareHouseService
@@ -89,7 +90,6 @@ public class WareHouseController {
         wareHouseService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
 
 //    @ExceptionHandler(WareHouseNotFoundException.class)

@@ -12,7 +12,7 @@ import java.util.UUID;
 public class FactorySiteID implements EntityId<UUID> {
     public final UUID id;
 
-    public FactorySiteID(){
+    public FactorySiteID() {
         id = UUID.randomUUID();
     }
 

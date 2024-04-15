@@ -11,9 +11,14 @@ import java.util.Optional;
 
 public interface ItemManagementService {
     Optional<Item> displayBy(ItemID id);
+
     List<Item> displayAllBy(Query query);
+
     List<Item> displayAll();
+
     Item create(CreateItemCmd cmd);
+
     void updateDetails(UpdateItemCmd cmd);
+
     void setDeleted(ItemID id);
 }

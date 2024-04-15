@@ -1,7 +1,5 @@
 package com.hexi.Cerberus.domain.group.command;
 
-import com.hexi.Cerberus.domain.department.DepartmentID;
-import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.infrastructure.ValidationResult;
 import com.hexi.Cerberus.infrastructure.command.Command;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
@@ -17,6 +15,7 @@ import java.util.List;
 public class CreateGroupCmd implements Command {
     CommandId id;
     String name;
+
     @Override
     public CommandId getId() {
         return id;
@@ -25,8 +24,8 @@ public class CreateGroupCmd implements Command {
     @Override
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
-        if(id == null) problems.add("Command id is null");
-        if(name == null) problems.add("Name is null");
+        if (id == null) problems.add("Command id is null");
+        if (name == null) problems.add("Name is null");
 
         return new ValidationResult(problems);
     }

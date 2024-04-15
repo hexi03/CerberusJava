@@ -1,19 +1,17 @@
 package com.hexi.Cerberus.domain.warehouse;
 
-import com.hexi.Cerberus.domain.department.Department;
+import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
 import com.hexi.Cerberus.domain.department.repository.DepartmentRepository;
+import com.hexi.Cerberus.domain.warehouse.WareHouse;
+import com.hexi.Cerberus.domain.warehouse.WareHouseID;
+import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.warehouse.command.CreateWareHouseCmd;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@RequiredArgsConstructor
-public class WareHouseFactory {
-    public final DepartmentRepository departmentRepository;
-    public WareHouse from(CreateWareHouseCmd cmd) {
-        Optional<Department> department = departmentRepository.displayById(cmd.getTargetDepartmentId());
-        department.orElseThrow(() -> new RuntimeException(String.format("There is no Department with id: %s", cmd.getTargetDepartmentId().toString())));
-
-        return new WareHouse(new WareHouseID(), department.get(), cmd.getName());
-    }
+@Component
+public interface WareHouseFactory {
+    WareHouse from(CreateWareHouseCmd cmd);
 }

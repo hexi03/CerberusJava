@@ -2,12 +2,8 @@ package com.hexi.Cerberus.domain.report.command.update;
 
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.item.ItemID;
-import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.ValidationResult;
-import com.hexi.Cerberus.infrastructure.command.Command;
-import com.hexi.Cerberus.infrastructure.command.CommandId;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 

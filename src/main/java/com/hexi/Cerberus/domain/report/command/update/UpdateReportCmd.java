@@ -8,9 +8,10 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public abstract class UpdateReportCmd  implements Command {
+public abstract class UpdateReportCmd implements Command {
     CommandId id;
     ReportID reportID;
+
     @Override
     public CommandId getId() {
         return id;

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 @DrivingAdapter
 @RequestMapping("/api/access")
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
@@ -33,7 +34,7 @@ public class AccessController {
     public ResponseEntity<Void> modifyAccess(@RequestBody ModifyAccessRequest dto) {
 
         EntityId resourceId;
-        switch (dto.getResourceId()){
+        switch (dto.getResourceId()) {
             case "department":
                 resourceId = new DepartmentID(UUID.fromString(dto.getResourceId()));
                 break;
@@ -89,8 +90,6 @@ public class AccessController {
         }
         return ResponseEntity.ok().build();
     }
-
-
 
 
 }

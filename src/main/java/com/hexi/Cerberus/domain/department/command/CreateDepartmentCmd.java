@@ -18,6 +18,7 @@ import java.util.List;
 public class CreateDepartmentCmd implements Command {
     CommandId id;
     String name;
+
     @Override
     public CommandId getId() {
         return id;
@@ -26,8 +27,8 @@ public class CreateDepartmentCmd implements Command {
     @Override
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
-        if(id == null) problems.add("Command id is null");
-        if(name == null) problems.add("Name is null");
+        if (id == null) problems.add("Command id is null");
+        if (name == null) problems.add("Name is null");
 
         return new ValidationResult(problems);
     }

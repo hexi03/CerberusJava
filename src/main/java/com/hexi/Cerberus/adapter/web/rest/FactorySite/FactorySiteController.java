@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @DrivingAdapter
 @RequestMapping("/api/factorysite")
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
@@ -42,9 +43,9 @@ public class FactorySiteController {
         if (id != null) {
             log.debug("id == null: fetch all");
             Optional<FactorySite> factorySite = factorySiteService.displayBy(id);
-            if(factorySite.isEmpty()) return ResponseEntity.notFound().build();
+            if (factorySite.isEmpty()) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(List.of(domainToDtoMapper.factorySiteToDetailsDTO(factorySite.get())));
-        }else{
+        } else {
             log.debug("id != null: fetch id");
             List<FactorySiteDetailsDTO> factorySites =
                     factorySiteService
@@ -105,7 +106,6 @@ public class FactorySiteController {
         );
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 
 //    @ExceptionHandler(FactorySiteNotFoundException.class)

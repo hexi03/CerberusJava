@@ -637,3 +637,9 @@ bsrc/main/java/com/hexi/Cerberus/domain/factorysite/exception/FactorySiteAccessD
 ТЗ.txt,e/6/e68f5380304506f885e8ca0030c92de921b84621
 �
 Vsrc/main/java/com/hexi/Cerberus/adapter/web/rest/WareHouse/DTO/WareHouseCreateDTO.java,7/a/7a4e6065aca2c554f2526b19d674ec6d38108fa8
+
+Osrc/main/java/com/hexi/Cerberus/domain/department/contract/DepartmentSlave.java,1/2/12b226e8b182a5bad5be325c4a993b55b84f4661
+z
+Jsrc/main/java/com/hexi/Cerberus/domain/department/base/DepartmentBase.java,2/5/250765b1899e5a29c84491b804f6efeb21442ddf
+~
+Nsrc/main/java/com/hexi/Cerberus/infrastructure/exception/ExceptionFactory.java,6/b/6b6b4db380a3873a5b924da894b723b65d1abfec

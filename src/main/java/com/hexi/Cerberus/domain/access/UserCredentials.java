@@ -1,6 +1,5 @@
 package com.hexi.Cerberus.domain.access;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

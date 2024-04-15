@@ -9,6 +9,7 @@ public class UserDetachedFromGroupEvent implements DomainEvent {
     public final EventId id;
     GroupID groupId;
     UserID userId;
+
     public UserDetachedFromGroupEvent(GroupID groupId, UserID userId) {
         this.userId = userId;
         this.groupId = groupId;

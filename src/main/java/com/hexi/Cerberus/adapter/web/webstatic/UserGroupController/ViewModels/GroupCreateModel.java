@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 public class GroupCreateModel {
     @NotNull
-    @Size(min = 3,max = 50)
+    @Size(min = 3, max = 50)
     public String name = "";
 }

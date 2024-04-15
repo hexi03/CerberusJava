@@ -1,9 +1,9 @@
 package com.hexi.Cerberus.domain.item;
 
 import com.hexi.Cerberus.domain.item.command.CreateItemCmd;
+import org.springframework.stereotype.Component;
 
-public class ItemFactory {
-    public static Item from(CreateItemCmd cmd) {
-        return new Item(new ItemID(), cmd.getName(), new Unit(cmd.getUnits()));
-    }
+@Component
+public interface ItemFactory {
+    Item from(CreateItemCmd cmd);
 }

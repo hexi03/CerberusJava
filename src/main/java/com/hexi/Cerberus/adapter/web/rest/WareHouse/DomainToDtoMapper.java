@@ -8,12 +8,14 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface DomainToDtoMapper {
 
-    default WareHouseDetailsDTO wareHouseToDetailsDTO(WareHouse wareHouse){
+    default WareHouseDetailsDTO wareHouseToDetailsDTO(WareHouse wareHouse) {
         return WareHouseDetailsDTO
                 .builder()
                 .id(wareHouse.getId())
                 .departmentId(wareHouse.getParentDepartment().getId())
                 .name(wareHouse.getName())
                 .build();
-    };
+    }
+
+    ;
 }

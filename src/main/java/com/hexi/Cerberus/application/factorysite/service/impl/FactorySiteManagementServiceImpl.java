@@ -1,7 +1,6 @@
 package com.hexi.Cerberus.application.factorysite.service.impl;
 
 import com.hexi.Cerberus.application.factorysite.service.FactorySiteManagementService;
-import com.hexi.Cerberus.domain.department.Department;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteFactory;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
@@ -17,6 +16,7 @@ import org.springframework.security.acls.model.MutableAclService;
 
 import java.util.List;
 import java.util.Optional;
+
 @RequiredArgsConstructor
 public class FactorySiteManagementServiceImpl implements FactorySiteManagementService {
     public final FactorySiteRepository factorySiteRepository;
@@ -24,19 +24,20 @@ public class FactorySiteManagementServiceImpl implements FactorySiteManagementSe
     public final MutableAclService aclService;
     public final FactorySiteFactory factorySiteFactory;
     public final FactorySiteUpdater factorySiteUpdater;
+
     @Override
     public Optional<FactorySite> displayBy(FactorySiteID factorySiteId) {
-        return factorySiteRepository.displayById(factorySiteId);
+        return factorySiteRepository.findById(factorySiteId);
     }
 
     @Override
     public List<FactorySite> displayAllBy(Query query) {
-        return factorySiteRepository.displayAll(query);
+        return factorySiteRepository.findAll(query);
     }
 
     @Override
     public List<FactorySite> displayAllBy() {
-        return factorySiteRepository.displayAll();
+        return factorySiteRepository.findAll();
     }
 
     @Override
@@ -52,7 +53,7 @@ public class FactorySiteManagementServiceImpl implements FactorySiteManagementSe
     @Override
     public void updateDetails(UpdateFactorySiteDetailsCmd cmd) {
         cmd.validate().onFailedThrow();
-        Optional<FactorySite> factorySite = factorySiteRepository.displayById(cmd.getFactorySiteId());
+        Optional<FactorySite> factorySite = factorySiteRepository.findById(cmd.getFactorySiteId());
         factorySite.orElseThrow(() -> new RuntimeException(String.format("There are no factorysite with id %s", cmd.getFactorySiteId().toString())));
         factorySiteUpdater.updateBy(factorySite.get(), cmd);
         factorySiteRepository.update(factorySite.get());
@@ -64,7 +65,7 @@ public class FactorySiteManagementServiceImpl implements FactorySiteManagementSe
     @Override
     public void updateSupply(UpdateFactorySiteSupplyCmd cmd) {
         cmd.validate().onFailedThrow();
-        Optional<FactorySite> factorySite = factorySiteRepository.displayById(cmd.getFactorySiteId());
+        Optional<FactorySite> factorySite = factorySiteRepository.findById(cmd.getFactorySiteId());
         factorySite.orElseThrow(() -> new RuntimeException(String.format("There are no factorysite with id %s", cmd.getFactorySiteId().toString())));
         messagePublisher.publish(factorySite.get().edjectEvents());
         factorySiteRepository.update(factorySite.get());

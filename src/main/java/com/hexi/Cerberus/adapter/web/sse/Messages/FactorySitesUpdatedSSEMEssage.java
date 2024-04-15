@@ -1,6 +1,6 @@
 package com.hexi.Cerberus.adapter.web.sse.Messages;
 
-public class FactorySitesUpdatedSSEMEssage implements SSEMessage{
+public class FactorySitesUpdatedSSEMEssage implements SSEMessage {
     static String msg = "FACCTORY_SITES_UPDATED";
 
 

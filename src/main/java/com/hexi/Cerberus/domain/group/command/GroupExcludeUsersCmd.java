@@ -18,6 +18,7 @@ public class GroupExcludeUsersCmd implements Command {
     CommandId id;
     GroupID groupId;
     List<UserID> users;
+
     @Override
     public CommandId getId() {
         return id;
@@ -26,9 +27,10 @@ public class GroupExcludeUsersCmd implements Command {
     @Override
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
-        if(id == null) problems.add("Command id is null");
-        if(groupId == null) problems.add("Group id is null");
-        if(users != null || users.stream().filter(userID -> userID == null).count() != 0) problems.add("User id(s) is null");
+        if (id == null) problems.add("Command id is null");
+        if (groupId == null) problems.add("Group id is null");
+        if (users != null || users.stream().filter(userID -> userID == null).count() != 0)
+            problems.add("User id(s) is null");
 
         return new ValidationResult(problems);
     }

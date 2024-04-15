@@ -9,25 +9,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public class Item implements Entity, AggregateRoot {
-    ItemID id;
-    String name;
-    Unit unit;
-    Optional<Date> deletedAt;
+public abstract class Item implements Entity, AggregateRoot {
 
     List<DomainEvent> events = new ArrayList<>();
 
-    public Item(
-            ItemID id,
-            String name,
-            Unit unit
-    ) {
-        this.id = id;
-        this.name = name;
-        this.unit = unit;
-    }
-
-    protected Item(){
+    protected Item() {
 
     }
 
@@ -43,29 +29,17 @@ public class Item implements Entity, AggregateRoot {
         return ev;
     }
 
-    public ItemID getId() {
-        return this.id;
-    }
+    public abstract ItemID getId();
 
-    public String getName() {
-        return this.name;
-    }
+    public abstract String getName();
 
-    public Unit getUnit() {
-        return this.unit;
-    }
+    public abstract void setName(String name);
 
-    public Optional<Date> getDeletedAt() {
-        return this.deletedAt;
-    }
+    public abstract Unit getUnit();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public abstract void setUnit(Unit unit);
 
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
+    public abstract Optional<Date> getDeletedAt();
 
     public boolean equals(final Object o) {
         if (o == this) return true;

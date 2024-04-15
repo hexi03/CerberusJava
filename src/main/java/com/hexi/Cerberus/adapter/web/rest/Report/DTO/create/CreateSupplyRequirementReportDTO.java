@@ -13,7 +13,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @JsonTypeName(Consts.REPORT_FS_SUPPLY_REQUIREMENT)
-public class CreateSupplyRequirementReportDTO extends CreateReportDTO{
+public class CreateSupplyRequirementReportDTO extends CreateReportDTO {
     FactorySiteID factorySiteId;
     WareHouseID targetWareHouseId;
     Map<ItemID, Integer> items;

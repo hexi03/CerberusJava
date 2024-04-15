@@ -5,15 +5,18 @@ import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.product.command.UpdateProductCmd;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
+
 @RequiredArgsConstructor
+@Component
 public class ProductUpdater {
     public final ProductRepository productRepository;
     public final ItemRepository itemRepository;
+
     public void updateBy(Product product, UpdateProductCmd cmd) {
-        List<Item> reqItems = itemRepository.displayById(cmd.getRequirements());
+        List<Item> reqItems = itemRepository.findById(cmd.getRequirements());
         product.setRequirements(reqItems);
 
     }

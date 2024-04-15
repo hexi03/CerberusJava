@@ -21,8 +21,7 @@ public class BehavioredPermissionGrantingStrategy implements PermissionGrantingS
     }
 
     @Override
-    public boolean isGranted(Acl acl, List<Permission> permission, List<Sid> sids, boolean administrativeMode)
-    {
+    public boolean isGranted(Acl acl, List<Permission> permission, List<Sid> sids, boolean administrativeMode) {
         return isGranted1(acl, permission, sids, administrativeMode, false);
     }
 
@@ -84,13 +83,13 @@ public class BehavioredPermissionGrantingStrategy implements PermissionGrantingS
     }
 
     protected boolean isGranted1(AccessControlEntry ace, Permission p, boolean parent) {
-        switch (ace.getPermission()){
+        switch (ace.getPermission()) {
             case BehavioredPermissionFactory.BehavioredPermission bhPerm:
-                return bhPerm.getPure().getMask() == (p instanceof BehavioredPermissionFactory.BehavioredPermission ? ((BehavioredPermissionFactory.BehavioredPermission)p).getPure().getMask() : p.getMask()) &&
-                    (
-                            !parent || bhPerm.getBehaviour().isInheritable()
+                return bhPerm.getPure().getMask() == (p instanceof BehavioredPermissionFactory.BehavioredPermission ? ((BehavioredPermissionFactory.BehavioredPermission) p).getPure().getMask() : p.getMask()) &&
+                        (
+                                !parent || bhPerm.getBehaviour().isInheritable()
 
-                    );
+                        );
             default:
                 return (ace.getPermission().getMask() == p.getMask()) && !parent;
         }

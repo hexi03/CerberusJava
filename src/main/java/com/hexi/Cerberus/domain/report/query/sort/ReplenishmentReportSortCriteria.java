@@ -5,6 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class ReplenishmentReportSortCriteria extends ReportSortCriteria{
+public class ReplenishmentReportSortCriteria extends ReportSortCriteria {
 
 }

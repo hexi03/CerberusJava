@@ -27,12 +27,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-
 @RequiredArgsConstructor
 public class WareHouseStateServiceImpl implements WareHouseStateService {
     public final ReportRepository reportRepository;
     public final ItemRepository itemRepository;
-    public List<WareHouseReport> getReports(WareHouse wareHouse, Date treshold){
+
+    public List<WareHouseReport> getReports(WareHouse wareHouse, Date treshold) {
         WareHouseReportFilterCriteria filter = WareHouseReportFilterCriteria
                 .builder()
                 .date(new ComparationContainer<>(treshold, ComparationContainer.Sign.GREATEREQUAL))
@@ -40,19 +40,20 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                 .department(wareHouse.getParentDepartment().getId())
                 .warehouse(wareHouse.getId())
                 .build();
-        return reportRepository.displayAll(new Query(filter, null,null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
+        return (List<WareHouseReport>) reportRepository.findAll(new Query(filter, null, null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
     }
-    public List<WareHouseReport> getReports(WareHouse wareHouse){
+
+    public List<WareHouseReport> getReports(WareHouse wareHouse) {
         WareHouseReportFilterCriteria filter = WareHouseReportFilterCriteria
                 .builder()
                 .status(ReportStatus.ACTIVE)
                 .department(wareHouse.getParentDepartment().getId())
                 .warehouse(wareHouse.getId())
                 .build();
-        return reportRepository.displayAll(new Query(filter, null,null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
+        return (List<WareHouseReport>) reportRepository.findAll(new Query(filter, null, null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
     }
 
-    public Map<ItemID, Integer> getStorageState(WareHouse wareHouse){
+    public Map<ItemID, Integer> getStorageState(WareHouse wareHouse) {
 
         InventarisationReportFilterCriteria inventarisationReportFilter = InventarisationReportFilterCriteria
                 .builder()
@@ -64,26 +65,24 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
         ReportSortCriteria inventarisationReportSort = ReportSortCriteria.builder().sortBy(ReportSortCriteria.SortBy.CREATED).sortType(ReportSortCriteria.SortType.DESCENDING).build();
 
 
-
-
-        Optional<Report> inventarisationBase = reportRepository.displayAll(new Query(inventarisationReportFilter, inventarisationReportSort,null)).stream().findFirst();
+        Optional<Report> inventarisationBase = reportRepository.findAll(new Query(inventarisationReportFilter, inventarisationReportSort, null)).stream().findFirst();
 
         Map<ItemID, Integer> baseStorageState;
         Date dateTreshold;
         List<WareHouseReport> wareHouseReports;
 
-        if (inventarisationBase.isPresent()){
+        if (inventarisationBase.isPresent()) {
             baseStorageState =
-                    ((InventarisationReport)inventarisationBase
+                    ((InventarisationReport) inventarisationBase
                             .get())
                             .getItems()
                             .entrySet()
                             .stream()
-                            .map(itemIntegerEntry -> new AbstractMap.SimpleImmutableEntry<ItemID, Integer>(itemIntegerEntry.getKey().getId(),itemIntegerEntry.getValue()))
+                            .map(itemIntegerEntry -> new AbstractMap.SimpleImmutableEntry<ItemID, Integer>(itemIntegerEntry.getKey().getId(), itemIntegerEntry.getValue()))
                             .collect(Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue, Integer::sum));
             dateTreshold = inventarisationBase.get().getCreatedAt();
             wareHouseReports = getReports(wareHouse, dateTreshold);
-        }else{
+        } else {
             baseStorageState = new HashMap<>();
             dateTreshold = null;
             wareHouseReports = getReports(wareHouse);
@@ -96,7 +95,7 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                         .filter(wareHouseReport -> wareHouseReport instanceof ItemReplenish)
                         .map(wareHouseReport -> (ItemReplenish) wareHouseReport)
                         .reduce(
-                                (List<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>)(new ArrayList<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>()),
+                                (List<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>) (new ArrayList<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>()),
                                 (arrayList, itemReplenish) -> (
                                         itemReplenish
                                                 .getItems()
@@ -107,7 +106,10 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                                                 )
                                                 .toList()
                                 ),
-                                (arrayList, arrayList2) -> {arrayList.addAll(arrayList2); return arrayList;})
+                                (arrayList, arrayList2) -> {
+                                    arrayList.addAll(arrayList2);
+                                    return arrayList;
+                                })
                         .stream()
                         .collect(Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue, Integer::sum));
         Map<ItemID, Integer> itemReleases =
@@ -116,7 +118,7 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                         .filter(wareHouseReport -> wareHouseReport instanceof ItemRelease)
                         .map(wareHouseReport -> (ItemRelease) wareHouseReport)
                         .reduce(
-                                (List<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>)(new ArrayList<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>()),
+                                (List<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>) (new ArrayList<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>()),
                                 (arrayList, itemReplenish) -> (
                                         itemReplenish
                                                 .getItems()
@@ -127,7 +129,10 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                                                 )
                                                 .toList()
                                 ),
-                                (arrayList, arrayList2) -> {arrayList.addAll(arrayList2); return arrayList;})
+                                (arrayList, arrayList2) -> {
+                                    arrayList.addAll(arrayList2);
+                                    return arrayList;
+                                })
                         .stream()
                         .collect(Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue, Integer::sum));
 
@@ -139,20 +144,16 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
     }
 
 
-
-
-
     @Override
     public WareHouseState getWareHouseState(WareHouse wareHouse) {
 
         Map<ItemID, Integer> storageStateItemID = getStorageState(wareHouse);
         List<ItemID> itemIDS = storageStateItemID.entrySet().stream().map(itemIDIntegerEntry -> itemIDIntegerEntry.getKey()).toList();
-        List<Item> items = itemRepository.displayById(itemIDS);
+        List<Item> items = itemRepository.findById(itemIDS);
         Map<Item, Integer> storageState = items.stream().collect(Collectors.toMap(item -> item, item -> storageStateItemID.get(item.getId()), Integer::sum));
 
         List<StateProblem> problems = getProblems(wareHouse);
         List<StateWarning> warnings = getWarnings(wareHouse);
-
 
 
         return WareHouseState
@@ -161,7 +162,6 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                 .problems(problems)
                 .warnings(warnings)
                 .build();
-
 
 
     }

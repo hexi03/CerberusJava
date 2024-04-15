@@ -1,6 +1,6 @@
 package com.hexi.Cerberus.adapter.web.sse.Messages;
 
-public class WareHouseUpdatedSSEMessage implements SSEMessage{
+public class WareHouseUpdatedSSEMessage implements SSEMessage {
     static String msg = "WAREHOUSES_UPDATED";
 
     @Override

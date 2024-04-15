@@ -9,6 +9,7 @@ public class UserAttachedFromGroupEvent implements DomainEvent {
     public final EventId id;
     GroupID groupId;
     UserID userId;
+
     public UserAttachedFromGroupEvent(GroupID groupId, UserID userId) {
         this.userId = userId;
         this.groupId = groupId;

@@ -4,11 +4,16 @@ import com.hexi.Cerberus.infrastructure.entity.EntityId;
 import lombok.Data;
 
 import java.util.UUID;
+
 @Data
 public class ReportID implements EntityId<UUID> {
     public final UUID id;
 
-    public ReportID(){
+    public ReportID() {
         id = UUID.randomUUID();
+    }
+
+    public ReportID(UUID id) {
+        this.id = id;
     }
 }

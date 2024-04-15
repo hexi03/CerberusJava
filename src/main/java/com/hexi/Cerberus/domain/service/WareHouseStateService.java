@@ -1,11 +1,10 @@
 package com.hexi.Cerberus.domain.service;
 
-import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseState;
-import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public interface WareHouseStateService {
 
 

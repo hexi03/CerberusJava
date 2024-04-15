@@ -14,7 +14,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @JsonTypeName(Consts.REPORT_WH_WORKSHIFT_REPLENISHMENT)
-public class CreateWorkShiftReplenishmentReportDTO extends CreateReportDTO{
+public class CreateWorkShiftReplenishmentReportDTO extends CreateReportDTO {
     WareHouseID wareHouseId;
     ReportID workShiftReportId;
     Map<ItemID, Integer> items;

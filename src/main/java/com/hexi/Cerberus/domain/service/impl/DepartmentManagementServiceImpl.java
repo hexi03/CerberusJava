@@ -9,7 +9,6 @@ import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import lombok.AllArgsConstructor;
-import org.springframework.security.acls.AclEntryVoter;
 import org.springframework.security.acls.model.MutableAclService;
 
 @AllArgsConstructor
@@ -19,20 +18,22 @@ public class DepartmentManagementServiceImpl implements DepartmentManagementServ
     private final FactorySiteRepository factorySiteRepository;
     private final WareHouseRepository wareHouseRepository;
     private final MessagePublisher messagePublisher;
+
     @Override
     public void addFactorySiteToDepartment(Department department, FactorySite factorySite) {
         department.registerFactorySite(factorySite);
-        factorySite.setParent(aclService,factorySite.getObjectIdentity());
-        departmentRepository.updateDepartment(department);
-        factorySiteRepository.updateFactorySite(factorySite);
+        factorySite.setParent(aclService, factorySite.getObjectIdentity());
+        departmentRepository.save(department);
+        factorySiteRepository.save(factorySite);
+        messagePublisher.publish(department.edjectEvents());
     }
 
     @Override
     public void addWareHouseToDepartment(Department department, WareHouse wareHouse) {
         department.registerWareHouse(wareHouse);
-        wareHouse.setParent(aclService,wareHouse.getObjectIdentity());
-        departmentRepository.updateDepartment(department);
-        wareHouseRepository.updateWareHouse(wareHouse);
+        wareHouse.setParent(aclService, wareHouse.getObjectIdentity());
+        departmentRepository.save(department);
+        wareHouseRepository.save(wareHouse);
         messagePublisher.publish(department.edjectEvents());
     }
 }

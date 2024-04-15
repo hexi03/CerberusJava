@@ -17,6 +17,7 @@ public class UpdateFactorySiteSupplyCmd implements Command {
     CommandId id;
     FactorySiteID factorySiteId;
     List<WareHouseID> suppliers;
+
     @Override
     public CommandId getId() {
         return id;
@@ -25,9 +26,10 @@ public class UpdateFactorySiteSupplyCmd implements Command {
     @Override
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
-        if(id == null) problems.add("Command id is null");
-        if(factorySiteId == null) problems.add("FactorySite id is null");
-        if(suppliers != null || suppliers.stream().filter(wareHouseID -> wareHouseID == null).count() != 0) problems.add("Supplier id(s) is null");
+        if (id == null) problems.add("Command id is null");
+        if (factorySiteId == null) problems.add("FactorySite id is null");
+        if (suppliers != null || suppliers.stream().filter(wareHouseID -> wareHouseID == null).count() != 0)
+            problems.add("Supplier id(s) is null");
 
         return new ValidationResult(problems);
     }

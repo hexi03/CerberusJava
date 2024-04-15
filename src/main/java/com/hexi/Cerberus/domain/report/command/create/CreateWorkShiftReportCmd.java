@@ -4,11 +4,6 @@ import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.ValidationResult;
-import com.hexi.Cerberus.infrastructure.command.Command;
-import com.hexi.Cerberus.infrastructure.command.CommandId;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -18,7 +13,7 @@ import java.util.Map;
 
 @Getter
 @SuperBuilder
-public class CreateWorkShiftReportCmd  extends CreateReportCmd {
+public class CreateWorkShiftReportCmd extends CreateReportCmd {
     FactorySiteID factorySiteId;
     WareHouseID targetWareHouseId;
     Map<ItemID, Integer> produced;

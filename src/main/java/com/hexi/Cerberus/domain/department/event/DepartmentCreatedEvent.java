@@ -8,14 +8,13 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DepartmentCreatedEvent extends DepartmentStorageUpdatedEvent{
+public class DepartmentCreatedEvent extends DepartmentStorageUpdatedEvent {
     EventId id;
     DepartmentID departmentId;
 
     public DepartmentCreatedEvent(
             DepartmentID departmentId
-        )
-    {
+    ) {
         this.departmentId = departmentId;
         id = EventId.generate();
     }

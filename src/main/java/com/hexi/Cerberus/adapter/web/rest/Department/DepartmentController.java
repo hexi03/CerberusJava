@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @DrivingAdapter
 @RequestMapping("/api/department")
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
@@ -32,6 +33,7 @@ public class DepartmentController {
 
     DepartmentManagementService departmentService;
     DomainToDtoMapper domainToDtoMapper;
+
     @GetMapping("/fetch")
     public ResponseEntity<List<DepartmentDetailsDTO>> fetch(@RequestParam(required = false) DepartmentID id) {
         log.debug(id.toString());
@@ -39,7 +41,7 @@ public class DepartmentController {
             Optional<Department> department = departmentService.displayBy(id);
             if (department.isEmpty()) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(List.of(domainToDtoMapper.departmentToDetailsDTO(department.get())));
-        }else{
+        } else {
             List<Department> departments = departmentService.displayAllBy();
             return ResponseEntity.ok(
                     departments
@@ -49,7 +51,7 @@ public class DepartmentController {
             );
         }
     }
-    
+
 
     @PostMapping("/create")
     public ResponseEntity<Void> createDepartment(@RequestBody CreateDepartmentDTO dto) {
@@ -82,7 +84,6 @@ public class DepartmentController {
         departmentService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
 
 //    @ExceptionHandler(FactorySiteNotFoundException.class)

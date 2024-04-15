@@ -8,11 +8,12 @@ import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
 
-@Data
-@AllArgsConstructor
+@SuperBuilder
 @JsonTypeName(Consts.REPORT_WH_WORKSHIFT_REPLENISHMENT)
 public class DetailsWorkShiftReplenishmentReportDTO extends ReportDetailsDTO {
     WareHouseID wareHouseId;

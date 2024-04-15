@@ -12,7 +12,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @JsonTypeName(Consts.REPORT_WH_INVENTARISATION)
-public class CreateInventarisationReportDTO extends CreateReportDTO{
+public class CreateInventarisationReportDTO extends CreateReportDTO {
     WareHouseID wareHouseId;
     Map<ItemID, Integer> items;
 

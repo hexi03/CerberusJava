@@ -2,12 +2,8 @@ package com.hexi.Cerberus.domain.report.command.update;
 
 
 import com.hexi.Cerberus.domain.item.ItemID;
-import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.ValidationResult;
-import com.hexi.Cerberus.infrastructure.command.Command;
-import com.hexi.Cerberus.infrastructure.command.CommandId;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -17,7 +13,7 @@ import java.util.Map;
 
 @Getter
 @SuperBuilder
-public class UpdateReplenishmentReportCmd extends UpdateReportCmd{
+public class UpdateReplenishmentReportCmd extends UpdateReportCmd {
     WareHouseID wareHouseId;
     Map<ItemID, Integer> items;
 

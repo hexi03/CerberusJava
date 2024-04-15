@@ -14,11 +14,12 @@ public class FactorySiteRegisteredEvent implements DomainEvent {
     DepartmentID departmentId;
     FactorySiteID factorySiteId;
 
-    public FactorySiteRegisteredEvent(DepartmentID depId, FactorySiteID facId){
+    public FactorySiteRegisteredEvent(DepartmentID depId, FactorySiteID facId) {
         departmentId = depId;
         factorySiteId = facId;
         eventId = EventId.generate();
     }
+
     @Override
     public EventId getId() {
         return eventId;

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface DomainToDtoMapper {
 
-    default DepartmentDetailsDTO departmentToDetailsDTO(Department department){
+    default DepartmentDetailsDTO departmentToDetailsDTO(Department department) {
         return DepartmentDetailsDTO
                 .builder()
                 .id(department.getId())
@@ -28,5 +28,7 @@ public interface DomainToDtoMapper {
                 )
 
                 .build();
-    };
+    }
+
+    ;
 }

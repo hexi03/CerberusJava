@@ -7,9 +7,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.SecretKey;
@@ -50,11 +48,12 @@ public class AuthService {
     public Optional<User> authUser(UserCredentials userCredentials) {
         Optional<User> user = userRepository.findByEmail(userCredentials.email);
         if (user.isEmpty()) return user;
-        if (user.get().getPasswordHash().equals(getPasswordHash(userCredentials.getPassword()))) return Optional.empty();
+        if (user.get().getPasswordHash().equals(getPasswordHash(userCredentials.getPassword())))
+            return Optional.empty();
         return user;
     }
 
-    public String getPasswordHash(String password){
+    public String getPasswordHash(String password) {
         return passwordEncoder.encode(password);
     }
 

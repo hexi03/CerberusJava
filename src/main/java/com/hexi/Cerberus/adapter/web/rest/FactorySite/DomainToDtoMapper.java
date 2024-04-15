@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Mapper
 public interface DomainToDtoMapper {
 
-    default FactorySiteDetailsDTO factorySiteToDetailsDTO(FactorySite factorySite){
+    default FactorySiteDetailsDTO factorySiteToDetailsDTO(FactorySite factorySite) {
         return FactorySiteDetailsDTO
                 .builder()
                 .id(factorySite.getId())
@@ -26,5 +26,7 @@ public interface DomainToDtoMapper {
                                 .collect(Collectors.toList())
                 )
                 .build();
-    };
+    }
+
+    ;
 }

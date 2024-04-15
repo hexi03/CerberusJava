@@ -11,6 +11,6 @@ public class GroupDetailsModel {
     @NotNull
     @UUID
     public GroupID id;
-    @Size(min = 3,max = 50)
+    @Size(min = 3, max = 50)
     public String name;
 }

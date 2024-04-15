@@ -17,14 +17,18 @@ public interface DomainToDTOMapper {
                 .name(item.getName())
                 .units(item.getUnit().getUnit())
                 .build();
-    };
+    }
 
-    default ProductDetailsDTO mapProductToDetailsDto(Product product){
+    ;
+
+    default ProductDetailsDTO mapProductToDetailsDto(Product product) {
         return ProductDetailsDTO
                 .builder()
                 .id(product.getId())
                 .productItemId(product.getProduction().getId())
                 .requirements(product.getRequirements().stream().map(item -> item.getId()).collect(Collectors.toList()))
                 .build();
-    };
+    }
+
+    ;
 }

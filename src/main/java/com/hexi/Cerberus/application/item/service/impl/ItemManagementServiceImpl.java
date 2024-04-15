@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
+
 @RequiredArgsConstructor
 public class ItemManagementServiceImpl implements ItemManagementService {
     public final ItemRepository itemRepository;
@@ -23,17 +24,17 @@ public class ItemManagementServiceImpl implements ItemManagementService {
 
     @Override
     public Optional<Item> displayBy(ItemID itemID) {
-        return itemRepository.displayById(itemID);
+        return itemRepository.findById(itemID);
     }
 
     @Override
     public List<Item> displayAllBy(Query query) {
-        return itemRepository.displayAll(query);
+        return itemRepository.findAll(query);
     }
 
     @Override
     public List<Item> displayAll() {
-        return itemRepository.displayAll();
+        return itemRepository.findAll();
     }
 
     @Override
@@ -49,16 +50,16 @@ public class ItemManagementServiceImpl implements ItemManagementService {
     @Override
     public void updateDetails(UpdateItemCmd cmd) {
         cmd.validate().onFailedThrow();
-        Optional<Item> item = itemRepository.displayById(cmd.getItemId());
+        Optional<Item> item = itemRepository.findById(cmd.getItemId());
         item.orElseThrow(() -> new RuntimeException(String.format("There are no item with id %s", cmd.getItemId().toString())));
-        itemUpdater.updateBy(item.get(),cmd);
+        itemUpdater.updateBy(item.get(), cmd);
         itemRepository.update(item.get());
         messagePublisher.publish(item.get().edjectEvents());
     }
 
     @Override
     public void setDeleted(ItemID id) {
-        Optional<Item> item = itemRepository.displayById(id);
+        Optional<Item> item = itemRepository.findById(id);
         item.orElseThrow(() -> new RuntimeException(String.format("There are no warehouse with id %s", id.toString())));
         messagePublisher.publish(item.get().edjectEvents());
         itemRepository.update(item.get());

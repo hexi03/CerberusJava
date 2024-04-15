@@ -4,11 +4,6 @@ package com.hexi.Cerberus.domain.report.command.create;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.ValidationResult;
-import com.hexi.Cerberus.infrastructure.command.Command;
-import com.hexi.Cerberus.infrastructure.command.CommandId;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -18,7 +13,7 @@ import java.util.Map;
 
 @Getter
 @SuperBuilder
-public class CreateReplenishmentReportCmd extends CreateReportCmd{
+public class CreateReplenishmentReportCmd extends CreateReportCmd {
 
     WareHouseID wareHouseId;
     Map<ItemID, Integer> items;

@@ -11,21 +11,24 @@ import com.hexi.Cerberus.infrastructure.query.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface Repository<T,ID extends EntityId> {
-    Optional<T> displayById(ID id);
-    List<T> displayById(List<ID> ids);
+public interface Repository<T extends Entity, ID extends EntityId> {
+    Optional<T> findById(ID id);
 
-    List<T> displayAll(Query query);
+    List<T> findById(List<ID> ids);
 
-    List<T> displayAll();
+    List<T> findAll(Query query);
 
-    T append(T user);
+    List<T> findAll();
 
-    void update(T user);
+    T append(T entity);
+
+    void update(T entity);
 
     void deleteById(ID id);
 
     boolean isExists(ID id);
+
+    void save(T entity);
 }
 
 

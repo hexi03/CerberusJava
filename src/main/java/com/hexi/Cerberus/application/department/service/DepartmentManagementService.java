@@ -13,10 +13,15 @@ public interface DepartmentManagementService {
 
 
     Optional<Department> displayBy(DepartmentID id);
+
     List<Department> displayAllBy(Query query);
+
     List<Department> displayAllBy();
+
     Department create(CreateDepartmentCmd cmd);
+
     void updateDetails(UpdateDepartmentDetailsCmd cmd);
+
     void delete(DepartmentID id);
 
 }

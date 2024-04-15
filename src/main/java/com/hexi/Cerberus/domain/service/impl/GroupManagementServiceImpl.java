@@ -13,22 +13,23 @@ public class GroupManagementServiceImpl implements GroupManagementService {
     public final MessagePublisher messagePublisher;
     public final GroupRepository groupRepository;
     public final UserRepository userRepository;
+
     @Override
     public void addUserToGroup(Group group, User user) {
         group.addUser(user);
 
         messagePublisher.publish(group.edjectEvents());
-        groupRepository.updateGroup(group);
-        userRepository.updateUser(user);
+        groupRepository.update(group);
+        userRepository.update(user);
         //TODO ????
     }
 
     @Override
     public void removeUserFromGroup(Group group, User user) {
-        group.removeUser(user);
+        group.removeUser(user.getId());
         messagePublisher.publish(group.edjectEvents());
-        groupRepository.updateGroup(group);
-        userRepository.updateUser(user);
+        groupRepository.update(group);
+        userRepository.update(user);
         //TODO ????
     }
 }

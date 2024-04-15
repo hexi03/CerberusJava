@@ -7,11 +7,12 @@ import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
 
 @Data
-@AllArgsConstructor
+@SuperBuilder
 @JsonTypeName(Consts.REPORT_FS_SUPPLY_REQUIREMENT)
 public class DetailsSupplyRequirementReportDTO extends ReportDetailsDTO {
     FactorySiteID factorySiteID;

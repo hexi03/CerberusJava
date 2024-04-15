@@ -6,12 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 public class WareHouseID implements EntityId<UUID> {
     public final UUID id;
 
-    public WareHouseID(){
+    public WareHouseID() {
         id = UUID.randomUUID();
     }
 }

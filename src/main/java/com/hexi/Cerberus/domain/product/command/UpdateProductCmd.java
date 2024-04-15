@@ -17,6 +17,7 @@ public class UpdateProductCmd implements Command {
     CommandId id;
     ProductID productId;
     List<ItemID> requirements;
+
     @Override
     public CommandId getId() {
         return id;
@@ -25,9 +26,10 @@ public class UpdateProductCmd implements Command {
     @Override
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
-        if(id == null) problems.add("Command id is null");
-        if(productId == null) problems.add("Item id is null");
-        if(requirements != null || requirements.stream().filter(userID -> userID == null).count() != 0) problems.add("Requireement id(s) is null");
+        if (id == null) problems.add("Command id is null");
+        if (productId == null) problems.add("Item id is null");
+        if (requirements != null || requirements.stream().filter(userID -> userID == null).count() != 0)
+            problems.add("Requireement id(s) is null");
 
         return new ValidationResult(problems);
     }

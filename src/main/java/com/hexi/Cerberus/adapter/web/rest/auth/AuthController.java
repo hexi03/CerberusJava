@@ -24,11 +24,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody UserDTO userCreds) {
-        Optional<User> user = authService.authUser(new UserCredentials(userCreds.getEmail(),userCreds.getPassword()));
-        if (user.isEmpty()){
+        Optional<User> user = authService.authUser(new UserCredentials(userCreds.getEmail(), userCreds.getPassword()));
+        if (user.isEmpty()) {
             String token = authService.generateToken(user.get());
             return ResponseEntity.ok(new AuthResponse(token));
-        }else
+        } else
             return ResponseEntity.notFound().build();
     }
 }

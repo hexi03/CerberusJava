@@ -17,16 +17,18 @@ import com.hexi.Cerberus.infrastructure.query.Query;
 import com.hexi.Cerberus.infrastructure.query.comparation.ComparationContainer;
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
-
 
 
 @RequiredArgsConstructor
 public class FactorySiteStateServiceImpl implements FactorySiteStateService {
     public final ReportRepository reportRepository;
     public final ItemRepository itemRepository;
-    public List<FactorySiteReport> getReports(FactorySite factorySite, Date treshold){
+
+    public List<FactorySiteReport> getReports(FactorySite factorySite, Date treshold) {
         FactorySiteReportFilterCriteria filter = FactorySiteReportFilterCriteria
                 .builder()
                 .date(new ComparationContainer<>(treshold, ComparationContainer.Sign.GREATEREQUAL))
@@ -34,16 +36,17 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
                 .department(factorySite.getParentDepartment().getId())
                 .factorySite(factorySite.getId())
                 .build();
-        return reportRepository.displayAll(new Query(filter, null,null)).stream().map(report -> (FactorySiteReport) report).collect(Collectors.toList());
+        return (List<FactorySiteReport>) reportRepository.findAll(new Query(filter, null, null)).stream().map(report -> (FactorySiteReport) report).collect(Collectors.toList());
     }
-    public List<WareHouseReport> getReports(WareHouse wareHouse){
+
+    public List<WareHouseReport> getReports(WareHouse wareHouse) {
         WareHouseReportFilterCriteria filter = WareHouseReportFilterCriteria
                 .builder()
                 .status(ReportStatus.ACTIVE)
                 .department(wareHouse.getParentDepartment().getId())
                 .warehouse(wareHouse.getId())
                 .build();
-        return reportRepository.displayAll(new Query(filter, null,null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
+        return (List<WareHouseReport>) reportRepository.findAll(new Query(filter, null, null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
     }
 
     @Override
@@ -51,7 +54,6 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
 
         List<StateProblem> problems = getProblems(factorySite);
         List<StateWarning> warnings = getWarnings(factorySite);
-
 
 
         return FactorySiteState

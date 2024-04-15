@@ -33,17 +33,17 @@ public class GroupManagementServiceImpl implements GroupManagementService {
 
     @Override
     public Optional<Group> displayBy(GroupID groupID) {
-        return groupRepository.displayById(groupID);
+        return groupRepository.findById(groupID);
     }
 
     @Override
     public List<Group> displayAll(Query query) {
-        return groupRepository.displayAll(query);
+        return groupRepository.findAll(query);
     }
 
     @Override
     public List<Group> displayAll() {
-        return groupRepository.displayAll();
+        return groupRepository.findAll();
     }
 
     @Override
@@ -60,9 +60,9 @@ public class GroupManagementServiceImpl implements GroupManagementService {
     @Override
     public void updateDetails(UpdateGroupDetailsCmd cmd) {
         cmd.validate().onFailedThrow();
-        Optional<Group> group = groupRepository.displayById(cmd.getGroupId());
+        Optional<Group> group = groupRepository.findById(cmd.getGroupId());
         group.orElseThrow(() -> new RuntimeException(String.format("There are no group with id %s", cmd.getGroupId().toString())));
-        groupUpdater.updateBy(group.get(),cmd);
+        groupUpdater.updateBy(group.get(), cmd);
         groupRepository.update(group.get());
         messagePublisher.publish(group.get().edjectEvents());
     }
@@ -86,10 +86,17 @@ public class GroupManagementServiceImpl implements GroupManagementService {
 
     @Override
     public void includeUsers(GroupIncludeUsersCmd cmd) {
-        Optional<Group> group = groupRepository.displayById(cmd.getGroupId());
+        Optional<Group> group = groupRepository.findById(cmd.getGroupId());
         group.orElseThrow(() -> new RuntimeException(String.format("There are no group with id %s", cmd.getGroupId().toString())));
 
-        List<User> users = cmd.getUsers().stream().map(userRepository::displayById).filter(user1 -> user1.isPresent()).map(user1 -> user1.get()).collect(Collectors.toList());
+        List<User> users =
+                cmd
+                        .getUsers()
+                        .stream()
+                        .map(userRepository::findById)
+                        .filter(Optional::isPresent)
+                        .map(user1 -> (User) user1.get())
+                        .toList();
 
         users.stream().forEach(group.get()::addUser);
 
@@ -101,16 +108,16 @@ public class GroupManagementServiceImpl implements GroupManagementService {
 
     @Override
     public void excludeUsers(GroupExcludeUsersCmd build) {
-        Optional<Group> group = groupRepository.displayById(build.getGroupId());
+        Optional<Group> group = groupRepository.findById(build.getGroupId());
         group.orElseThrow(() -> new RuntimeException(String.format("There are no group with id %s", build.getGroupId().toString())));
 
         List<User> users = build
                 .getUsers()
                 .stream()
-                .map(userRepository::displayById)
-                .filter(user -> user.isPresent())
-                .map(user -> user.get())
-                .collect(Collectors.toList());
+                .map(userRepository::findById)
+                .filter(Optional::isPresent)
+                .map(user -> (User) user.get())
+                .toList();
 
         List<User> removed_users = users.stream().map(user -> group.get().removeUser(user.getId())).collect(Collectors.toList());
 

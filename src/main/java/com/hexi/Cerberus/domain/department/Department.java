@@ -1,46 +1,56 @@
 package com.hexi.Cerberus.domain.department;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.errorprone.annotations.Immutable;
 import com.hexi.Cerberus.domain.department.event.FactorySiteRegisteredEvent;
 import com.hexi.Cerberus.domain.department.event.WareHouseRegisteredEvent;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
+import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
+import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.aggregate.AggregateRoot;
 import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
+import com.hexi.Cerberus.infrastructure.messaging.Message;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
-public class Department implements SecuredEntity, AggregateRoot {
-    DepartmentID id;
-    String name;
-    Collection<FactorySite> factorySites = new ArrayList<>();
-    Collection<WareHouse> wareHouses = new ArrayList<>();
+public abstract class Department implements SecuredEntity, AggregateRoot {
 
     List<DomainEvent> events = new ArrayList<>();
-
-    public Department(DepartmentID id, String name) {
-        this.id = id;
-        this.name = name;
-
-    }
 
     protected Department() {
 
     }
 
-
     public void registerFactorySite(FactorySite factorySite) {
-        factorySites.add(factorySite);
-        factorySite.setParentDepartment(this);
+        Collection<DomainEvent> events = getEvents();
+        addFactorySite(factorySite);
+        factorySite.registerParentDepartment(this);
         events.add(new FactorySiteRegisteredEvent(this.getId(), factorySite.getId()));
     }
 
     public void registerWareHouse(WareHouse wareHouse) {
-        wareHouses.add(wareHouse);
-        wareHouse.setParentDepartment(this);
+        Collection<DomainEvent> events = getEvents();
+        addWareHouse(wareHouse);
+        wareHouse.registerParentDepartment(this);
         events.add(new WareHouseRegisteredEvent(this.getId(), wareHouse.getId()));
+    }
+
+    public void deregisterFactorySite(FactorySiteID id) {
+
+        FactorySite fs = removeFactorySite(id).orElseThrow();
+        fs.resetParentDepartment();
+    }
+
+    public void deregisterWareHouse(WareHouseID id) {
+
+        WareHouse wh = removeWareHouse(id).orElseThrow();
+        wh.resetParentDepartment();
     }
 
     @Override
@@ -48,36 +58,44 @@ public class Department implements SecuredEntity, AggregateRoot {
         events.clear();
     }
 
-    @Override
-    public List<DomainEvent> edjectEvents() {
-        List<DomainEvent> ev = events;
+    protected void dropEvents() {
         events = new ArrayList<>();
+    }
+
+    protected Collection<DomainEvent> getEvents() {
+        return events;
+    }
+
+    @Override
+    public Collection<DomainEvent> edjectEvents() {
+        Collection<DomainEvent> ev = getEvents();
+        dropEvents();
         return ev;
     }
 
-    public DepartmentID getId() {
-        return this.id;
-    }
+    public abstract DepartmentID getId();
 
-    public String getName() {
-        return this.name;
-    }
+    public abstract String getName();
 
-    public Collection<FactorySite> getFactorySites() {
-        return this.factorySites;
-    }
+    public abstract void setName(String name);
 
-    public Collection<WareHouse> getWareHouses() {
-        return this.wareHouses;
-    }
+    public abstract ImmutableCollection<FactorySite> getFactorySites();
 
-    public void setId(DepartmentID id) {
-        this.id = id;
-    }
+    public abstract ImmutableCollection<WareHouse> getWareHouses();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    protected abstract void addFactorySite(FactorySite fs);
+
+    protected abstract void addWareHouse(WareHouse wh);
+
+    protected abstract void removeFactorySite(FactorySite fs);
+
+    protected abstract void removeWareHouse(WareHouse wh);
+
+
+    protected abstract Optional<FactorySite> removeFactorySite(FactorySiteID id);
+
+    protected abstract Optional<WareHouse> removeWareHouse(WareHouseID id);
+
 
     public boolean equals(final Object o) {
         if (o == this) return true;

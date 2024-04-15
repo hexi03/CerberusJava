@@ -5,6 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public abstract class FilterCriteria{
+public abstract class FilterCriteria {
 
 }

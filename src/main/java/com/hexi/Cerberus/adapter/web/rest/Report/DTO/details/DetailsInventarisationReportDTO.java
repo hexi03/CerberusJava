@@ -5,12 +5,14 @@ import com.hexi.Cerberus.adapter.web.rest.Consts;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
 
 @Data
-@AllArgsConstructor
+@SuperBuilder
 @JsonTypeName(Consts.REPORT_WH_INVENTARISATION)
 public class DetailsInventarisationReportDTO extends ReportDetailsDTO {
     WareHouseID wareHouseId;

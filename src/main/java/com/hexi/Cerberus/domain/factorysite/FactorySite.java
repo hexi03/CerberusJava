@@ -1,42 +1,26 @@
 package com.hexi.Cerberus.domain.factorysite;
 
 import com.hexi.Cerberus.domain.department.Department;
-import com.hexi.Cerberus.domain.factorysite.event.FactorySiteSuppliersUpdatedEvent;
+import com.hexi.Cerberus.domain.department.contract.DepartmentSlave;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
+import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.aggregate.AggregateRoot;
 import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
-public class FactorySite implements SecuredEntity, AggregateRoot {
-    FactorySiteID id;
-    Department parentDepartment;
-    String name;
-    Collection<WareHouse> suppliers = new ArrayList<>();
+public abstract class FactorySite implements SecuredEntity, AggregateRoot, DepartmentSlave {
+
 
     List<DomainEvent> events = new ArrayList<>();
 
-    public FactorySite(
-            FactorySiteID id,
-            Department parentDepartment,
-            String name
-    ) {
-        this.name = name;
-        this.id = id;
-        this.parentDepartment = parentDepartment;
-    }
-
     protected FactorySite() {
 
-    }
-
-
-    public void addSupplier(WareHouse wareHouse) {
-        suppliers.add(wareHouse);
-        events.add(new FactorySiteSuppliersUpdatedEvent(id));
     }
 
     @Override
@@ -51,30 +35,23 @@ public class FactorySite implements SecuredEntity, AggregateRoot {
         return ev;
     }
 
-    public FactorySiteID getId() {
-        return this.id;
-    }
+    public abstract FactorySiteID getId();
 
-    public Department getParentDepartment() {
-        return this.parentDepartment;
-    }
+    public abstract Department getParentDepartment();
 
-    public String getName() {
-        return this.name;
-    }
+    protected abstract void setParentDepartment(Object o);
 
-    public Collection<WareHouse> getSuppliers() {
-        return this.suppliers;
-    }
+    public abstract String getName();
 
+    public abstract void setName(String name);
 
-    public void setParentDepartment(Department parentDepartment) {
-        this.parentDepartment = parentDepartment;
-    }
+    public abstract Collection<WareHouse> getSuppliers();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    protected abstract void addSupplier(WareHouse fs);
+
+    protected abstract void removeSupplier(WareHouse wh);
+
+    protected abstract Optional<WareHouse> removeSupplier(WareHouseID id);
 
     public boolean equals(final Object o) {
         if (o == this) return true;
@@ -118,4 +95,16 @@ public class FactorySite implements SecuredEntity, AggregateRoot {
     public String toString() {
         return "FactorySite(id=" + this.getId() + ", parentDepartment=" + this.getParentDepartment() + ", name=" + this.getName() + ", suppliers=" + this.getSuppliers() + ")";
     }
+
+    @Override
+    public void registerParentDepartment(Department d) {
+        setParentDepartment(d);
+    }
+
+    @Override
+    public void resetParentDepartment() {
+        setParentDepartment(null);
+    }
+
+
 }

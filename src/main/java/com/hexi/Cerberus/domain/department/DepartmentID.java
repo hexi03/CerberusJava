@@ -11,7 +11,7 @@ import java.util.UUID;
 public class DepartmentID implements EntityId<UUID> {
     public final UUID id;
 
-    public DepartmentID(){
+    public DepartmentID() {
         id = UUID.randomUUID();
     }
 }

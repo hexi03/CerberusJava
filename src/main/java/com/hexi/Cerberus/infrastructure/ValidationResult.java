@@ -10,20 +10,25 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public class ValidationResult {
     final List<String> problems;
-    public List<String> getProblems(){
+
+    public List<String> getProblems() {
         return problems;
     }
-    public boolean isValid(){
+
+    public boolean isValid() {
         return !hasErrors();
     }
-    public boolean hasErrors(){
+
+    public boolean hasErrors() {
         return problems.size() != 0;
     }
 
-    public void onFailedThrow(){
-        if (hasErrors()) throw new RuntimeException(problems.stream().reduce("Problems: \n    ", (s, s2) -> s + "\n    " + s2));
+    public void onFailedThrow() {
+        if (hasErrors())
+            throw new RuntimeException(problems.stream().reduce("Problems: \n    ", (s, s2) -> s + "\n    " + s2));
 
     }
+
     public void onFailedThrow(Function<List<String>, RuntimeException> throwable) {
         if (hasErrors()) throw throwable.apply(problems);
 

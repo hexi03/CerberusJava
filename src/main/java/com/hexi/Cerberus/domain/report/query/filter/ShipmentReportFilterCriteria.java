@@ -5,5 +5,5 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class ShipmentReportFilterCriteria extends WareHouseReportFilterCriteria{
+public class ShipmentReportFilterCriteria extends WareHouseReportFilterCriteria {
 }

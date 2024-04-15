@@ -7,15 +7,15 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class ReportSortCriteria extends SortCriteria {
-    public enum SortBy{
+    public final SortBy sortBy;
+    public final SortType sortType;
+
+    public enum SortBy {
         CREATED,
         DELETED
     }
-    public enum SortType{
+    public enum SortType {
         ASCENDING,
         DESCENDING
     }
-
-    public final SortBy sortBy;
-    public final SortType sortType;
 }

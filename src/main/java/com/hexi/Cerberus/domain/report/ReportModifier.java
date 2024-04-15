@@ -12,6 +12,7 @@ import com.hexi.Cerberus.domain.report.warehouse.*;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -21,15 +22,25 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Component
 public class ReportModifier {
     public final WareHouseRepository wareHouseRepository;
     public final ItemRepository itemRepository;
     public final ProductRepository productRepository;
     public final ReportRepository reportRepository;
-    public void updateBy(SupplyRequirementReport supplyRequirementReport, UpdateSupplyRequirementReportCmd cmd) {
-        Optional<WareHouse> targetWareHouse = wareHouseRepository.displayById(cmd.getTargetWareHouseId());
 
-        List<Item> reqs = cmd.getItems().keySet().stream().map(itemRepository::displayById).filter(Optional::isPresent).map(Optional::get).toList();
+    public void updateBy(SupplyRequirementReport supplyRequirementReport, UpdateSupplyRequirementReportCmd cmd) {
+        Optional<WareHouse> targetWareHouse = wareHouseRepository.findById(cmd.getTargetWareHouseId());
+
+        List<Item> reqs =
+                cmd
+                        .getItems()
+                        .keySet()
+                        .stream()
+                        .map(itemRepository::findById)
+                        .filter(Optional::isPresent)
+                        .map(item -> (Item) item.get())
+                        .toList();
         Map<Item, Integer> reqMap = reqs.stream().collect(Collectors.toMap(
                 Function.identity(),
                 item -> cmd.getItems().get(item.getId()),
@@ -44,12 +55,24 @@ public class ReportModifier {
 
     public void updateBy(InventarisationReport inventarisationReport, UpdateInventarisationReportCmd cmd) {
 
-        List<Item> items = cmd.getItems().keySet().stream().map(itemRepository::displayById).filter(Optional::isPresent).map(Optional::get).toList();
-        Map<Item, Integer> itMap = items.stream().collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getItems().get(item.getId()),
-                Integer::sum
-        ));
+        List<Item> items =
+                cmd
+                        .getItems()
+                        .keySet()
+                        .stream()
+                        .map(itemRepository::findById)
+                        .filter(Optional::isPresent)
+                        .map(item -> (Item) item.get())
+                        .toList();
+        Map<Item, Integer> itMap =
+                items
+                        .stream()
+                        .collect(Collectors.toMap(
+                                        Function.identity(),
+                                        item -> cmd.getItems().get(item.getId()),
+                                        Integer::sum
+                                )
+                        );
 
         inventarisationReport.setCreatedAt(new Date());
 
@@ -57,7 +80,15 @@ public class ReportModifier {
     }
 
     public void updateBy(ShipmentReport shipmentReport, UpdateShipmentReportCmd cmd) {
-        List<Item> items = cmd.getItems().keySet().stream().map(itemRepository::displayById).filter(Optional::isPresent).map(Optional::get).toList();
+        List<Item> items =
+                cmd
+                        .getItems()
+                        .keySet()
+                        .stream()
+                        .map(itemRepository::findById)
+                        .filter(Optional::isPresent)
+                        .map(item -> (Item) item.get())
+                        .toList();
         Map<Item, Integer> itMap = items.stream().collect(Collectors.toMap(
                 Function.identity(),
                 item -> cmd.getItems().get(item.getId()),
@@ -71,10 +102,19 @@ public class ReportModifier {
 
 
     public void updateBy(ReleaseReport releaseReport, UpdateReleaseReportCmd cmd) {
-        Optional<Report> SRQReport = reportRepository.displayById(cmd.getSupplyReqReportId());
-        if(! (SRQReport.get() instanceof SupplyRequirementReport)) throw new RuntimeException("Report id associated with incorrect report type");
+        Optional<Report> SRQReport = reportRepository.findById(cmd.getSupplyReqReportId());
+        if (!(SRQReport.get() instanceof SupplyRequirementReport))
+            throw new RuntimeException("Report id associated with incorrect report type");
 
-        List<Item> reqs = cmd.getItems().keySet().stream().map(itemRepository::displayById).filter(Optional::isPresent).map(Optional::get).toList();
+        List<Item> reqs =
+                cmd
+                        .getItems()
+                        .keySet()
+                        .stream()
+                        .map(itemRepository::findById)
+                        .filter(Optional::isPresent)
+                        .map(item -> (Item) item.get())
+                        .toList();
         Map<Item, Integer> reqMap = reqs.stream().collect(Collectors.toMap(
                 Function.identity(),
                 item -> cmd.getItems().get(item.getId()),
@@ -88,7 +128,14 @@ public class ReportModifier {
 
     public void updateBy(ReplenishmentReport replenishmentReport, UpdateReplenishmentReportCmd cmd) {
 
-        List<Item> items = cmd.getItems().keySet().stream().map(itemRepository::displayById).filter(Optional::isPresent).map(Optional::get).toList();
+        List<Item> items = cmd
+                .getItems()
+                .keySet()
+                .stream()
+                .map(itemRepository::findById)
+                .filter(Optional::isPresent)
+                .map(item -> (Item) item.get())
+                .toList();
         Map<Item, Integer> itemMap = items.stream().collect(Collectors.toMap(
                 Function.identity(),
                 item -> cmd.getItems().get(item.getId()),
@@ -100,10 +147,18 @@ public class ReportModifier {
 
 
     public void updateBy(WorkShiftReplenishmentReport workShiftReplenishmentReport, UpdateWorkShiftReplenishmentReportCmd cmd) {
-        Optional<Report> WHReport = reportRepository.displayById(cmd.getWorkShiftReportId());
-        if(! (WHReport.get() instanceof WorkShiftReport)) throw new RuntimeException("Report id associated with incorrect report type");
+        Optional<Report> WHReport = reportRepository.findById(cmd.getWorkShiftReportId());
+        if (!(WHReport.get() instanceof WorkShiftReport))
+            throw new RuntimeException("Report id associated with incorrect report type");
 
-        List<Item> reqs = cmd.getItems().keySet().stream().map(itemRepository::displayById).filter(Optional::isPresent).map(Optional::get).toList();
+        List<Item> reqs = cmd
+                .getItems()
+                .keySet()
+                .stream()
+                .map(itemRepository::findById)
+                .filter(Optional::isPresent)
+                .map(item -> (Item) item.get())
+                .toList();
         Map<Item, Integer> reqMap = reqs.stream().collect(Collectors.toMap(
                 Function.identity(),
                 item -> cmd.getItems().get(item.getId()),
@@ -117,9 +172,16 @@ public class ReportModifier {
     }
 
     public void updateBy(WorkShiftReport workShiftReport, UpdateWorkShiftReportCmd cmd) {
-        Optional<WareHouse> targetWareHouse = wareHouseRepository.displayById(cmd.getTargetWareHouseId());
+        Optional<WareHouse> targetWareHouse = wareHouseRepository.findById(cmd.getTargetWareHouseId());
 
-        List<Product> produced = cmd.getProduced().keySet().stream().map(productRepository::displayById).filter(Optional::isPresent).map(Optional::get).toList();
+        List<Product> produced = cmd
+                .getProduced()
+                .keySet()
+                .stream()
+                .map(productRepository::findById)
+                .filter(Optional::isPresent)
+                .map(item -> (Product) item.get())
+                .toList();
         Map<Product, Integer> producedMap = produced.stream().collect(Collectors.toMap(
                 Function.identity(),
                 item -> cmd.getProduced().get(item.getId()),
@@ -127,14 +189,28 @@ public class ReportModifier {
         ));
 
 
-        List<Item> losses = cmd.getLosses().keySet().stream().map(itemRepository::displayById).filter(Optional::isPresent).map(Optional::get).toList();
+        List<Item> losses = cmd
+                .getLosses()
+                .keySet()
+                .stream()
+                .map(itemRepository::findById)
+                .filter(Optional::isPresent)
+                .map(item -> (Item) item.get())
+                .toList();
         Map<Item, Integer> lossesMap = losses.stream().collect(Collectors.toMap(
                 Function.identity(),
                 item -> cmd.getLosses().get(item.getId()),
                 Integer::sum
         ));
 
-        List<Item> remains = cmd.getRemains().keySet().stream().map(itemRepository::displayById).filter(Optional::isPresent).map(Optional::get).toList();
+        List<Item> remains = cmd
+                .getRemains()
+                .keySet()
+                .stream()
+                .map(itemRepository::findById)
+                .filter(Optional::isPresent)
+                .map(item -> (Item) item.get())
+                .toList();
         Map<Item, Integer> remainsMap = remains.stream().collect(Collectors.toMap(
                 Function.identity(),
                 item -> cmd.getRemains().get(item.getId()),
@@ -145,7 +221,7 @@ public class ReportModifier {
         workShiftReport.setProduced(producedMap);
         workShiftReport.setLosses(lossesMap);
         workShiftReport.setRemains(remainsMap);
-        workShiftReport.setTargetWareHouseId(targetWareHouse.get());
+        workShiftReport.setTargetWareHouse(targetWareHouse.get());
 
     }
 }

@@ -7,38 +7,32 @@ import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.infrastructure.aggregate.AggregateRoot;
 import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
-import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-@Builder
-public class Group implements SecuredEntity, AggregateRoot {
-    GroupID id;
-    Collection<User> users = new ArrayList<>();
-    String name;
+
+public abstract class Group implements SecuredEntity, AggregateRoot {
 
     List<DomainEvent> events = new ArrayList<>();
-
-    public Group(
-            GroupID id,
-            String name
-    ) {
-        this.id = id;
-        this.name = name;
-    }
 
     protected Group() {
 
     }
 
+
+    protected abstract void disposeUser(User tmpUser);
+
+    protected abstract void appendUser(User user);
+
     public void addUser(User user) {
         user.attachToGroup(this);
-        users.add(user);
+        appendUser(user);
         events.add(new UserAttachedFromGroupEvent(this.getId(), user.getId()));
     }
+
 
 //    public List<User> removeUsers(GroupExcludeUsersCmd cmd) {
 //        Stream<User> tmp_users = cmd.getUsers()
@@ -55,16 +49,17 @@ public class Group implements SecuredEntity, AggregateRoot {
 //    }
 
     public User removeUser(UserID uid) {
-        Optional<User> tmp_user = users.stream().filter((u) -> u.getId().equals(uid)).findAny();
+        Optional<User> tmp_user = getUsers().stream().filter((u) -> u.getId().equals(uid)).findAny();
         tmp_user.orElseThrow(() -> new RuntimeException(String.format("There is no user with id %s", uid.toString())));
         tmp_user.get().detachFromGroup(this);
-        users.remove(tmp_user);
+        disposeUser(tmp_user.orElseThrow());
         events.add(new UserDetachedFromGroupEvent(this.getId(), tmp_user.get().getId()));
         return tmp_user.get();
     }
 
+
     public boolean isUserPresented(User user) {
-        return users.stream().filter((u) -> u.getId() == user.getId()).findAny().isPresent();
+        return getUsers().stream().filter((u) -> u.getId() == user.getId()).findAny().isPresent();
     }
 
     @Override
@@ -79,21 +74,13 @@ public class Group implements SecuredEntity, AggregateRoot {
         return ev;
     }
 
-    public GroupID getId() {
-        return this.id;
-    }
+    public abstract GroupID getId();
 
-    public Collection<User> getUsers() {
-        return this.users;
-    }
+    public abstract Collection<User> getUsers();
 
-    public String getName() {
-        return this.name;
-    }
+    public abstract String getName();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public abstract void setName(String name);
 
     public boolean equals(final Object o) {
         if (o == this) return true;

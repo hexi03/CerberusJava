@@ -2,39 +2,20 @@ package com.hexi.Cerberus.domain.product;
 
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.infrastructure.aggregate.AggregateRoot;
+import com.hexi.Cerberus.infrastructure.entity.Entity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
 
 import java.util.*;
 
-public class Product implements AggregateRoot {
-    ProductID id;
-    Item production;
-    Collection<Item> requirements;
-    Optional<Date> deletedAt;
+public abstract class Product implements AggregateRoot, Entity {
 
     List<DomainEvent> events = new ArrayList<>();
 
-    public Product(
-            ProductID id,
-            Item production,
-            List<Item> requirements
-    ) {
-        this.id = id;
-        this.production = production;
-        this.requirements = requirements;
-    }
 
     protected Product() {
 
     }
 
-    public Product(ProductID id, Item production, List<Item> requirements, Optional<Date> deletedAt, List<DomainEvent> events) {
-        this.id = id;
-        this.production = production;
-        this.requirements = requirements;
-        this.deletedAt = deletedAt;
-        this.events = events;
-    }
 
     @Override
     public void clearEvents() {
@@ -48,25 +29,17 @@ public class Product implements AggregateRoot {
         return ev;
     }
 
-    public ProductID getId() {
-        return this.id;
-    }
+    public abstract ProductID getId();
 
-    public Item getProduction() {
-        return this.production;
-    }
+    public abstract Item getProduction();
 
-    public Collection<Item> getRequirements() {
-        return this.requirements;
-    }
+    public abstract void setProduction(Item production);
 
-    public Optional<Date> getDeletedAt() {
-        return this.deletedAt;
-    }
+    public abstract Collection<Item> getRequirements();
 
-    public void setProduction(Item production) {
-        this.production = production;
-    }
+    public abstract void setRequirements(List<Item> requirements);
+
+    public abstract Optional<Date> getDeletedAt();
 
     public boolean equals(final Object o) {
         if (o == this) return true;

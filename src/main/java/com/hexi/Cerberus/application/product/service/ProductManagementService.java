@@ -12,10 +12,16 @@ import java.util.Optional;
 
 public interface ProductManagementService {
     List<Product> displayByProductionItem(ItemID id);
+
     Optional<Product> displayBy(ProductID id);
+
     List<Product> displayAllBy(Query query);
+
     List<Product> displayAll();
+
     Product create(CreateProductCmd cmd);
+
     void updateDetails(UpdateProductCmd cmd);
+
     void setDeleted(ProductID id);
 }
