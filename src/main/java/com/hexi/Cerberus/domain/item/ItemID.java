@@ -16,4 +16,8 @@ public class ItemID implements EntityId<UUID> {
     public ItemID(UUID id) {
         this.id = id;
     }
+
+    public ItemID(ItemID itemId) {
+        this.id = itemId.getId();
+    }
 }

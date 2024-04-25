@@ -16,12 +16,14 @@ import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ReportManagementServiceImpl implements ReportManagementService {
+@Service
+public class AplReportManagementServiceImpl implements ReportManagementService {
     public final ReportRepository reportRepository;
     public final MessagePublisher messagePublisher;
     public final MutableAclService aclService;
@@ -78,7 +80,7 @@ public class ReportManagementServiceImpl implements ReportManagementService {
 
     @Override
     public List<Report> fetch(Query query) {
-        return reportRepository.findAll(query);
+        return reportRepository.findAllWithQuery(query);
     }
 
     @Override

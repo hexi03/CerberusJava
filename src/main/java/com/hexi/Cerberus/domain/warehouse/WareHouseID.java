@@ -15,4 +15,8 @@ public class WareHouseID implements EntityId<UUID> {
     public WareHouseID() {
         id = UUID.randomUUID();
     }
+
+    public WareHouseID(WareHouseID wareHouseID) {
+        id = wareHouseID.getId();
+    }
 }

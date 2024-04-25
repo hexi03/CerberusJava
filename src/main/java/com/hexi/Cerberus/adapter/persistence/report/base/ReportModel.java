@@ -1,5 +1,6 @@
 package com.hexi.Cerberus.adapter.persistence.report.base;
 
+import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
 import com.hexi.Cerberus.domain.department.Department;
 import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportID;
@@ -13,10 +14,10 @@ import java.util.*;
 @Table(name = "report_registry")
 
 public class ReportModel implements Report {
-    @Id
-    UUID id;
+    @EmbeddedId
+    ReportID id;
     @ManyToOne
-    Department department;
+    DepartmentModel department;
     @Temporal(TemporalType.TIMESTAMP)
     Date createdAt;
     @Temporal(TemporalType.TIMESTAMP)
@@ -24,26 +25,26 @@ public class ReportModel implements Report {
     ReportStatus status;
 
 
-    Optional<Date> deletedAt;
+    Date deletedAt;
 
     @Transient
     transient List<DomainEvent> events = new ArrayList<>();
 
 
-    public ReportModel(ReportID id, Department department, Date createdAt, Date expirationDate, Optional<Date> deletedAt) {
-        this.id = id.getId();
+    public ReportModel(ReportID id, DepartmentModel department, Date createdAt, Date expirationDate, Optional<Date> deletedAt) {
+        this.id = new ReportID(id);
         this.department = department;
         this.createdAt = createdAt;
-        this.deletedAt = deletedAt;
+        this.deletedAt = deletedAt.orElse(null);
         this.expirationDate = expirationDate;
         updateStatus();
     }
 
-    public ReportModel(ReportID id, Department department, Date createdAt, Date expirationDate) {
-        this.id = id.getId();
+    public ReportModel(ReportID id, DepartmentModel department, Date createdAt, Date expirationDate) {
+        this.id = new ReportID(id);
         this.department = department;
         this.createdAt = createdAt;
-        this.deletedAt = Optional.empty();
+        this.deletedAt = null;
         this.expirationDate = expirationDate;
         updateStatus();
     }
@@ -77,7 +78,7 @@ public class ReportModel implements Report {
 
     @Override
     public Optional<Date> getDeletedAt() {
-        return deletedAt;
+        return Optional.ofNullable(deletedAt);
     }
 
     @Override

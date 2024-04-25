@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Table(name = "group")
 
 public class GroupModel extends Group {
-    @Id
-    UUID id;
+    @EmbeddedId
+    GroupID id;
 
     String name;
 
@@ -35,7 +35,8 @@ public class GroupModel extends Group {
     }
 
     public GroupModel(GroupID groupID, String name) {
-        this.id = groupID.getId();
+        this.id = new GroupID(groupID);
+        this.name = name;
     }
 
     @Override

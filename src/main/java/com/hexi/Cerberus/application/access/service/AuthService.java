@@ -9,11 +9,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Service
 public class AuthService {
 
     private final UserRepository userRepository;

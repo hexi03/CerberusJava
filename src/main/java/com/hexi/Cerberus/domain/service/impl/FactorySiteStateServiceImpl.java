@@ -16,6 +16,7 @@ import com.hexi.Cerberus.infrastructure.StateWarning;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import com.hexi.Cerberus.infrastructure.query.comparation.ComparationContainer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
+@Service
 public class FactorySiteStateServiceImpl implements FactorySiteStateService {
     public final ReportRepository reportRepository;
     public final ItemRepository itemRepository;
@@ -36,7 +38,7 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
                 .department(factorySite.getParentDepartment().getId())
                 .factorySite(factorySite.getId())
                 .build();
-        return (List<FactorySiteReport>) reportRepository.findAll(new Query(filter, null, null)).stream().map(report -> (FactorySiteReport) report).collect(Collectors.toList());
+        return (List<FactorySiteReport>) reportRepository.findAllWithQuery(new Query(filter, null, null)).stream().map(report -> (FactorySiteReport) report).collect(Collectors.toList());
     }
 
     public List<WareHouseReport> getReports(WareHouse wareHouse) {
@@ -46,7 +48,7 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
                 .department(wareHouse.getParentDepartment().getId())
                 .warehouse(wareHouse.getId())
                 .build();
-        return (List<WareHouseReport>) reportRepository.findAll(new Query(filter, null, null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
+        return (List<WareHouseReport>) reportRepository.findAllWithQuery(new Query(filter, null, null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
     }
 
     @Override

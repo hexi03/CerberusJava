@@ -17,13 +17,15 @@ import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class GroupManagementServiceImpl implements GroupManagementService {
+@Service
+public class AplGroupManagementServiceImpl implements GroupManagementService {
     public final GroupRepository groupRepository;
     public final UserRepository userRepository;
     public final MessagePublisher messagePublisher;
@@ -38,7 +40,7 @@ public class GroupManagementServiceImpl implements GroupManagementService {
 
     @Override
     public List<Group> displayAll(Query query) {
-        return groupRepository.findAll(query);
+        return groupRepository.findAllWithQuery(query);
     }
 
     @Override

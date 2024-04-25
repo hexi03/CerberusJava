@@ -7,8 +7,10 @@ import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
+@Service
 public class GroupManagementServiceImpl implements GroupManagementService {
     public final MessagePublisher messagePublisher;
     public final GroupRepository groupRepository;

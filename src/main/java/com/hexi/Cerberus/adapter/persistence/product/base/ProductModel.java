@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 @Table(name = "product_registry")
 
 public class ProductModel extends Product {
-    @Id
-    UUID id;
+    @EmbeddedId
+    ProductID id;
     @ManyToOne
     @JoinColumn(name = "production_item_id")
     ItemModel producedItem;
@@ -23,7 +23,7 @@ public class ProductModel extends Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "requirement_item_id"))
     List<ItemModel> requirements;
-    Optional<Date> deletedAt;
+    Date deletedAt;
 
     @Deprecated
     public ProductModel() {
@@ -31,7 +31,7 @@ public class ProductModel extends Product {
     }
 
     public ProductModel(ProductID productID, Item item, List<ItemModel> requirements) {
-        this.id = productID.getId();
+        this.id = new ProductID(productID);
         this.producedItem = (ItemModel) item;
         this.requirements = requirements.stream().map(item1 -> (ItemModel) item1).toList();
     }
@@ -70,7 +70,7 @@ public class ProductModel extends Product {
 
     @Override
     public Optional<Date> getDeletedAt() {
-        return deletedAt;
+        return Optional.ofNullable(deletedAt);
     }
 
 }

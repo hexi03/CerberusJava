@@ -13,12 +13,14 @@ import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class FactorySiteManagementServiceImpl implements FactorySiteManagementService {
+@Service
+public class AplFactorySiteManagementServiceImpl implements FactorySiteManagementService {
     public final FactorySiteRepository factorySiteRepository;
     public final MessagePublisher messagePublisher;
     public final MutableAclService aclService;
@@ -32,7 +34,7 @@ public class FactorySiteManagementServiceImpl implements FactorySiteManagementSe
 
     @Override
     public List<FactorySite> displayAllBy(Query query) {
-        return factorySiteRepository.findAll(query);
+        return factorySiteRepository.findAllWithQuery(query);
     }
 
     @Override

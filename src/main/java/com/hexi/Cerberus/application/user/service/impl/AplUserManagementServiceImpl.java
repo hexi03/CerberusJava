@@ -12,12 +12,14 @@ import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class UserManagementServiceImpl implements UserManagementService {
+@Service
+public class AplUserManagementServiceImpl implements UserManagementService {
     public final UserRepository userRepository;
     public final MessagePublisher messagePublisher;
     public final MutableAclService aclService;
@@ -31,7 +33,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     @Override
     public List<User> displayAllBy(Query query) {
-        return userRepository.findAll(query);
+        return userRepository.findAllWithQuery(query);
     }
 
     @Override

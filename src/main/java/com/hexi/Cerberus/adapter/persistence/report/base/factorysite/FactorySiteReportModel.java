@@ -1,5 +1,7 @@
 package com.hexi.Cerberus.adapter.persistence.report.base.factorysite;
 
+import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
+import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.ReportModel;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
@@ -14,7 +16,7 @@ import java.util.Optional;
 @Getter
 @Setter
 public class FactorySiteReportModel extends ReportModel implements FactorySiteReport {
-    FactorySite factorySite;
+    FactorySiteModel factorySite;
 
     protected FactorySiteReportModel() {
         super();
@@ -22,21 +24,21 @@ public class FactorySiteReportModel extends ReportModel implements FactorySiteRe
 
     public FactorySiteReportModel(
             ReportID id,
-            FactorySite factorySite,
+            FactorySiteModel factorySite,
             Date createdAt,
             Date expirationDate,
             Optional<Date> deletedAt) {
-        super(id, factorySite.getParentDepartment(), createdAt, expirationDate, deletedAt);
+        super(id, (DepartmentModel) factorySite.getParentDepartment(), createdAt, expirationDate, deletedAt);
         this.factorySite = factorySite;
     }
 
     public FactorySiteReportModel(
             ReportID id,
-            FactorySite factorySite,
+            FactorySiteModel factorySite,
             Date createdAt,
             Date expirationDate
     ) {
-        super(id, factorySite.getParentDepartment(), createdAt, expirationDate);
+        super(id, (DepartmentModel) factorySite.getParentDepartment(), createdAt, expirationDate);
         this.factorySite = factorySite;
     }
 

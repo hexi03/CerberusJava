@@ -14,4 +14,8 @@ public class UserID implements EntityId<UUID> {
     public UserID() {
         id = UUID.randomUUID();
     }
+
+    public UserID(UserID userID) {
+        id = userID.getId();
+    }
 }

@@ -12,12 +12,14 @@ import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ProductManagementServiceImpl implements ProductManagementService {
+@Service
+public class AplProductManagementServiceImpl implements ProductManagementService {
 
     public final ProductRepository productRepository;
     public final MessagePublisher messagePublisher;
@@ -36,7 +38,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     @Override
     public List<Product> displayAllBy(Query query) {
-        return productRepository.findAll(query);
+        return productRepository.findAllWithQuery(query);
     }
 
     @Override

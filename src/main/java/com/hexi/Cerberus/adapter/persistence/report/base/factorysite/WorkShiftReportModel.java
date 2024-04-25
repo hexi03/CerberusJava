@@ -1,5 +1,6 @@
 package com.hexi.Cerberus.adapter.persistence.report.base.factorysite;
 
+import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.product.base.ProductModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
@@ -17,18 +18,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WorkShiftReportModel extends FactorySiteReportModel implements WorkShiftReport {
-    WareHouse targetWareHouseId;
+    WareHouseModel targetWareHouseId;
     Map<ProductModel, Integer> produced = new HashMap<>();
     Map<ItemModel, Integer> losses = new HashMap<>();
     Map<ItemModel, Integer> remains = new HashMap<>();
 
     public WorkShiftReportModel(
             ReportID id,
-            FactorySite factorySite,
+            FactorySiteModel factorySite,
             Date createdAt,
             Date expirationDate,
             Optional<Date> deletedAt,
-            WareHouse targetWareHouseId,
+            WareHouseModel targetWareHouseId,
             Map<ProductModel, Integer> produced,
             Map<ItemModel, Integer> losses,
             Map<ItemModel, Integer> remains) {
@@ -41,10 +42,10 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
 
     public WorkShiftReportModel(
             ReportID id,
-            FactorySite factorySite,
+            FactorySiteModel factorySite,
             Date createdAt,
             Date expirationDate,
-            WareHouse targetWareHouseId,
+            WareHouseModel targetWareHouseId,
             Map<ProductModel, Integer> produced,
             Map<ItemModel, Integer> losses,
             Map<ItemModel, Integer> remains) {

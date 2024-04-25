@@ -8,7 +8,6 @@ import com.hexi.Cerberus.infrastructure.repository.Repository;
 
 import java.util.Optional;
 
-@org.springframework.stereotype.Repository
 public interface ProductRepository<T extends Product, ID extends ProductID> extends Repository<T, ID> {
     //TODO
     Optional<ProductModel> findByItemId(ItemID id);

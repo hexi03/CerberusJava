@@ -1,6 +1,8 @@
 package com.hexi.Cerberus.adapter.persistence.report.base.warehouse;
 
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
+import com.hexi.Cerberus.adapter.persistence.report.base.ReportModel;
+import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportID;
@@ -16,16 +18,16 @@ import java.util.stream.Collectors;
 
 
 public class ReleaseReportModel extends WareHouseReportModel implements ItemStorageOperationReport {
-    Report supplyReqReportId;
+    ReportModel supplyReqReportId;
     Map<ItemModel, Integer> items = new HashMap<>();
 
     public ReleaseReportModel(
             ReportID id,
-            WareHouse wareHouse,
+            WareHouseModel wareHouse,
             Date createdAt,
             Date expirationDate,
             Optional<Date> deletedAt,
-            Report supplyReqReportId,
+            ReportModel supplyReqReportId,
             Map<ItemModel, Integer> items) {
         super(id, wareHouse, createdAt, expirationDate, deletedAt);
         this.supplyReqReportId = supplyReqReportId;
@@ -34,10 +36,10 @@ public class ReleaseReportModel extends WareHouseReportModel implements ItemStor
 
     public ReleaseReportModel(
             ReportID id,
-            WareHouse wareHouse,
+            WareHouseModel wareHouse,
             Date createdAt,
             Date expirationDate,
-            Report supplyReqReportId,
+            ReportModel supplyReqReportId,
             Map<ItemModel, Integer> items) {
         super(id, wareHouse, createdAt, expirationDate);
         this.supplyReqReportId = supplyReqReportId;

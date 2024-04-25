@@ -12,12 +12,14 @@ import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class DepartmentManagementServiceImpl implements DepartmentManagementService {
+@Service
+public class AplDepartmentManagementServiceImpl implements DepartmentManagementService {
     public final DepartmentRepository departmentRepository;
     public final MutableAclService aclService;
     public final MessagePublisher messagePublisher;
@@ -31,7 +33,7 @@ public class DepartmentManagementServiceImpl implements DepartmentManagementServ
 
     @Override
     public List<Department> displayAllBy(Query query) {
-        return departmentRepository.findAll(query);
+        return departmentRepository.findAllWithQuery(query);
     }
 
     @Override

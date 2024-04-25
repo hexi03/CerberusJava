@@ -16,4 +16,8 @@ public class ProductID implements EntityId<UUID> {
     public ProductID(UUID id) {
         this.id = id;
     }
+
+    public ProductID(ProductID productID) {
+        id = productID.getId();
+    }
 }

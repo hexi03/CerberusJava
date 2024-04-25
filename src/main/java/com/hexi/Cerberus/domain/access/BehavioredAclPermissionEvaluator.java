@@ -1,9 +1,8 @@
 package com.hexi.Cerberus.domain.access;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.core.log.LogMessage;
-import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.ObjectIdentityRetrievalStrategyImpl;
 import org.springframework.security.acls.domain.PermissionFactory;
 import org.springframework.security.acls.domain.SidRetrievalStrategyImpl;
@@ -15,12 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-@Slf4j
-@RequiredArgsConstructor
-public class BehavioredAclPermissionEvaluator implements PermissionEvaluator {
+public class BehavioredAclPermissionEvaluator extends AclPermissionEvaluator {
 
-    private final AclService aclService;
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(BehavioredAclPermissionEvaluator.class);
     private ObjectIdentityRetrievalStrategy objectIdentityRetrievalStrategy = new ObjectIdentityRetrievalStrategyImpl();
 
     private ObjectIdentityGenerator objectIdentityGenerator = new ObjectIdentityRetrievalStrategyImpl();
@@ -28,6 +25,13 @@ public class BehavioredAclPermissionEvaluator implements PermissionEvaluator {
     private SidRetrievalStrategy sidRetrievalStrategy = new SidRetrievalStrategyImpl();
 
     private PermissionFactory permissionFactory = new BehavioredPermissionFactory();
+
+    private AclService service;
+
+    public BehavioredAclPermissionEvaluator(AclService aclService) {
+        super(aclService);
+        service = aclService;
+    }
 
 
     /**
@@ -99,7 +103,7 @@ public class BehavioredAclPermissionEvaluator implements PermissionEvaluator {
         }).toString());
 
         try {
-            Acl acl = this.aclService.readAclById(oid, sids);
+            Acl acl = service.readAclById(oid, sids);
             if (acl.isGranted(requiredPermission, sids, false)) {
                 this.log.debug("Access is granted");
                 return true;

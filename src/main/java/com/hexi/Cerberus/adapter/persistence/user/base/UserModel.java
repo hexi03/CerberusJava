@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @Setter
 
 public class UserModel extends User {
-    @Id
-    UUID id;
+    @EmbeddedId
+    UserID id;
     String name = "";
     @Column(unique = true)
     String email = "";
@@ -41,7 +41,7 @@ public class UserModel extends User {
     }
 
     public UserModel(UserID userID, String name, String email, String passwordHash) {
-        this.id = userID.getId();
+        this.id = new UserID(userID);
         this.email = email;
         this.passwordHash = passwordHash;
     }

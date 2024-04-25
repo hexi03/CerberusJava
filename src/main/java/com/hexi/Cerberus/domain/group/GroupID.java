@@ -18,4 +18,8 @@ public class GroupID implements EntityId<UUID> {
     public GroupID() {
         id = UUID.randomUUID();
     }
+
+    public GroupID(GroupID groupID) {
+        id = groupID.getId();
+    }
 }

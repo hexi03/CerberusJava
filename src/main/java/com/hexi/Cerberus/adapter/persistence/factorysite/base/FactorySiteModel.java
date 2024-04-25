@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 
 public class FactorySiteModel extends FactorySite {
 
-    @Id
+    @EmbeddedId
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private FactorySiteID id;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
@@ -44,7 +44,7 @@ public class FactorySiteModel extends FactorySite {
     }
 
     public FactorySiteModel(FactorySiteID factorySiteID, Department department, String name) {
-        this.id = factorySiteID.getId();
+        this.id = new FactorySiteID(factorySiteID);
         this.department = (DepartmentModel) department;
     }
 

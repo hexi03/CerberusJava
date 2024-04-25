@@ -12,12 +12,14 @@ import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class WareHouseManagementServiceImpl implements WareHouseManagementService {
+@Service
+public class AplWareHouseManagementServiceImpl implements WareHouseManagementService {
     public final WareHouseRepository wareHouseRepository;
     public final MessagePublisher messagePublisher;
     public final MutableAclService aclService;
@@ -31,7 +33,7 @@ public class WareHouseManagementServiceImpl implements WareHouseManagementServic
 
     @Override
     public List<WareHouse> displayAllBy(Query query) {
-        return wareHouseRepository.findAll(query);
+        return wareHouseRepository.findAllWithQuery(query);
     }
 
     @Override

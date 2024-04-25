@@ -14,8 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/UserGroup")
-@Controller
+//@RequestMapping("/UserGroup")
+//@Controller
 public class UserGroupController {
 
 //    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(UserGroupController.class);

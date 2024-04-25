@@ -1,5 +1,6 @@
 package com.hexi.Cerberus.adapter.persistence.report.base.factorysite;
 
+import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
@@ -21,7 +22,7 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
 
     public SupplyRequirementReportModel(
             ReportID id,
-            FactorySite factorySite,
+            FactorySiteModel factorySite,
             Date createdAt,
             Date expirationDate,
             Optional<Date> deletedAt,
@@ -34,7 +35,7 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
 
     public SupplyRequirementReportModel(
             ReportID id,
-            FactorySite factorySite,
+            FactorySiteModel factorySite,
             Date createdAt,
             Date expirationDate,
             WareHouseModel targetWareHouse,

@@ -6,7 +6,6 @@ import com.hexi.Cerberus.infrastructure.repository.Repository;
 
 import java.util.Optional;
 
-@org.springframework.stereotype.Repository
 public interface UserRepository<T extends User, ID extends UserID> extends Repository<T, ID> {
 
     Optional<User> findByEmail(String email);

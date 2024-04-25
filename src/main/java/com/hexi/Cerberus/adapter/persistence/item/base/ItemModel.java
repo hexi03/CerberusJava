@@ -15,11 +15,12 @@ import java.util.UUID;
 @Table(name = "item_registry")
 
 public class ItemModel extends Item {
-    @Id
-    UUID id;
+    @EmbeddedId
+    ItemID id;
     String name;
     Unit unit;
-    Optional<Date> deletedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date deletedAt;
 
     @OneToMany(mappedBy = "producedItem", cascade = CascadeType.ALL, orphanRemoval = true)
     Collection<ProductModel> products;
@@ -30,7 +31,7 @@ public class ItemModel extends Item {
     }
 
     public ItemModel(ItemID itemID, String name, Unit unit) {
-        this.id = itemID.getId();
+        this.id = new ItemID(itemID);
         this.name = name;
         this.unit = unit;
     }
@@ -50,8 +51,6 @@ public class ItemModel extends Item {
         name = n;
     }
 
-    ;
-
     @Override
     public Unit getUnit() {
         return unit;
@@ -64,6 +63,6 @@ public class ItemModel extends Item {
 
     @Override
     public Optional<Date> getDeletedAt() {
-        return deletedAt;
+        return Optional.ofNullable(deletedAt);
     }
 }

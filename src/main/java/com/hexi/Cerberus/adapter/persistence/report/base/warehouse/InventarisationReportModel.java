@@ -1,6 +1,7 @@
 package com.hexi.Cerberus.adapter.persistence.report.base.warehouse;
 
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
+import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 
@@ -14,7 +15,7 @@ public class InventarisationReportModel extends WareHouseReportModel {
 
     public InventarisationReportModel(
             ReportID id,
-            WareHouse wareHouse,
+            WareHouseModel wareHouse,
             Date createdAt,
             Date expirationDate,
             Optional<Date> deletedAt,
@@ -25,7 +26,7 @@ public class InventarisationReportModel extends WareHouseReportModel {
 
     public InventarisationReportModel(
             ReportID id,
-            WareHouse wareHouse,
+            WareHouseModel wareHouse,
             Date createdAt,
             Date expirationDate,
             Map<ItemModel, Integer> items) {

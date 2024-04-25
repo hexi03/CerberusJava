@@ -22,13 +22,15 @@ import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class EntityPermissionManagementServiceImpl implements EntityPermissionManagementService {
+@Service
+public class AplEntityPermissionManagementServiceImpl implements EntityPermissionManagementService {
     public final DepartmentRepository departmentRepository;
     public final FactorySiteRepository factorySiteRepository;
     public final WareHouseRepository wareHouseRepository;

@@ -11,12 +11,14 @@ import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ItemManagementServiceImpl implements ItemManagementService {
+@Service
+public class AplItemManagementServiceImpl implements ItemManagementService {
     public final ItemRepository itemRepository;
     public final MessagePublisher messagePublisher;
     public final ItemFactory itemFactory;
@@ -29,7 +31,7 @@ public class ItemManagementServiceImpl implements ItemManagementService {
 
     @Override
     public List<Item> displayAllBy(Query query) {
-        return itemRepository.findAll(query);
+        return itemRepository.findAllWithQuery(query);
     }
 
     @Override

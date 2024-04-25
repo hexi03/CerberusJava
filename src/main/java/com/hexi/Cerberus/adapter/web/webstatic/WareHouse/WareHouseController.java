@@ -3,10 +3,10 @@ package com.hexi.Cerberus.adapter.web.webstatic.WareHouse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/warehouse")
-@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
-@RestController
-@Slf4j
+//@RequestMapping("/api/warehouse")
+//@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
+//@RestController
+//@Slf4j
 public class WareHouseController {
 //
 //    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(UserGroupController.class);

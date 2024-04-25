@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 
 public class DepartmentModel extends Department {
 
-    @Id
+    @EmbeddedId
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private DepartmentID id;
 
     private String name;
 
@@ -46,7 +46,7 @@ public class DepartmentModel extends Department {
     }
 
     public DepartmentModel(DepartmentID departmentID, String name) {
-        this.id = departmentID.getId();
+        this.id = new DepartmentID(departmentID);
         this.name = name;
     }
 

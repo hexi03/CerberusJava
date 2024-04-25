@@ -4,7 +4,6 @@ import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.repository.Repository;
 
-@org.springframework.stereotype.Repository
 public interface WareHouseRepository<T extends WareHouse, ID extends WareHouseID> extends Repository<T, ID> {
 
 

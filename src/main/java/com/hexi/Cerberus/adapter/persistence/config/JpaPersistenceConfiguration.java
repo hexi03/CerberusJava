@@ -1,29 +1,47 @@
 package com.hexi.Cerberus.adapter.persistence.config;
 
+import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
 import com.hexi.Cerberus.adapter.persistence.department.factory.JpaDepartmentFactoryImpl;
+import com.hexi.Cerberus.adapter.persistence.department.repository.JpaDepartmentRepository;
+import com.hexi.Cerberus.adapter.persistence.factorysite.repository.JpaFactorySiteRepository;
 import com.hexi.Cerberus.adapter.persistence.group.factory.JpaGroupFactoryImpl;
+import com.hexi.Cerberus.adapter.persistence.group.repository.JpaGroupRepository;
 import com.hexi.Cerberus.adapter.persistence.item.factory.JpaItemFactoryImpl;
+import com.hexi.Cerberus.adapter.persistence.item.repository.JpaItemRepository;
 import com.hexi.Cerberus.adapter.persistence.product.factory.JpaProductFactoryImpl;
+import com.hexi.Cerberus.adapter.persistence.product.repository.JpaProductRepository;
 import com.hexi.Cerberus.adapter.persistence.user.factory.JpaUserFactoryImpl;
+import com.hexi.Cerberus.adapter.persistence.user.repository.JpaUserRepository;
 import com.hexi.Cerberus.adapter.persistence.warehouse.factory.JpaWareHouseFactoryImpl;
 import com.hexi.Cerberus.adapter.persistence.factorysite.factory.JpaFactorySiteFactoryImpl;
+import com.hexi.Cerberus.adapter.persistence.warehouse.repository.JpaWareHouseRepository;
 import com.hexi.Cerberus.domain.department.DepartmentFactory;
+import com.hexi.Cerberus.domain.department.DepartmentID;
 import com.hexi.Cerberus.domain.department.repository.DepartmentRepository;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteFactory;
+import com.hexi.Cerberus.domain.factorysite.repository.FactorySiteRepository;
 import com.hexi.Cerberus.domain.group.GroupFactory;
+import com.hexi.Cerberus.domain.group.repository.GroupRepository;
 import com.hexi.Cerberus.domain.item.ItemFactory;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.product.ProductFactory;
+import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import com.hexi.Cerberus.domain.user.UserFactory;
+import com.hexi.Cerberus.domain.user.repository.UserRepository;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseFactory;
+import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.zaxxer.hikari.HikariConfig;
 //import liquibase.integration.spring.SpringLiquibase;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -35,31 +53,49 @@ import javax.sql.DataSource;
  * @author Mate Karolyi
  */
 @Configuration
-@EnableJpaRepositories(basePackages = "hexi.SpringSecurityTestApp.demo.models")
+@EnableJpaRepositories(basePackages = "com.hexi.Cerberus.adapter.persistence")
 @EnableTransactionManagement
 //@ConditionalOnProperty(
 //        value = "persistence",
 //        havingValue = "spring-data-jpa",
 //        matchIfMissing = true
 //)
-@PropertySource("classpath:application.yml")
 public class JpaPersistenceConfiguration {
 
     private static HikariConfig config = new HikariConfig();
 
-    @Bean
-    public LocalSessionFactoryBean sessionFactory(DataSource ds) {
-        LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-        factoryBean.setDataSource(ds);
-        factoryBean.setPackagesToScan("com.hexi.Cerberus.adapter.persistence");
-        return factoryBean;
-    }
+//    @Bean
+//    public LocalSessionFactoryBean sessionFactory(DataSource ds) {
+//        LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
+//        factoryBean.setDataSource(ds);
+//        factoryBean.setPackagesToScan("com.hexi.Cerberus.adapter.persistence");
+//        return factoryBean;
+//    }
+//
+//    @Bean
+//    public TransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
+//        JpaTransactionManager transactionManager = new JpaTransactionManager();
+//        transactionManager.setEntityManagerFactory(sessionFactory.getObject());
+//        return transactionManager;
+//    }
+
 
     @Bean
-    public TransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(sessionFactory.getObject());
-        return transactionManager;
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource ds) {
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setGenerateDdl(true);
+        LocalContainerEntityManagerFactoryBean factory = new
+                LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter(vendorAdapter);
+        factory.setPackagesToScan("com.hexi.Cerberus.adapter.persistence");
+        factory.setDataSource(ds);
+        return factory;
+    }
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+        JpaTransactionManager txManager = new JpaTransactionManager();
+        txManager.setEntityManagerFactory(emf);
+        return txManager;
     }
 
 //    @Bean("liquibaseForPersistence")
@@ -104,6 +140,40 @@ public class JpaPersistenceConfiguration {
     @Bean
     public ProductFactory productFactory(ItemRepository itemRepository) {
         return new JpaProductFactoryImpl(itemRepository);
+    }
+    @Bean
+    public DepartmentRepository departmentRepository(JpaDepartmentRepository<DepartmentModel, DepartmentID> rep) {
+        return rep;
+    }
+
+    @Bean
+    public FactorySiteRepository factorySiteRepository(JpaFactorySiteRepository rep) {
+        return rep;
+    }
+
+    @Bean
+    public WareHouseRepository wareHouseRepository(JpaWareHouseRepository rep) {
+        return rep;
+    }
+
+    @Bean
+    public UserRepository userRepository(JpaUserRepository rep) {
+        return rep;
+    }
+
+    @Bean
+    public GroupRepository groupRepository(JpaGroupRepository rep) {
+        return rep;
+    }
+
+    @Bean
+    public ItemRepository itemRepository(JpaItemRepository rep) {
+        return rep;
+    }
+
+    @Bean
+    public ProductRepository productRepository(JpaProductRepository rep) {
+        return rep;
     }
 
 }

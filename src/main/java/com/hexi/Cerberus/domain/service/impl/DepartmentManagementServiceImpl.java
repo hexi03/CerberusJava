@@ -10,8 +10,10 @@ import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import lombok.AllArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
+@Service
 public class DepartmentManagementServiceImpl implements DepartmentManagementService {
     private final MutableAclService aclService;
     private final DepartmentRepository departmentRepository;

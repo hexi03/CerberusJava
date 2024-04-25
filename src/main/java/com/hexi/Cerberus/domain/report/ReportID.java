@@ -16,4 +16,8 @@ public class ReportID implements EntityId<UUID> {
     public ReportID(UUID id) {
         this.id = id;
     }
+
+    public ReportID(ReportID id) {
+        this.id = id.getId();
+    }
 }

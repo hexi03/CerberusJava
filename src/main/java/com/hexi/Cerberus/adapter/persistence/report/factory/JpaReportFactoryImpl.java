@@ -152,7 +152,7 @@ public class JpaReportFactoryImpl {
                 "Error while creating report: " +
                         String.format("Invalid factory site id: %s", cmd.getWorkShiftReportId().toString())
         ));
-        FactorySite whReportFactorySite = ((WorkShiftReportModel) whReport.get()).getFactorySite();
+        FactorySiteModel whReportFactorySite = ((WorkShiftReportModel) whReport.get()).getFactorySite();
         factorySite = factorySiteRepository.findById(whReportFactorySite.getId());
         factorySite.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +

@@ -20,9 +20,9 @@ import java.util.UUID;
 public class WareHouseModel extends WareHouse {
 
 
-    @Id
+    @EmbeddedId
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private WareHouseID id;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
@@ -43,7 +43,7 @@ public class WareHouseModel extends WareHouse {
 
     public WareHouseModel(WareHouseID wareHouseID, Department department, String name) {
         super();
-        id = wareHouseID.getId();
+        id = new WareHouseID(wareHouseID);
         this.department = (DepartmentModel) department;
         this.name = name;
     }

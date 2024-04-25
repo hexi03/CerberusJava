@@ -14,4 +14,8 @@ public class DepartmentID implements EntityId<UUID> {
     public DepartmentID() {
         id = UUID.randomUUID();
     }
+
+    public DepartmentID(DepartmentID departmentID) {
+        this.id = departmentID.getId();
+    }
 }

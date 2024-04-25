@@ -22,12 +22,14 @@ import com.hexi.Cerberus.infrastructure.StateWarning;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import com.hexi.Cerberus.infrastructure.query.comparation.ComparationContainer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
+@Service
 public class WareHouseStateServiceImpl implements WareHouseStateService {
     public final ReportRepository reportRepository;
     public final ItemRepository itemRepository;
@@ -40,7 +42,7 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                 .department(wareHouse.getParentDepartment().getId())
                 .warehouse(wareHouse.getId())
                 .build();
-        return (List<WareHouseReport>) reportRepository.findAll(new Query(filter, null, null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
+        return (List<WareHouseReport>) reportRepository.findAllWithQuery(new Query(filter, null, null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
     }
 
     public List<WareHouseReport> getReports(WareHouse wareHouse) {
@@ -50,7 +52,7 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                 .department(wareHouse.getParentDepartment().getId())
                 .warehouse(wareHouse.getId())
                 .build();
-        return (List<WareHouseReport>) reportRepository.findAll(new Query(filter, null, null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
+        return (List<WareHouseReport>) reportRepository.findAllWithQuery(new Query(filter, null, null)).stream().map(report -> (WareHouseReport) report).collect(Collectors.toList());
     }
 
     public Map<ItemID, Integer> getStorageState(WareHouse wareHouse) {
@@ -65,7 +67,7 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
         ReportSortCriteria inventarisationReportSort = ReportSortCriteria.builder().sortBy(ReportSortCriteria.SortBy.CREATED).sortType(ReportSortCriteria.SortType.DESCENDING).build();
 
 
-        Optional<Report> inventarisationBase = reportRepository.findAll(new Query(inventarisationReportFilter, inventarisationReportSort, null)).stream().findFirst();
+        Optional<Report> inventarisationBase = reportRepository.findAllWithQuery(new Query(inventarisationReportFilter, inventarisationReportSort, null)).stream().findFirst();
 
         Map<ItemID, Integer> baseStorageState;
         Date dateTreshold;
@@ -149,7 +151,7 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
 
         Map<ItemID, Integer> storageStateItemID = getStorageState(wareHouse);
         List<ItemID> itemIDS = storageStateItemID.entrySet().stream().map(itemIDIntegerEntry -> itemIDIntegerEntry.getKey()).toList();
-        List<Item> items = itemRepository.findById(itemIDS);
+        List<Item> items = itemRepository.findAllById(itemIDS).stream().toList();
         Map<Item, Integer> storageState = items.stream().collect(Collectors.toMap(item -> item, item -> storageStateItemID.get(item.getId()), Integer::sum));
 
         List<StateProblem> problems = getProblems(wareHouse);
