@@ -114,7 +114,9 @@ test {
 
 war {
     archiveFileName = 'cerberus.war'
-    destinationDirectory = new File("/home/hexi/apache-tomcat-10.1.13/webapps")
+    //destinationDirectory = new File("/home/hexi/apache-tomcat-10.1.13/webapps")
+    destinationDirectory = new File("C:\\Users\\rumjancev-ve-240321\\apache-tomcat-10.1.23\\webapps")
+
 }
 
 //jar {

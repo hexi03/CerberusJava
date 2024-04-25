@@ -15,13 +15,13 @@ import java.util.List;
 public class UserCreateModel {
     @NotNull
     @Size(min = 3, max = 50)
-    public String name = "";
+    public String name;
     @NotNull
     @Email
-    public String email = "";
+    public String email;
     @NotNull
     @Size(min = 10, max = 50)
-    public String passwordHash = "";
+    public String passwordHash;
 
     @Singular
     public List<GroupID> groups;

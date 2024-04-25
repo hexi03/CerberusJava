@@ -6,9 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Optional;
+
 @SuperBuilder
 @Getter
 public class DepartmentFilterCriteria extends FilterCriteria {
-    String name;
+    Optional<String> name;
 
 }

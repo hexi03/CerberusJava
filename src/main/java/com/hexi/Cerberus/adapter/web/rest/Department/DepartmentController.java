@@ -36,7 +36,6 @@ public class DepartmentController {
 
     @GetMapping("/fetch")
     public ResponseEntity<List<DepartmentDetailsDTO>> fetch(@RequestParam(required = false) DepartmentID id) {
-        log.debug(id.toString());
         if (id != null) {
             Optional<Department> department = departmentService.displayBy(id);
             if (department.isEmpty()) return ResponseEntity.notFound().build();
