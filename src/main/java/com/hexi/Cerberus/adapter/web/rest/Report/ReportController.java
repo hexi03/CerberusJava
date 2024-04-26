@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 public class ReportController {
     public final ReportManagementService reportManagementService;
-    public final DomainToDTOMapper domainToDTOMapper;
+    public final ReportDomainToDTOMapper reportDomainToDTOMapper;
 
     static Query toQuery(
             @PathVariable(required = false) ReportID id,
@@ -138,14 +138,14 @@ public class ReportController {
             );
 
             List<Report> reports = reportManagementService.fetch(query);
-            reportDetails = domainToDTOMapper.toReportDetails(reports);
+            reportDetails = reportDomainToDTOMapper.toReportDetails(reports);
         } else {
             // Fetch a single report by ID
             Report report = reportManagementService.fetchById(id).orElseThrow();
             if (report == null) {
                 return ResponseEntity.notFound().build();  // Handle case when report not found
             }
-            reportDetails = List.of(domainToDTOMapper.toReportDetails(report));
+            reportDetails = List.of(reportDomainToDTOMapper.toReportDetails(report));
         }
 
         return ResponseEntity.ok(reportDetails);

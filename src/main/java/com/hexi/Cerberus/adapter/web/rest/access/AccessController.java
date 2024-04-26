@@ -1,7 +1,7 @@
 package com.hexi.Cerberus.adapter.web.rest.access;
 
 import com.hexi.Cerberus.adapter.web.rest.access.DTO.ModifyAccessRequest;
-import com.hexi.Cerberus.adapter.web.rest.UserGroup.DomainToDTOMapper;
+import com.hexi.Cerberus.adapter.web.rest.UserGroup.UserGroupDomainToDTOMapper;
 import com.hexi.Cerberus.application.access.service.EntityPermissionManagementService;
 import com.hexi.Cerberus.domain.access.AccessUnit;
 import com.hexi.Cerberus.domain.department.DepartmentID;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AccessController {
     public final EntityPermissionManagementService accessManagementService;
-    public final DomainToDTOMapper domainToDTOMapper;
+    public final UserGroupDomainToDTOMapper userGroupDomainToDTOMapper;
 
 
     @PostMapping("/modifyAccess")

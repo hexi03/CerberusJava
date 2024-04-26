@@ -3,7 +3,6 @@ package com.hexi.Cerberus.config;
 import com.hexi.Cerberus.domain.access.BehavioredAclPermissionEvaluator;
 import com.hexi.Cerberus.domain.access.BehavioredPermissionFactory;
 import com.hexi.Cerberus.domain.access.BehavioredPermissionGrantingStrategy;
-import net.sf.ehcache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -23,7 +22,7 @@ import javax.sql.DataSource;
 
 @Configuration
 // @EnableCaching
-@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 public class MethodSecurityConfiguration {
 
     // method security config wired in aclPermissionEvaluator
@@ -87,6 +86,8 @@ public class MethodSecurityConfiguration {
 //        return new EhCacheBasedAclCache(factoryBean.getObject(), permissionGrantingStrategy(), aclAuthorizationStrategy());
 //
 //    }
+
+
 
     @Bean(name = { "defaultAclCache", "aclCache" })
     protected AclCache defaultAclCache(org.springframework.cache.CacheManager springCacheManager, AclAuthorizationStrategy authStrategy, PermissionGrantingStrategy grantingStrategy ) {

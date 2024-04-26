@@ -7,7 +7,6 @@ import com.hexi.Cerberus.adapter.web.rest.FactorySite.DTO.FactorySiteUpdateSuppl
 import com.hexi.Cerberus.application.factorysite.service.FactorySiteManagementService;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
-import com.hexi.Cerberus.adapter.web.webstatic.UserGroupController.UserGroupController;
 import com.hexi.Cerberus.domain.factorysite.command.CreateFactorySiteCmd;
 import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteDetailsCmd;
 import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteSupplyCmd;
@@ -15,12 +14,10 @@ import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +31,7 @@ import java.util.stream.Collectors;
 public class FactorySiteController {
 
     public final FactorySiteManagementService factorySiteService;
-    public final DomainToDtoMapper domainToDtoMapper;
+    public final FactorySiteDomainToDtoMapper factorySiteDomainToDtoMapper;
 
 
     @GetMapping("/fetch")
@@ -44,14 +41,14 @@ public class FactorySiteController {
             log.debug("id == null: fetch all");
             Optional<FactorySite> factorySite = factorySiteService.displayBy(id);
             if (factorySite.isEmpty()) return ResponseEntity.notFound().build();
-            return ResponseEntity.ok(List.of(domainToDtoMapper.factorySiteToDetailsDTO(factorySite.get())));
+            return ResponseEntity.ok(List.of(factorySiteDomainToDtoMapper.factorySiteToDetailsDTO(factorySite.get())));
         } else {
             log.debug("id != null: fetch id");
             List<FactorySiteDetailsDTO> factorySites =
                     factorySiteService
                             .displayAllBy()
                             .stream()
-                            .map(domainToDtoMapper::factorySiteToDetailsDTO)
+                            .map(factorySiteDomainToDtoMapper::factorySiteToDetailsDTO)
                             .collect(Collectors.toList());
             return ResponseEntity.ok(factorySites);
         }

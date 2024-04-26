@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "group")
+@Table(name = "_group")
 
 public class GroupModel extends Group {
     @EmbeddedId
@@ -23,8 +23,8 @@ public class GroupModel extends Group {
 
     @ManyToMany
     @JoinTable(name = "user_group_assoc",
-            joinColumns = @JoinColumn(name = "warehouse_id"),
-            inverseJoinColumns = @JoinColumn(name = "factorysite_id"))
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
 
     Collection<UserModel> users = new ArrayList<>();
 

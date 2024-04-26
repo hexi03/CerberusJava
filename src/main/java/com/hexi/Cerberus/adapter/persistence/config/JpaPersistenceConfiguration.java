@@ -10,6 +10,8 @@ import com.hexi.Cerberus.adapter.persistence.item.factory.JpaItemFactoryImpl;
 import com.hexi.Cerberus.adapter.persistence.item.repository.JpaItemRepository;
 import com.hexi.Cerberus.adapter.persistence.product.factory.JpaProductFactoryImpl;
 import com.hexi.Cerberus.adapter.persistence.product.repository.JpaProductRepository;
+import com.hexi.Cerberus.adapter.persistence.report.factory.JpaReportFactoryImpl;
+import com.hexi.Cerberus.adapter.persistence.report.repository.JpaReportRepository;
 import com.hexi.Cerberus.adapter.persistence.user.factory.JpaUserFactoryImpl;
 import com.hexi.Cerberus.adapter.persistence.user.repository.JpaUserRepository;
 import com.hexi.Cerberus.adapter.persistence.warehouse.factory.JpaWareHouseFactoryImpl;
@@ -27,6 +29,8 @@ import com.hexi.Cerberus.domain.item.ItemFactory;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.product.ProductFactory;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
+import com.hexi.Cerberus.domain.report.ReportFactory;
+import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.user.UserFactory;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
@@ -141,6 +145,19 @@ public class JpaPersistenceConfiguration {
     public ProductFactory productFactory(ItemRepository itemRepository) {
         return new JpaProductFactoryImpl(itemRepository);
     }
+
+    @Bean
+    public ReportFactory reportFactory(
+            ItemRepository itemRepository,
+            ProductRepository productRepository,
+            FactorySiteRepository factorySiteRepository,
+            WareHouseRepository wareHouseRepository,
+            ReportRepository reportRepository
+    ) {
+        return new JpaReportFactoryImpl(itemRepository, productRepository, factorySiteRepository, wareHouseRepository, reportRepository);
+    }
+
+
     @Bean
     public DepartmentRepository departmentRepository(JpaDepartmentRepository<DepartmentModel, DepartmentID> rep) {
         return rep;
@@ -173,6 +190,11 @@ public class JpaPersistenceConfiguration {
 
     @Bean
     public ProductRepository productRepository(JpaProductRepository rep) {
+        return rep;
+    }
+
+    @Bean
+    public ReportRepository reportRepository(JpaReportRepository rep) {
         return rep;
     }
 

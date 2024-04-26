@@ -1,6 +1,8 @@
 package com.hexi.Cerberus.config;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -9,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @ComponentScan(basePackages = "com.hexi.Cerberus")
 @PropertySource("classpath:application.properties")
-
 public class AppConfig {
 
 //    @Bean
@@ -35,4 +36,9 @@ public class AppConfig {
 //        resolver.setTemplateEngine(templateEngine());
 //        registry.viewResolver(resolver);
 //    }
+
+    @Bean
+    public ServletWebServerFactory servletWebServerFactory() {
+        return new JettyServletWebServerFactory();
+    }
 }

@@ -3,7 +3,6 @@ package com.hexi.Cerberus.adapter.web.rest.WareHouse;
 import com.hexi.Cerberus.adapter.web.rest.WareHouse.DTO.WareHouseCreateDTO;
 import com.hexi.Cerberus.adapter.web.rest.WareHouse.DTO.WareHouseDetailsDTO;
 import com.hexi.Cerberus.adapter.web.rest.WareHouse.DTO.WareHouseUpdateDetailsDTO;
-import com.hexi.Cerberus.adapter.web.webstatic.UserGroupController.UserGroupController;
 import com.hexi.Cerberus.application.warehouse.service.WareHouseManagementService;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
@@ -14,12 +13,10 @@ import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +30,7 @@ import java.util.stream.Collectors;
 public class WareHouseController {
 
     public final WareHouseManagementService wareHouseService;
-    public final DomainToDtoMapper domainToDtoMapper;
+    public final WareHouseDomainToDtoMapper wareHouseDomainToDtoMapper;
 
     @GetMapping("/fetch")
     public ResponseEntity<List<WareHouseDetailsDTO>> fetch(@RequestParam(required = false) WareHouseID id) {
@@ -42,14 +39,14 @@ public class WareHouseController {
             log.debug("id == null: fetch all");
             Optional<WareHouse> wareHouse = wareHouseService.displayBy(id);
             if (wareHouse.isEmpty()) return ResponseEntity.notFound().build();
-            return ResponseEntity.ok(List.of(domainToDtoMapper.wareHouseToDetailsDTO(wareHouse.get())));
+            return ResponseEntity.ok(List.of(wareHouseDomainToDtoMapper.wareHouseToDetailsDTO(wareHouse.get())));
         } else {
             log.debug("id != null: fetch id");
             List<WareHouseDetailsDTO> wareHouses =
                     wareHouseService
                             .displayAllBy()
                             .stream()
-                            .map(domainToDtoMapper::wareHouseToDetailsDTO)
+                            .map(wareHouseDomainToDtoMapper::wareHouseToDetailsDTO)
                             .collect(Collectors.toList());
             return ResponseEntity.ok(wareHouses);
         }

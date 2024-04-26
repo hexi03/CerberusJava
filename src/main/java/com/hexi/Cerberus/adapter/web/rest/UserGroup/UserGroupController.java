@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class UserGroupController {
     public final UserManagementService userManagementService;
     public final GroupManagementService groupManagementService;
-    public final DomainToDTOMapper domainToDTOMapper;
+    public final UserGroupDomainToDTOMapper domainToDTOMapper;
 
     //USER
     @GetMapping("/fetchUser")

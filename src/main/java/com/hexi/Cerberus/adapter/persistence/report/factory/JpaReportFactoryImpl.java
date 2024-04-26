@@ -14,6 +14,7 @@ import com.hexi.Cerberus.domain.factorysite.repository.FactorySiteRepository;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import com.hexi.Cerberus.domain.report.Report;
+import com.hexi.Cerberus.domain.report.ReportFactory;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.command.create.*;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
@@ -29,7 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class JpaReportFactoryImpl {
+public class JpaReportFactoryImpl implements ReportFactory {
     public final ItemRepository itemRepository;
     public final ProductRepository productRepository;
     public final FactorySiteRepository factorySiteRepository;

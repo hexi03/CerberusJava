@@ -48,13 +48,13 @@ public class PermissionRegistry {
     }
 
     public Permission registerPermission(String permissionName, Permission perm) {
-        registered.put(permissionName, perm);
+
         Assert.notNull(perm, "Permission required");
         Assert.hasText(permissionName, "Permission name required");
-        Integer mask = perm.getMask();
 
         Assert.isTrue(!getPermission(permissionName).isPresent(),
                 () -> "An existing Permission already provides name '" + permissionName + "'");
+        registered.put(permissionName, perm);
         return perm;
     }
 }

@@ -19,12 +19,12 @@ import java.util.Properties;
 @PropertySource("classpath:application.properties")
 public class PropertyConfig {
 
-//    @Bean
-//    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-//        PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
-//
-//        return pspc;
-//    }
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
+
+        return pspc;
+    }
 
 //    @Bean
 //    public static PropertySourcesPlaceholderConfigurer createPropertyConfigurer(ConfigurableEnvironment environment)

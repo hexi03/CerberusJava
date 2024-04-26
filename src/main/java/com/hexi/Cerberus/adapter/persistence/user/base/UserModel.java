@@ -16,11 +16,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "user")
-
+@Table(name = "_user")
 @Getter
 @Setter
-
 public class UserModel extends User {
     @EmbeddedId
     UserID id;

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class RegistriesController {
     public final ItemManagementService itemManagementService;
     public final ProductManagementService productManagementService;
-    public final DomainToDTOMapper domainToDTOMapper;
+    public final RegistriesDomainToDTOMapper registriesDomainToDTOMapper;
 
     //USER
     @GetMapping("/fetchItem")
@@ -41,7 +41,7 @@ public class RegistriesController {
             return ResponseEntity.ok(itemManagementService
                     .displayAll()
                     .stream()
-                    .map(domainToDTOMapper::mapItemToDetailsDto)
+                    .map(registriesDomainToDTOMapper::mapItemToDetailsDto)
                     .collect(Collectors.toList())
             );
         } else {
@@ -49,7 +49,7 @@ public class RegistriesController {
             if (item.isEmpty()) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(
                     List.of(
-                            domainToDTOMapper.mapItemToDetailsDto(
+                            registriesDomainToDTOMapper.mapItemToDetailsDto(
                                     item.get()
                             )
                     )
@@ -98,7 +98,7 @@ public class RegistriesController {
             return ResponseEntity.ok(productManagementService
                     .displayAll()
                     .stream()
-                    .map(domainToDTOMapper::mapProductToDetailsDto)
+                    .map(registriesDomainToDTOMapper::mapProductToDetailsDto)
                     .collect(Collectors.toList())
             );
         } else {
@@ -106,7 +106,7 @@ public class RegistriesController {
             if (item.isEmpty()) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(
                     List.of(
-                            domainToDTOMapper.mapProductToDetailsDto(
+                            registriesDomainToDTOMapper.mapProductToDetailsDto(
                                     item.get()
                             )
                     )
