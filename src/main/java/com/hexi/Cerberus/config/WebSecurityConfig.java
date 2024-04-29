@@ -1,5 +1,10 @@
 package com.hexi.Cerberus.config;
 
+import com.hexi.Cerberus.application.access.service.UserService;
+import com.hexi.Cerberus.domain.user.User;
+import com.hexi.Cerberus.domain.user.UserFactory;
+import com.hexi.Cerberus.domain.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +36,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -38,64 +44,75 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Configuration
 @EnableWebSecurity
+@Transactional
 public class WebSecurityConfig implements WebMvcConfigurer {
-    private UserDetailsService userService;
-    private JwtRequestFilter jwtRequestFilter;
+    //private JwtRequestFilter jwtRequestFilter;
 
 
-    @Autowired
-    public void setUserService(UserDetailsService userService) {
-        this.userService = userService;
-    }
+//    @Autowired
+//    public void setUserService(UserService userService) {
+//        this.userService = userService;
+//    }
 
-    @Autowired
-    public void setJwtRequestFilter(JwtRequestFilter jwtRequestFilter) {
-        this.jwtRequestFilter = jwtRequestFilter;
-    }
+//    @Autowired
+//    public void setJwtRequestFilter(JwtRequestFilter jwtRequestFilter) {
+//        this.jwtRequestFilter = jwtRequestFilter;
+//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         System.err.println("SecurityFilterChain: Configuring");
         // Регистрация CorsFilter в ServletContext
-
-        http
-                .authorizeHttpRequests(rmr -> {
-
-                    rmr.requestMatchers("/secured").authenticated()
-                            .requestMatchers("/info").authenticated()
-                            .requestMatchers("/admin").hasRole("ADMIN")
-                            .anyRequest().permitAll();
-                })
-                .sessionManagement(smc -> {
-                    smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                })
-
-
-                .exceptionHandling(ec -> ec.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(new PromisquousCorsFilter(), CorsFilter.class);
+        http.authorizeHttpRequests(rmr -> {
+                    rmr.anyRequest().anonymous();
+//                    rmr.requestMatchers("/secured").authenticated();
+//                    rmr.requestMatchers("/info").authenticated();
+//                    rmr.requestMatchers("/admin").hasRole("ADMIN");
+//                    rmr.anyRequest().permitAll();
+                });
+//        http
+//                .authorizeHttpRequests(rmr -> {
+//                    rmr.anyRequest().anonymous();
+////                    rmr.requestMatchers("/secured").authenticated();
+////                    rmr.requestMatchers("/info").authenticated();
+////                    rmr.requestMatchers("/admin").hasRole("ADMIN");
+////                    rmr.anyRequest().permitAll();
+//                })
+//                .sessionManagement(smc -> {
+//                    smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                })
+//
+//
+//                .exceptionHandling(ec -> ec.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+//                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAt(new PromisquousCorsFilter(), CorsFilter.class);
         return http.build();
     }
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
+    public DaoAuthenticationProvider daoAuthenticationProvider(UserRepository userRepository, UserService userService, PasswordEncoder passwordEncoder) {
+
+
+        if (!userRepository.findByEmail("user@abc.ru").isPresent()) {
+            userService.createDefaultUser();
+
+        }
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(userService);
+
+
         return daoAuthenticationProvider;
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        System.err.println("BCryptPasswordEncoder: Created");
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

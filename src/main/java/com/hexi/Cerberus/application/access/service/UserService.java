@@ -1,8 +1,8 @@
 package com.hexi.Cerberus.application.access.service;
 
 import com.hexi.Cerberus.domain.user.User;
+import com.hexi.Cerberus.domain.user.UserFactory;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,40 +10,38 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
-    private UserRepository userRepository;
-    //private PasswordEncoder passwordEncoder;
-
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private UserGroupService userGroupService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserFactory userFactory;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    //@Autowired
-    //public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-    //    this.passwordEncoder = passwordEncoder;
-    //}
-
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByEmail(username);
-    }
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(
+        Optional<org.springframework.security.core.userdetails.User> user = userGroupService.findByEmail(username); //email as username
+        if (user.isEmpty()) new UsernameNotFoundException(
                 String.format("Пользователь '%s' не найден", username)
-        ));
-        return new org.springframework.security.core.userdetails.User(
-                user.getName(),
-                user.getPasswordHash(),
-                user.getGroups().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList())
         );
+
+        return user.get();
+    }
+
+
+    public void createDefaultUser() {
+        User user = userFactory.from("user", "user@abc.ru", passwordEncoder.encode("password"));
+        userRepository.save(user);
+        //user.setRoles(List.of(roleService.getUserRole()));
     }
 
 }

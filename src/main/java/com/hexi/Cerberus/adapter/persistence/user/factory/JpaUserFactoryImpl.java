@@ -10,4 +10,8 @@ public class JpaUserFactoryImpl implements UserFactory {
     public User from(CreateUserCmd cmd) {
         return new UserModel(new UserID(), cmd.getName(), cmd.getEmail(), cmd.getPasswordHash());
     }
+
+    public User from(String name, String email, String passwordHash) {
+        return new UserModel(new UserID(), name, email, passwordHash);
+    }
 }

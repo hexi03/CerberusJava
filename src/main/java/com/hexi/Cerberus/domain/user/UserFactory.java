@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public interface UserFactory {
     User from(CreateUserCmd cmd);
+    User from(String name, String email, String passwordHash);
 }
 
 

@@ -15,7 +15,7 @@ import java.util.Collections;
 
 //@EnableCaching
 @Configuration
-@EnableCaching
+//@EnableCaching
 public class CacheConfig {
 
     @Primary

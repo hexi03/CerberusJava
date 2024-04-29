@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,8 +18,10 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "_user")
+@Access(value=AccessType.FIELD)
 @Getter
 @Setter
+@Transactional
 public class UserModel extends User {
     @EmbeddedId
     UserID id;
@@ -40,6 +43,7 @@ public class UserModel extends User {
 
     public UserModel(UserID userID, String name, String email, String passwordHash) {
         this.id = new UserID(userID);
+        this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
     }

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "_group")
-
+@Access(value=AccessType.FIELD)
 public class GroupModel extends Group {
     @EmbeddedId
     GroupID id;
@@ -50,7 +50,7 @@ public class GroupModel extends Group {
         if (user.getClass() == UserModel.class) {
             users.add((UserModel) user);
         } else {
-            throw new Exception("Ivalid WareHouse child");
+            throw new Exception("Invalid WareHouse child");
         }
     }
 
@@ -61,6 +61,7 @@ public class GroupModel extends Group {
 
     @Override
     public Collection<User> getUsers() {
+
         return users.stream().map(userModel -> (User) userModel).collect(Collectors.toSet());
     }
 

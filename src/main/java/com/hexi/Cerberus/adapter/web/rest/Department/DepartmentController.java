@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @DrivingAdapter
 @RequestMapping("/api/department")
-@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
 @RestController
 @AllArgsConstructor
 @Slf4j

@@ -8,9 +8,10 @@ import com.hexi.Cerberus.infrastructure.query.Query;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+@Transactional
 public interface JpaGroupRepository<T extends GroupModel,ID extends GroupID> extends GroupRepository<T,ID>, JpaRepository<T,ID> {
     @SneakyThrows
     default List<T> findAllWithQuery(Query domainQuery){

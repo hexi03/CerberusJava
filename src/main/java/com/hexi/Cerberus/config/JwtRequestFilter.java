@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 
-@Component
+//@Component
 @RequiredArgsConstructor
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
