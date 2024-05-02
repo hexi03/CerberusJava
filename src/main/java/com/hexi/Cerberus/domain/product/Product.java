@@ -43,24 +43,22 @@ public abstract class Product implements AggregateRoot, Entity {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof Product)) return false;
-        final Product other = (Product) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!(o instanceof Product other)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$id = this.getId();
         final Object other$id = other.getId();
-        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        if (!Objects.equals(this$id, other$id)) return false;
         final Object this$production = this.getProduction();
         final Object other$production = other.getProduction();
-        if (this$production == null ? other$production != null : !this$production.equals(other$production))
+        if (!Objects.equals(this$production, other$production))
             return false;
         final Object this$requirements = this.getRequirements();
         final Object other$requirements = other.getRequirements();
-        if (this$requirements == null ? other$requirements != null : !this$requirements.equals(other$requirements))
+        if (!Objects.equals(this$requirements, other$requirements))
             return false;
         final Object this$deletedAt = this.getDeletedAt();
         final Object other$deletedAt = other.getDeletedAt();
-        if (this$deletedAt == null ? other$deletedAt != null : !this$deletedAt.equals(other$deletedAt)) return false;
-        return true;
+        return Objects.equals(this$deletedAt, other$deletedAt);
     }
 
     protected boolean canEqual(final Object other) {

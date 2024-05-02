@@ -1,9 +1,10 @@
 package com.hexi.Cerberus.adapter.web.rest.FactorySite;
 
-import com.hexi.Cerberus.adapter.web.rest.FactorySite.DTO.FactorySiteCreateDTO;
-import com.hexi.Cerberus.adapter.web.rest.FactorySite.DTO.FactorySiteDetailsDTO;
-import com.hexi.Cerberus.adapter.web.rest.FactorySite.DTO.FactorySiteUpdateDetailsDTO;
-import com.hexi.Cerberus.adapter.web.rest.FactorySite.DTO.FactorySiteUpdateSupplyDTO;
+import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteCreateDTO;
+import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteDetailsDTO;
+import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteUpdateDetailsDTO;
+import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteUpdateSupplyDTO;
+import com.hexi.Cerberus.application.factorysite.service.FactorySiteDomainToDtoMapper;
 import com.hexi.Cerberus.application.factorysite.service.FactorySiteManagementService;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
@@ -31,42 +32,41 @@ import java.util.stream.Collectors;
 public class FactorySiteController {
 
     public final FactorySiteManagementService factorySiteService;
-    public final FactorySiteDomainToDtoMapper factorySiteDomainToDtoMapper;
+
 
 
     @GetMapping("/fetch")
     public ResponseEntity<List<FactorySiteDetailsDTO>> fetch(@RequestParam(required = false) FactorySiteID id) {
-        log.debug(id.toString());
+
         if (id != null) {
+            log.debug(id.toString());
             log.debug("id == null: fetch all");
-            Optional<FactorySite> factorySite = factorySiteService.displayBy(id);
+            Optional<FactorySiteDetailsDTO> factorySite = factorySiteService.displayBy(id);
             if (factorySite.isEmpty()) return ResponseEntity.notFound().build();
-            return ResponseEntity.ok(List.of(factorySiteDomainToDtoMapper.factorySiteToDetailsDTO(factorySite.get())));
+            return ResponseEntity.ok(List.of(factorySite.get()));
         } else {
             log.debug("id != null: fetch id");
             List<FactorySiteDetailsDTO> factorySites =
                     factorySiteService
-                            .displayAllBy()
-                            .stream()
-                            .map(factorySiteDomainToDtoMapper::factorySiteToDetailsDTO)
-                            .collect(Collectors.toList());
+                            .displayAll();
+
             return ResponseEntity.ok(factorySites);
         }
     }
 
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createFactorySite(@RequestBody FactorySiteCreateDTO dto) {
+    public ResponseEntity<FactorySiteID> createFactorySite(@RequestBody FactorySiteCreateDTO dto) {
         log.debug(dto.toString());
-        factorySiteService.create(
+        FactorySiteID id = factorySiteService.create(
                 CreateFactorySiteCmd
                         .builder()
                         .id(CommandId.generate())
                         .targetDepartmentId(dto.getDepartmentId())
                         .name(dto.getName())
                         .build()
-        );
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        ).getId();
+        return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
     @PutMapping("/update")

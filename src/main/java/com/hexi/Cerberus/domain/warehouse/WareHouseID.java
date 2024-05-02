@@ -19,4 +19,6 @@ public class WareHouseID implements EntityId<UUID> {
     public WareHouseID(WareHouseID wareHouseID) {
         id = wareHouseID.getId();
     }
+
+    public WareHouseID(String id) { this.id = UUID.fromString(id); }
 }

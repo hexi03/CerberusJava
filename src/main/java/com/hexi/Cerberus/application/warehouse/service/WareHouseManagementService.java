@@ -1,22 +1,24 @@
 package com.hexi.Cerberus.application.warehouse.service;
 
+import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseDetailsDTO;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.domain.warehouse.command.CreateWareHouseCmd;
 import com.hexi.Cerberus.domain.warehouse.command.UpdateWareHouseDetailsCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+@Transactional
 public interface WareHouseManagementService {
-    Optional<WareHouse> displayBy(WareHouseID wareHouseId);
+    Optional<WareHouseDetailsDTO> displayBy(WareHouseID wareHouseId);
 
-    List<WareHouse> displayAllBy(Query query);
+    List<WareHouseDetailsDTO> displayAllBy(Query query);
 
-    List<WareHouse> displayAllBy();
+    List<WareHouseDetailsDTO> displayAll();
 
-    WareHouse create(CreateWareHouseCmd cmd);
+    WareHouseDetailsDTO create(CreateWareHouseCmd cmd);
 
     void updateDetails(UpdateWareHouseDetailsCmd cmd);
 

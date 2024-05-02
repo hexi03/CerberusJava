@@ -3,6 +3,7 @@ package com.hexi.Cerberus.config;
 import com.hexi.Cerberus.domain.access.BehavioredAclPermissionEvaluator;
 import com.hexi.Cerberus.domain.access.BehavioredPermissionFactory;
 import com.hexi.Cerberus.domain.access.BehavioredPermissionGrantingStrategy;
+import com.hexi.Cerberus.infrastructure.security.AclSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -56,17 +57,23 @@ public class MethodSecurityConfiguration {
      */
     @Bean
     public JdbcMutableAclService aclService(DataSource ds, LookupStrategy lookupStrategy, AclCache aclCache) {
+        AclSupport.makeMigrations(ds);
+
         final JdbcMutableAclService service = new JdbcMutableAclService(ds, lookupStrategy, aclCache);
         // Those two line for MySQL only
-        service.setClassIdentityQuery("SELECT @@IDENTITY");
-        service.setSidIdentityQuery("SELECT @@IDENTITY");
+        service.setClassIdentityQuery("SELECT nextval('acl_sid_id_seq');");
+        service.setSidIdentityQuery("SELECT nextval('acl_class_id_seq');");
+        service.setAclClassIdSupported(true);
+
         return service;
     }
 
     // lookup strategy
     @Bean
     public LookupStrategy lookupStrategy(DataSource ds, AclCache aclCache, AclAuthorizationStrategy authStrategy, PermissionGrantingStrategy grantingStrategy) {
-        return new BasicLookupStrategy(ds, aclCache, authStrategy, grantingStrategy);
+        BasicLookupStrategy strategy = new BasicLookupStrategy(ds, aclCache, authStrategy, grantingStrategy);
+        strategy.setAclClassIdSupported(true);
+        return strategy;
     }
 
     // cache

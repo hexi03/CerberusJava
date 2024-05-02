@@ -8,6 +8,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.transaction.Transactional;
 import org.bouncycastle.jcajce.provider.asymmetric.dsa.BCDSAPrivateKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,7 @@ import java.security.Key;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AuthService {
 
     private final UserRepository userRepository;

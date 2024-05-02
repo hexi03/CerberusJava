@@ -1,8 +1,9 @@
 package com.hexi.Cerberus.adapter.web.rest.WareHouse;
 
-import com.hexi.Cerberus.adapter.web.rest.WareHouse.DTO.WareHouseCreateDTO;
-import com.hexi.Cerberus.adapter.web.rest.WareHouse.DTO.WareHouseDetailsDTO;
-import com.hexi.Cerberus.adapter.web.rest.WareHouse.DTO.WareHouseUpdateDetailsDTO;
+import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseCreateDTO;
+import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseDetailsDTO;
+import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseUpdateDetailsDTO;
+import com.hexi.Cerberus.application.warehouse.service.WareHouseDomainToDtoMapper;
 import com.hexi.Cerberus.application.warehouse.service.WareHouseManagementService;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
@@ -34,37 +35,35 @@ public class WareHouseController {
 
     @GetMapping("/fetch")
     public ResponseEntity<List<WareHouseDetailsDTO>> fetch(@RequestParam(required = false) WareHouseID id) {
-        log.debug(id.toString());
+
         if (id != null) {
+            log.debug(id.toString());
             log.debug("id == null: fetch all");
-            Optional<WareHouse> wareHouse = wareHouseService.displayBy(id);
+            Optional<WareHouseDetailsDTO> wareHouse = wareHouseService.displayBy(id);
             if (wareHouse.isEmpty()) return ResponseEntity.notFound().build();
-            return ResponseEntity.ok(List.of(wareHouseDomainToDtoMapper.wareHouseToDetailsDTO(wareHouse.get())));
+            return ResponseEntity.ok(List.of(wareHouse.get()));
         } else {
             log.debug("id != null: fetch id");
             List<WareHouseDetailsDTO> wareHouses =
                     wareHouseService
-                            .displayAllBy()
-                            .stream()
-                            .map(wareHouseDomainToDtoMapper::wareHouseToDetailsDTO)
-                            .collect(Collectors.toList());
+                            .displayAll();
             return ResponseEntity.ok(wareHouses);
         }
     }
 
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createWareHouse(@RequestBody WareHouseCreateDTO dto) {
+    public ResponseEntity<WareHouseID> createWareHouse(@RequestBody WareHouseCreateDTO dto) {
         log.debug(dto.toString());
-        wareHouseService.create(
+        WareHouseID id = wareHouseService.create(
                 CreateWareHouseCmd
                         .builder()
                         .id(CommandId.generate())
                         .targetDepartmentId(dto.getDepartmentId())
                         .name(dto.getName())
                         .build()
-        );
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        ).getId();
+        return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
     @PutMapping("/update")

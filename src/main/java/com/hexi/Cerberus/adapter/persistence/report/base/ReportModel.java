@@ -62,7 +62,7 @@ public class ReportModel implements Report {
 //    Optional<Date> deletedAt;
 
     @Deprecated
-    public ReportModel() {
+    protected ReportModel() {
         super();
     }
 

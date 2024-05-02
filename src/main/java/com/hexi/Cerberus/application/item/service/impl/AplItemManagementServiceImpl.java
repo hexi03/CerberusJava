@@ -1,6 +1,11 @@
 package com.hexi.Cerberus.application.item.service.impl;
 
+import com.hexi.Cerberus.application.group.service.DTO.GroupDetailsDTO;
+import com.hexi.Cerberus.application.item.service.DTO.ItemDetailsDTO;
+import com.hexi.Cerberus.application.item.service.ItemDomainToDTOMapper;
 import com.hexi.Cerberus.application.item.service.ItemManagementService;
+import com.hexi.Cerberus.domain.group.Group;
+import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemFactory;
 import com.hexi.Cerberus.domain.item.ItemID;
@@ -10,42 +15,52 @@ import com.hexi.Cerberus.domain.item.command.UpdateItemCmd;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class AplItemManagementServiceImpl implements ItemManagementService {
     public final ItemRepository itemRepository;
     public final MessagePublisher messagePublisher;
     public final ItemFactory itemFactory;
     public final ItemUpdater itemUpdater;
+    public final ItemDomainToDTOMapper itemDomainToDtoMapper;
 
     @Override
-    public Optional<Item> displayBy(ItemID itemID) {
-        return itemRepository.findById(itemID);
+    public Optional<ItemDetailsDTO> displayBy(ItemID id) {
+        Optional<Item> item = itemRepository.findById(id);
+        return item.map(itemDomainToDtoMapper::itemToDetailsDTO);
     }
 
     @Override
-    public List<Item> displayAllBy(Query query) {
-        return itemRepository.findAllWithQuery(query);
+    public List<ItemDetailsDTO> displayAllBy(Query query) {
+        return ((List<Item>)itemRepository.findAllWithQuery(query)).stream()
+                .map(itemDomainToDtoMapper::itemToDetailsDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Item> displayAll() {
-        return itemRepository.findAll();
+    public List<ItemDetailsDTO> displayAll() {
+        return ((List<Item>)itemRepository.findAll()).stream()
+                .map(itemDomainToDtoMapper::itemToDetailsDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Override
-    public Item create(CreateItemCmd cmd) {
+    public ItemDetailsDTO create(CreateItemCmd cmd) {
         cmd.validate().onFailedThrow();
         Item item = itemFactory.from(cmd);
         itemRepository.append(item);
         messagePublisher.publish(item.edjectEvents());
-        return item;
+        return itemDomainToDtoMapper.itemToDetailsDTO(item);
 
     }
 

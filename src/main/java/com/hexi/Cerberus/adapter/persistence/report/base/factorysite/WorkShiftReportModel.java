@@ -72,7 +72,7 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> (Product) entry.getKey(),
+                                entry -> entry.getKey(),
                                 entry -> entry.getValue()
                         )
                 );
@@ -93,7 +93,7 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> (Item) entry.getKey(),
+                                entry -> entry.getKey(),
                                 entry -> entry.getValue()
                         )
                 );
@@ -114,7 +114,7 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> (Item) entry.getKey(),
+                                entry -> entry.getKey(),
                                 entry -> entry.getValue()
                         )
                 );

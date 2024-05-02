@@ -4,10 +4,7 @@ import com.hexi.Cerberus.infrastructure.aggregate.AggregateRoot;
 import com.hexi.Cerberus.infrastructure.entity.Entity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class Item implements Entity, AggregateRoot {
 
@@ -43,22 +40,20 @@ public abstract class Item implements Entity, AggregateRoot {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof Item)) return false;
-        final Item other = (Item) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!(o instanceof Item other)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$id = this.getId();
         final Object other$id = other.getId();
-        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        if (!Objects.equals(this$id, other$id)) return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (!Objects.equals(this$name, other$name)) return false;
         final Object this$unit = this.getUnit();
         final Object other$unit = other.getUnit();
-        if (this$unit == null ? other$unit != null : !this$unit.equals(other$unit)) return false;
+        if (!Objects.equals(this$unit, other$unit)) return false;
         final Object this$deletedAt = this.getDeletedAt();
         final Object other$deletedAt = other.getDeletedAt();
-        if (this$deletedAt == null ? other$deletedAt != null : !this$deletedAt.equals(other$deletedAt)) return false;
-        return true;
+        return Objects.equals(this$deletedAt, other$deletedAt);
     }
 
     protected boolean canEqual(final Object other) {

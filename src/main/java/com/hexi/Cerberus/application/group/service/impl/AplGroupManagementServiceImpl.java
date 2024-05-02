@@ -1,5 +1,7 @@
 package com.hexi.Cerberus.application.group.service.impl;
 
+import com.hexi.Cerberus.application.group.service.DTO.GroupDetailsDTO;
+import com.hexi.Cerberus.application.group.service.GroupDomainToDTOMapper;
 import com.hexi.Cerberus.application.group.service.GroupManagementService;
 import com.hexi.Cerberus.domain.group.Group;
 import com.hexi.Cerberus.domain.group.GroupFactory;
@@ -15,6 +17,7 @@ import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class AplGroupManagementServiceImpl implements GroupManagementService {
     public final GroupRepository groupRepository;
     public final UserRepository userRepository;
@@ -32,30 +36,37 @@ public class AplGroupManagementServiceImpl implements GroupManagementService {
     public final MutableAclService aclService;
     public final GroupFactory groupFactory;
     public final GroupUpdater groupUpdater;
+    public final GroupDomainToDTOMapper groupDomainToDtoMapper;
 
     @Override
-    public Optional<Group> displayBy(GroupID groupID) {
-        return groupRepository.findById(groupID);
+    public Optional<GroupDetailsDTO> displayBy(GroupID id) {
+        Optional<Group> group = groupRepository.findById(id);
+        return group.map(groupDomainToDtoMapper::groupToDetailsDTO);
     }
 
     @Override
-    public List<Group> displayAll(Query query) {
-        return groupRepository.findAllWithQuery(query);
+    public List<GroupDetailsDTO> displayAllBy(Query query) {
+        return ((List<Group>)groupRepository.findAllWithQuery(query)).stream()
+                .map(groupDomainToDtoMapper::groupToDetailsDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Group> displayAll() {
-        return groupRepository.findAll();
+    public List<GroupDetailsDTO> displayAll() {
+        return ((List<Group>)groupRepository.findAll()).stream()
+                .map(groupDomainToDtoMapper::groupToDetailsDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Override
-    public Group create(CreateGroupCmd cmd) {
+    public GroupDetailsDTO create(CreateGroupCmd cmd) {
         cmd.validate().onFailedThrow();
         Group group = groupFactory.from(cmd);
         groupRepository.append(group);
         group.initAcl(aclService);
         messagePublisher.publish(group.edjectEvents());
-        return group;
+        return groupDomainToDtoMapper.groupToDetailsDTO(group);
 
     }
 

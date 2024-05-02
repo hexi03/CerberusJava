@@ -48,7 +48,7 @@ public class ReplenishmentReportModel extends WareHouseReportModel implements It
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> (Item) entry.getKey(),
+                                entry -> entry.getKey(),
                                 entry -> entry.getValue()
                         )
                 );

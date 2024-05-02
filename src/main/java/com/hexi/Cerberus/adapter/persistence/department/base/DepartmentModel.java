@@ -41,7 +41,7 @@ public class DepartmentModel extends Department {
 
 
     @Deprecated
-    public DepartmentModel() {
+    private DepartmentModel() {
         super();
     }
 

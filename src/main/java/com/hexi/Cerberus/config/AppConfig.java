@@ -1,8 +1,12 @@
 package com.hexi.Cerberus.config;
 
+import com.hexi.Cerberus.WebAppInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
@@ -10,11 +14,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -51,18 +60,27 @@ public class AppConfig {
 
 
     @EventListener
-    public void handleContextRefresh(ContextRefreshedEvent event) {
+    public void handleContextRefresh(ContextRefreshedEvent event){
         ApplicationContext applicationContext = event.getApplicationContext();
         RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext
                 .getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
         Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping
                 .getHandlerMethods();
         map.forEach((key, value) -> log.info("{} {}", key, value));
+
+        String[] beanNames = applicationContext.getBeanDefinitionNames();
+        for (String beanName : Arrays.stream(beanNames).toList()) {
+            Object bean = applicationContext.getBean(beanName);
+            System.out.println("Bean name: " + beanName + ", class: " + bean.getClass().getName());
+        }
+
+        DispatcherServlet context = applicationContext.getBean(DispatcherServlet.class);
+        System.out.println("Bean name: dispatcherServlet" + ", class: " + context.getClass().getName());
+
+
     }
-    @Bean
-    public ServletWebServerFactory servletWebServerFactory() {
-        return new JettyServletWebServerFactory();
-    }
+
+
 
 //    @Bean
 //    WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> enableDefaultServlet() {

@@ -14,10 +14,7 @@ import com.hexi.Cerberus.infrastructure.event.DomainEvent;
 import com.hexi.Cerberus.infrastructure.messaging.Message;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class Department implements SecuredEntity, AggregateRoot {
 
@@ -99,24 +96,21 @@ public abstract class Department implements SecuredEntity, AggregateRoot {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof Department)) return false;
-        final Department other = (Department) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!(o instanceof Department other)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$id = this.getId();
         final Object other$id = other.getId();
-        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        if (!Objects.equals(this$id, other$id)) return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (!Objects.equals(this$name, other$name)) return false;
         final Object this$factorySites = this.getFactorySites();
         final Object other$factorySites = other.getFactorySites();
-        if (this$factorySites == null ? other$factorySites != null : !this$factorySites.equals(other$factorySites))
+        if (!Objects.equals(this$factorySites, other$factorySites))
             return false;
         final Object this$wareHouses = this.getWareHouses();
         final Object other$wareHouses = other.getWareHouses();
-        if (this$wareHouses == null ? other$wareHouses != null : !this$wareHouses.equals(other$wareHouses))
-            return false;
-        return true;
+        return Objects.equals(this$wareHouses, other$wareHouses);
     }
 
     protected boolean canEqual(final Object other) {

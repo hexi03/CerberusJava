@@ -1,25 +1,26 @@
 package com.hexi.Cerberus.application.product.service;
 
+import com.hexi.Cerberus.application.product.service.DTO.ProductDetailsDTO;
 import com.hexi.Cerberus.domain.item.ItemID;
-import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.product.ProductID;
 import com.hexi.Cerberus.domain.product.command.CreateProductCmd;
 import com.hexi.Cerberus.domain.product.command.UpdateProductCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+@Transactional
 public interface ProductManagementService {
-    List<Product> displayByProductionItem(ItemID id);
+    Optional<ProductDetailsDTO> displayByProductionItem(ItemID id);
 
-    Optional<Product> displayBy(ProductID id);
+    Optional<ProductDetailsDTO> displayBy(ProductID id);
 
-    List<Product> displayAllBy(Query query);
+    List<ProductDetailsDTO> displayAllBy(Query query);
 
-    List<Product> displayAll();
+    List<ProductDetailsDTO> displayAll();
 
-    Product create(CreateProductCmd cmd);
+    ProductDetailsDTO create(CreateProductCmd cmd);
 
     void updateDetails(UpdateProductCmd cmd);
 

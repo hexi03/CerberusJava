@@ -60,7 +60,7 @@ public class BehavioredPermissionFactory implements PermissionFactory {
         public final boolean inheritable;
 
         public Behavior(long mask) {
-            inheritable = (mask & (1 << BehaviourBit.INHERITABLE.bit)) == 1;
+            inheritable = (mask & (1L << BehaviourBit.INHERITABLE.bit)) == 1;
         }
 
         public Behavior(boolean inheritable) {

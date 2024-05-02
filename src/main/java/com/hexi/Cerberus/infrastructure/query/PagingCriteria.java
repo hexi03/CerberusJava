@@ -1,14 +1,31 @@
 package com.hexi.Cerberus.infrastructure.query;
 
-import lombok.AllArgsConstructor;
+import com.hexi.Cerberus.infrastructure.entity.EntityId;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-@AllArgsConstructor
-
 public class PagingCriteria {
-    Integer shift;
-    Integer count;
+    private EntityId key;
+    private Integer count;
+    private Direction direction;
+    public PagingCriteria(EntityId key, Integer count, Direction direction) {
+        this.key = key;
+        this.count = count;
+        this.direction = direction;
+    }
+
+    public PagingCriteria(EntityId key, Integer count) {
+        this.key = key;
+        this.count = count;
+        this.direction = Direction.FORWARD;
+    }
+
+    public static enum Direction {
+        FORWARD,
+        BACKWARD
+    }
+
+
 }

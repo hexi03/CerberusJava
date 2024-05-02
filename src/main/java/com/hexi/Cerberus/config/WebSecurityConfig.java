@@ -72,28 +72,23 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         System.err.println("SecurityFilterChain: Configuring");
         // Регистрация CorsFilter в ServletContext
         http.authorizeHttpRequests(rmr -> {
-                    rmr.anyRequest().anonymous();
+                    rmr.anyRequest().permitAll();
 //                    rmr.requestMatchers("/secured").authenticated();
 //                    rmr.requestMatchers("/info").authenticated();
 //                    rmr.requestMatchers("/admin").hasRole("ADMIN");
 //                    rmr.anyRequest().permitAll();
                 });
-//        http
-//                .authorizeHttpRequests(rmr -> {
-//                    rmr.anyRequest().anonymous();
-////                    rmr.requestMatchers("/secured").authenticated();
-////                    rmr.requestMatchers("/info").authenticated();
-////                    rmr.requestMatchers("/admin").hasRole("ADMIN");
-////                    rmr.anyRequest().permitAll();
-//                })
-//                .sessionManagement(smc -> {
-//                    smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//                })
-//
-//
-//                .exceptionHandling(ec -> ec.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+        http.csrf(csrfmc -> csrfmc.disable());
+        http
+                .sessionManagement(smc -> {
+                    smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                })
+
+
+                .exceptionHandling(ec -> ec.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+        http.cors(cmr -> cmr.disable());
 //                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-//                .addFilterAt(new PromisquousCorsFilter(), CorsFilter.class);
+        http.addFilterAt(new PromisquousCorsFilter(), CorsFilter.class);
         return http.build();
     }
 

@@ -5,13 +5,23 @@ import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.user.UserFactory;
 import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.domain.user.command.CreateUserCmd;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class JpaUserFactoryImpl implements UserFactory {
-    public User from(CreateUserCmd cmd) {
-        return new UserModel(new UserID(), cmd.getName(), cmd.getEmail(), cmd.getPasswordHash());
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    public JpaUserFactoryImpl(PasswordEncoder encoder) {
+        passwordEncoder = encoder;
     }
 
-    public User from(String name, String email, String passwordHash) {
-        return new UserModel(new UserID(), name, email, passwordHash);
+    public User from(CreateUserCmd cmd) {
+        return new UserModel(new UserID(), cmd.getName(), cmd.getEmail(), passwordEncoder.encode(cmd.getPassword()));
+    }
+
+    public User from(String name, String email, String password) {
+        return new UserModel(new UserID(), name, email, passwordEncoder.encode(password));
     }
 }

@@ -37,7 +37,7 @@ public class WareHouseModel extends WareHouse {
     private Collection<FactorySiteModel> consumers;
 
     @Deprecated
-    protected WareHouseModel() {
+    private WareHouseModel() {
 
     }
 

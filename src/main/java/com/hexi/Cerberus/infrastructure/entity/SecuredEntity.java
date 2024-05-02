@@ -38,8 +38,6 @@ public interface SecuredEntity extends Entity {
         aclService.updateAcl(acl);
     }
 
-    ;
-
     default void addPermission(MutableAclService aclService, Sid sid, Permission perm) {
         ObjectIdentity oid = this.getObjectIdentity();
         MutableAcl acl = (MutableAcl) aclService.readAclById(oid);
@@ -48,8 +46,6 @@ public interface SecuredEntity extends Entity {
         acl.insertAce(acl.getEntries().size(), perm, sid, true);
         aclService.updateAcl(acl);
     }
-
-    ;
 
     default List<Permission> getPermissions(AclService aclService, Sid sid) {
         ObjectIdentity oid = new ObjectIdentityImpl(this.getClass(), this.getId().toString());
@@ -64,7 +60,7 @@ public interface SecuredEntity extends Entity {
 
         return acl.getEntries().stream().reduce(new HashMap<Sid, List<Permission>>(),
                 (acc, ace) -> {
-                    acc.put(ace.getSid(), Arrays.asList(ace.getPermission()));
+                    acc.put(ace.getSid(), Collections.singletonList(ace.getPermission()));
                     return acc;
                 },
                 (c1, c2) -> {

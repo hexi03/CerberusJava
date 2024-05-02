@@ -4,11 +4,8 @@ import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.ReportModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
-import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportID;
-import com.hexi.Cerberus.domain.warehouse.WareHouse;
-import lombok.Getter;
-import lombok.Setter;
+import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +15,7 @@ import java.util.stream.Collectors;
 
 
 public class ReleaseReportModel extends WareHouseReportModel implements ItemStorageOperationReport {
-    ReportModel supplyReqReportId;
+    SupplyRequirementReport supplyReqReport;
     Map<ItemModel, Integer> items = new HashMap<>();
 
     public ReleaseReportModel(
@@ -27,10 +24,10 @@ public class ReleaseReportModel extends WareHouseReportModel implements ItemStor
             Date createdAt,
             Date expirationDate,
             Optional<Date> deletedAt,
-            ReportModel supplyReqReportId,
+            SupplyRequirementReport supplyReqReport,
             Map<ItemModel, Integer> items) {
         super(id, wareHouse, createdAt, expirationDate, deletedAt);
-        this.supplyReqReportId = supplyReqReportId;
+        this.supplyReqReport = supplyReqReport;
         this.items = items;
     }
 
@@ -39,10 +36,10 @@ public class ReleaseReportModel extends WareHouseReportModel implements ItemStor
             WareHouseModel wareHouse,
             Date createdAt,
             Date expirationDate,
-            ReportModel supplyReqReportId,
+            SupplyRequirementReport supplyReqReport,
             Map<ItemModel, Integer> items) {
         super(id, wareHouse, createdAt, expirationDate);
-        this.supplyReqReportId = supplyReqReportId;
+        this.supplyReqReport = supplyReqReport;
         this.items = items;
     }
 
@@ -58,7 +55,7 @@ public class ReleaseReportModel extends WareHouseReportModel implements ItemStor
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> (Item) entry.getKey(),
+                                entry -> entry.getKey(),
                                 entry -> entry.getValue()
                         )
                 );

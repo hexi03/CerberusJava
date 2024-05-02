@@ -15,7 +15,7 @@ public class CreateUserCmd implements Command {
     CommandId id;
     String name;
     String email;
-    String passwordHash;
+    String password;
 
     @Override
     public CommandId getId() {

@@ -7,5 +7,5 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public abstract class SortCriteria {
-    Boolean descending;
+
 }

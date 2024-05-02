@@ -16,7 +16,7 @@ public class UpdateUserDetailsCmd implements Command {
     CommandId id;
     UserID userId;
     String name;
-    String passwordHash;
+    String password;
     String email;
 
     @Override

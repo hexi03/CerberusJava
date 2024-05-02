@@ -1,22 +1,24 @@
 package com.hexi.Cerberus.application.item.service;
 
+import com.hexi.Cerberus.application.item.service.DTO.ItemDetailsDTO;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.item.command.CreateItemCmd;
 import com.hexi.Cerberus.domain.item.command.UpdateItemCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+@Transactional
 public interface ItemManagementService {
-    Optional<Item> displayBy(ItemID id);
+    Optional<ItemDetailsDTO> displayBy(ItemID id);
 
-    List<Item> displayAllBy(Query query);
+    List<ItemDetailsDTO> displayAllBy(Query query);
 
-    List<Item> displayAll();
+    List<ItemDetailsDTO> displayAll();
 
-    Item create(CreateItemCmd cmd);
+    ItemDetailsDTO create(CreateItemCmd cmd);
 
     void updateDetails(UpdateItemCmd cmd);
 

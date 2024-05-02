@@ -37,7 +37,7 @@ public class UserModel extends User {
     Collection<GroupModel> groups = new ArrayList<>();
 
     @Deprecated
-    public UserModel() {
+    private UserModel() {
         super();
     }
 
@@ -72,8 +72,6 @@ public class UserModel extends User {
     public String getEmail() {
         return email;
     }
-
-    ;
 
     @Override
     public void setEmail(String e) {

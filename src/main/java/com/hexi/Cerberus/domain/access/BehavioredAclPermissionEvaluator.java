@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,9 +25,9 @@ public class BehavioredAclPermissionEvaluator extends AclPermissionEvaluator {
 
     private SidRetrievalStrategy sidRetrievalStrategy = new SidRetrievalStrategyImpl();
 
-    private PermissionFactory permissionFactory = new BehavioredPermissionFactory();
+    private final PermissionFactory permissionFactory = new BehavioredPermissionFactory();
 
-    private AclService service;
+    private final AclService service;
 
     public BehavioredAclPermissionEvaluator(AclService aclService) {
         super(aclService);
@@ -56,10 +57,10 @@ public class BehavioredAclPermissionEvaluator extends AclPermissionEvaluator {
 
     List<Permission> resolvePermission(Object permission) {
         if (permission instanceof Integer) {
-            return Arrays.asList(this.permissionFactory.buildFromMask((Integer) permission));
+            return Collections.singletonList(this.permissionFactory.buildFromMask((Integer) permission));
         }
         if (permission instanceof Permission) {
-            return Arrays.asList((Permission) permission);
+            return List.of((Permission) permission);
         }
         if (permission instanceof Permission[]) {
             return Arrays.asList((Permission[]) permission);
@@ -67,7 +68,7 @@ public class BehavioredAclPermissionEvaluator extends AclPermissionEvaluator {
         if (permission instanceof String permString) {
             Permission p = buildPermission(permString);
             if (p != null) {
-                return Arrays.asList(p);
+                return List.of(p);
             }
         }
 
@@ -98,20 +99,20 @@ public class BehavioredAclPermissionEvaluator extends AclPermissionEvaluator {
     private boolean checkPermission(Authentication authentication, ObjectIdentity oid, Object permission) {
         List<Sid> sids = this.sidRetrievalStrategy.getSids(authentication);
         List<Permission> requiredPermission = this.resolvePermission(permission);
-        this.log.debug(LogMessage.of(() -> {
+        log.debug(LogMessage.of(() -> {
             return "Checking permission '" + permission + "' for object '" + oid + "'";
         }).toString());
 
         try {
             Acl acl = service.readAclById(oid, sids);
             if (acl.isGranted(requiredPermission, sids, false)) {
-                this.log.debug("Access is granted");
+                log.debug("Access is granted");
                 return true;
             }
 
-            this.log.debug("Returning false - ACLs returned, but insufficient permissions for this principal");
+            log.debug("Returning false - ACLs returned, but insufficient permissions for this principal");
         } catch (NotFoundException var7) {
-            this.log.debug("Returning false - no ACLs apply for this principal");
+            log.debug("Returning false - no ACLs apply for this principal");
         }
 
         return false;

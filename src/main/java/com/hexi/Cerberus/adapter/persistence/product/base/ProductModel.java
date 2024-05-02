@@ -26,14 +26,14 @@ public class ProductModel extends Product {
     Date deletedAt;
 
     @Deprecated
-    public ProductModel() {
+    private ProductModel() {
         super();
     }
 
     public ProductModel(ProductID productID, Item item, List<ItemModel> requirements) {
         this.id = new ProductID(productID);
         this.producedItem = (ItemModel) item;
-        this.requirements = requirements.stream().map(item1 -> (ItemModel) item1).toList();
+        this.requirements = requirements.stream().map(item1 -> item1).toList();
     }
 
     @Override
@@ -46,21 +46,15 @@ public class ProductModel extends Product {
         return producedItem;
     }
 
-    ;
-
     @Override
     public void setProduction(Item production) {
         producedItem = (ItemModel) production;
     }
 
-    ;
-
     @Override
     public Collection<Item> getRequirements() {
         return requirements.stream().map(itemModel -> (Item) itemModel).collect(Collectors.toSet());
     }
-
-    ;
 
     @Override
     public void setRequirements(List<Item> requirements) {

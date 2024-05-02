@@ -12,6 +12,7 @@ import com.hexi.Cerberus.adapter.persistence.product.factory.JpaProductFactoryIm
 import com.hexi.Cerberus.adapter.persistence.product.repository.JpaProductRepository;
 import com.hexi.Cerberus.adapter.persistence.report.factory.JpaReportFactoryImpl;
 import com.hexi.Cerberus.adapter.persistence.report.repository.JpaReportRepository;
+import com.hexi.Cerberus.adapter.persistence.report.repository.ReportSpecificationBuilder;
 import com.hexi.Cerberus.adapter.persistence.user.factory.JpaUserFactoryImpl;
 import com.hexi.Cerberus.adapter.persistence.user.repository.JpaUserRepository;
 import com.hexi.Cerberus.adapter.persistence.warehouse.factory.JpaWareHouseFactoryImpl;
@@ -38,6 +39,7 @@ import com.hexi.Cerberus.domain.warehouse.WareHouseFactory;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.zaxxer.hikari.HikariConfig;
 //import liquibase.integration.spring.SpringLiquibase;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -45,6 +47,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -66,7 +69,7 @@ import javax.sql.DataSource;
 //)
 public class JpaPersistenceConfiguration {
 
-    private static HikariConfig config = new HikariConfig();
+    private static final HikariConfig config = new HikariConfig();
 
 //    @Bean
 //    public LocalSessionFactoryBean sessionFactory(DataSource ds) {
@@ -82,6 +85,8 @@ public class JpaPersistenceConfiguration {
 //        transactionManager.setEntityManagerFactory(sessionFactory.getObject());
 //        return transactionManager;
 //    }
+
+
 
 
     @Bean
@@ -127,8 +132,8 @@ public class JpaPersistenceConfiguration {
     }
 
     @Bean
-    public UserFactory userFactory() {
-        return new JpaUserFactoryImpl();
+    public UserFactory userFactory(PasswordEncoder encoder) {
+        return new JpaUserFactoryImpl(encoder);
     }
 
     @Bean
@@ -194,7 +199,8 @@ public class JpaPersistenceConfiguration {
     }
 
     @Bean
-    public ReportRepository reportRepository(JpaReportRepository rep) {
+    public ReportRepository reportRepository(JpaReportRepository rep, EntityManager entityManager) {
+        ReportSpecificationBuilder.setManager(entityManager);
         return rep;
     }
 

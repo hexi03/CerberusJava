@@ -43,8 +43,12 @@ public class FactorySiteModel extends FactorySite {
         super();
     }
 
+    @Deprecated
+    private FactorySiteModel() {super();}
+
     public FactorySiteModel(FactorySiteID factorySiteID, Department department, String name) {
         this.id = new FactorySiteID(factorySiteID);
+        this.name = name;
         this.department = (DepartmentModel) department;
     }
 

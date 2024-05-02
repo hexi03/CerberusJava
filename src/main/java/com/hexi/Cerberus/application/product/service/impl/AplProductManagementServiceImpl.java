@@ -1,5 +1,7 @@
 package com.hexi.Cerberus.application.product.service.impl;
 
+import com.hexi.Cerberus.application.product.service.DTO.ProductDetailsDTO;
+import com.hexi.Cerberus.application.product.service.ProductDomainToDTOMapper;
 import com.hexi.Cerberus.application.product.service.ProductManagementService;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.product.Product;
@@ -11,48 +13,59 @@ import com.hexi.Cerberus.domain.product.command.UpdateProductCmd;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class AplProductManagementServiceImpl implements ProductManagementService {
 
     public final ProductRepository productRepository;
     public final MessagePublisher messagePublisher;
     public final ProductFactory productFactory;
     public final ProductUpdater productUpdater;
+    public final ProductDomainToDTOMapper productDomainToDtoMapper;
 
     @Override
-    public List<Product> displayByProductionItem(ItemID id) {
-        return null;
+    public Optional<ProductDetailsDTO> displayByProductionItem(ItemID id) {
+        Optional<Product> product = productRepository.findByItemId(id);
+        return product.map(productDomainToDtoMapper::productToDetailsDTO);
     }
 
     @Override
-    public Optional<Product> displayBy(ProductID productID) {
-        return productRepository.findById(productID);
+    public Optional<ProductDetailsDTO> displayBy(ProductID id) {
+        Optional<Product> product = productRepository.findById(id);
+        return product.map(productDomainToDtoMapper::productToDetailsDTO);
     }
 
     @Override
-    public List<Product> displayAllBy(Query query) {
-        return productRepository.findAllWithQuery(query);
+    public List<ProductDetailsDTO> displayAllBy(Query query) {
+        return ((List<Product>)productRepository.findAllWithQuery(query)).stream()
+                .map(productDomainToDtoMapper::productToDetailsDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> displayAll() {
-        return productRepository.findAll();
+    public List<ProductDetailsDTO> displayAll() {
+        return ((List<Product>)productRepository.findAll()).stream()
+                .map(productDomainToDtoMapper::productToDetailsDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Override
-    public Product create(CreateProductCmd cmd) {
+    public ProductDetailsDTO create(CreateProductCmd cmd) {
         cmd.validate().onFailedThrow();
         Product product = productFactory.from(cmd);
         productRepository.append(product);
         messagePublisher.publish(product.edjectEvents());
-        return product;
+        return productDomainToDtoMapper.productToDetailsDTO(product);
 
     }
 

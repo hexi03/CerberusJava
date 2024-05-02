@@ -18,4 +18,6 @@ public class UserID implements EntityId<UUID> {
     public UserID(UserID userID) {
         id = userID.getId();
     }
+
+    public UserID(String id) { this.id = UUID.fromString(id); }
 }

@@ -30,13 +30,13 @@ public interface Report extends SecuredEntity, AggregateRoot {
         }
     }
 
-    public abstract ReportID getId();
+    ReportID getId();
 
-    public abstract ReportStatus getStatus();
+    ReportStatus getStatus();
 
-    public abstract void setStatus(ReportStatus reportStatus);
+    void setStatus(ReportStatus reportStatus);
 
-    public abstract Optional<Date> getDeletedAt();
+    Optional<Date> getDeletedAt();
 
     Date getCreatedAt();
 

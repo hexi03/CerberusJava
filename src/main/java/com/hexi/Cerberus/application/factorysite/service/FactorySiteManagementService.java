@@ -1,23 +1,24 @@
 package com.hexi.Cerberus.application.factorysite.service;
 
-import com.hexi.Cerberus.domain.factorysite.FactorySite;
+import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteDetailsDTO;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.factorysite.command.CreateFactorySiteCmd;
 import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteDetailsCmd;
 import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteSupplyCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+@Transactional
 public interface FactorySiteManagementService {
-    Optional<FactorySite> displayBy(FactorySiteID factorySiteId);
+    Optional<FactorySiteDetailsDTO> displayBy(FactorySiteID factorySiteId);
 
-    List<FactorySite> displayAllBy(Query query);
+    List<FactorySiteDetailsDTO> displayAllBy(Query query);
 
-    List<FactorySite> displayAllBy();
+    List<FactorySiteDetailsDTO> displayAll();
 
-    FactorySite create(CreateFactorySiteCmd cmd);
+    FactorySiteDetailsDTO create(CreateFactorySiteCmd cmd);
 
     void updateDetails(UpdateFactorySiteDetailsCmd cmd);
 

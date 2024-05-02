@@ -9,10 +9,7 @@ import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class FactorySite implements SecuredEntity, AggregateRoot, DepartmentSlave {
 
@@ -55,23 +52,21 @@ public abstract class FactorySite implements SecuredEntity, AggregateRoot, Depar
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof FactorySite)) return false;
-        final FactorySite other = (FactorySite) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!(o instanceof FactorySite other)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$id = this.getId();
         final Object other$id = other.getId();
-        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        if (!Objects.equals(this$id, other$id)) return false;
         final Object this$parentDepartment = this.getParentDepartment();
         final Object other$parentDepartment = other.getParentDepartment();
-        if (this$parentDepartment == null ? other$parentDepartment != null : !this$parentDepartment.equals(other$parentDepartment))
+        if (!Objects.equals(this$parentDepartment, other$parentDepartment))
             return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (!Objects.equals(this$name, other$name)) return false;
         final Object this$suppliers = this.getSuppliers();
         final Object other$suppliers = other.getSuppliers();
-        if (this$suppliers == null ? other$suppliers != null : !this$suppliers.equals(other$suppliers)) return false;
-        return true;
+        return Objects.equals(this$suppliers, other$suppliers);
     }
 
     protected boolean canEqual(final Object other) {

@@ -7,5 +7,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Getter
 public class WareHouseReportFilterCriteria extends ReportFilterCriteria {
-    WareHouseID warehouse;
+    WareHouseID warehouseId;
 }

@@ -6,11 +6,13 @@ import com.hexi.Cerberus.domain.service.GroupManagementService;
 import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
+@Transactional
 public class GroupManagementServiceImpl implements GroupManagementService {
     public final MessagePublisher messagePublisher;
     public final GroupRepository groupRepository;

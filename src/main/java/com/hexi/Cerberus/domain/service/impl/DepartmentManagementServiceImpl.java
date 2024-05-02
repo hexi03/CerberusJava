@@ -8,12 +8,14 @@ import com.hexi.Cerberus.domain.service.DepartmentManagementService;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
+@Transactional
 public class DepartmentManagementServiceImpl implements DepartmentManagementService {
     private final MutableAclService aclService;
     private final DepartmentRepository departmentRepository;

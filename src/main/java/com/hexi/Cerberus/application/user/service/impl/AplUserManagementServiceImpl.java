@@ -1,5 +1,7 @@
 package com.hexi.Cerberus.application.user.service.impl;
 
+import com.hexi.Cerberus.application.user.service.DTO.UserDetailsDTO;
+import com.hexi.Cerberus.application.user.service.UserDomainToDTOMapper;
 import com.hexi.Cerberus.application.user.service.UserManagementService;
 import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.user.UserFactory;
@@ -10,45 +12,55 @@ import com.hexi.Cerberus.domain.user.command.UpdateUserDetailsCmd;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class AplUserManagementServiceImpl implements UserManagementService {
     public final UserRepository userRepository;
     public final MessagePublisher messagePublisher;
     public final MutableAclService aclService;
     public final UserFactory userFactory;
     public final UserUpdater userUpdater;
+    public final UserDomainToDTOMapper userDomainToDtoMapper;
 
     @Override
-    public Optional<User> displayBy(UserID userID) {
-        return userRepository.findById(userID);
+    public Optional<UserDetailsDTO> displayBy(UserID id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.map(userDomainToDtoMapper::userToDetailsDTO);
     }
 
     @Override
-    public List<User> displayAllBy(Query query) {
-        return userRepository.findAllWithQuery(query);
+    public List<UserDetailsDTO> displayAllBy(Query query) {
+        return ((List<User>)userRepository.findAllWithQuery(query)).stream()
+                .map(userDomainToDtoMapper::userToDetailsDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<User> displayAllBy() {
-        return userRepository.findAll();
+    public List<UserDetailsDTO> displayAll() {
+        return ((List<User>)userRepository.findAll()).stream()
+                .map(userDomainToDtoMapper::userToDetailsDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Override
-    public User create(CreateUserCmd cmd) {
+    public UserDetailsDTO create(CreateUserCmd cmd) {
         cmd.validate().onFailedThrow();
         User user = userFactory.from(cmd);
         userRepository.append(user);
         user.initAcl(aclService);
         messagePublisher.publish(user.edjectEvents());
-        return user;
+        return userDomainToDtoMapper.userToDetailsDTO(user);
     }
 
     @Override

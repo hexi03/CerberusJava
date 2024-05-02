@@ -48,7 +48,7 @@ public class ShipmentReportModel extends WareHouseReportModel implements ItemSto
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> (Item) entry.getKey(),
+                                entry -> entry.getKey(),
                                 entry -> entry.getValue()
                         )
                 );

@@ -20,4 +20,6 @@ public class ItemID implements EntityId<UUID> {
     public ItemID(ItemID itemId) {
         this.id = itemId.getId();
     }
+
+    public ItemID(String id) { this.id = UUID.fromString(id); }
 }

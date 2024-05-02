@@ -1,6 +1,9 @@
 package com.hexi.Cerberus.adapter.web.rest.Registry;
 
-import com.hexi.Cerberus.adapter.web.rest.Registry.DTO.*;
+import com.hexi.Cerberus.application.product.service.DTO.*;
+import com.hexi.Cerberus.application.item.service.DTO.CreateItemDTO;
+import com.hexi.Cerberus.application.item.service.DTO.ItemDetailsDTO;
+import com.hexi.Cerberus.application.item.service.DTO.UpdateItemDTO;
 import com.hexi.Cerberus.application.product.service.ProductManagementService;
 import com.hexi.Cerberus.application.item.service.ItemManagementService;
 import com.hexi.Cerberus.domain.item.command.UpdateItemCmd;
@@ -15,6 +18,7 @@ import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +36,7 @@ import java.util.stream.Collectors;
 public class RegistriesController {
     public final ItemManagementService itemManagementService;
     public final ProductManagementService productManagementService;
-    public final RegistriesDomainToDTOMapper registriesDomainToDTOMapper;
+
 
     //USER
     @GetMapping("/fetchItem")
@@ -40,34 +44,27 @@ public class RegistriesController {
         if (id != null) {
             return ResponseEntity.ok(itemManagementService
                     .displayAll()
-                    .stream()
-                    .map(registriesDomainToDTOMapper::mapItemToDetailsDto)
-                    .collect(Collectors.toList())
             );
         } else {
-            Optional<Item> item = itemManagementService.displayBy(id);
+            Optional<ItemDetailsDTO> item = itemManagementService.displayBy(id);
             if (item.isEmpty()) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(
-                    List.of(
-                            registriesDomainToDTOMapper.mapItemToDetailsDto(
-                                    item.get()
-                            )
-                    )
+                    List.of(item.get())
             );
         }
     }
 
     @PostMapping("/addItem")
-    public ResponseEntity<Void> addItem(CreateItemDTO dto) {
-        itemManagementService.create(
+    public ResponseEntity<ItemID> addItem(CreateItemDTO dto) {
+        ItemID id = itemManagementService.create(
                 CreateItemCmd
                         .builder()
                         .id(CommandId.generate())
                         .name(dto.getName())
 
                         .build()
-        );
-        return ResponseEntity.ok().build();
+        ).getId();
+        return ResponseEntity.status(HttpStatus.CREATED).body(id);
 
     }
 
@@ -97,34 +94,27 @@ public class RegistriesController {
         if (id != null) {
             return ResponseEntity.ok(productManagementService
                     .displayAll()
-                    .stream()
-                    .map(registriesDomainToDTOMapper::mapProductToDetailsDto)
-                    .collect(Collectors.toList())
             );
         } else {
-            Optional<Product> item = productManagementService.displayBy(id);
+            Optional<ProductDetailsDTO> item = productManagementService.displayBy(id);
             if (item.isEmpty()) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(
-                    List.of(
-                            registriesDomainToDTOMapper.mapProductToDetailsDto(
-                                    item.get()
-                            )
-                    )
+                    List.of(item.get())
             );
         }
     }
 
     @PostMapping("/addProduct")
-    public ResponseEntity<Void> addProduct(CreateProductDTO dto) {
-        productManagementService.create(
+    public ResponseEntity<ProductID> addProduct(CreateProductDTO dto) {
+        ProductID id = productManagementService.create(
                 CreateProductCmd
                         .builder()
                         .id(CommandId.generate())
                         .itemId(dto.getProductItemId())
                         .requirements(dto.getRequirements())
                         .build()
-        );
-        return ResponseEntity.ok().build();
+        ).getId();
+        return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
     @PutMapping("/updateProduct")

@@ -8,10 +8,7 @@ import com.hexi.Cerberus.infrastructure.aggregate.AggregateRoot;
 import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 public abstract class Group implements SecuredEntity, AggregateRoot {
@@ -84,19 +81,17 @@ public abstract class Group implements SecuredEntity, AggregateRoot {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof Group)) return false;
-        final Group other = (Group) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!(o instanceof Group other)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$id = this.getId();
         final Object other$id = other.getId();
-        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        if (!Objects.equals(this$id, other$id)) return false;
         final Object this$users = this.getUsers();
         final Object other$users = other.getUsers();
-        if (this$users == null ? other$users != null : !this$users.equals(other$users)) return false;
+        if (!Objects.equals(this$users, other$users)) return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
-        return true;
+        return Objects.equals(this$name, other$name);
     }
 
     protected boolean canEqual(final Object other) {

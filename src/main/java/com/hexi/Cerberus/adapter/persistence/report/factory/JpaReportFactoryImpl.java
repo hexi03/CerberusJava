@@ -12,11 +12,13 @@ import com.hexi.Cerberus.config.CerberusParameters;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.repository.FactorySiteRepository;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
+import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportFactory;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.command.create.*;
+import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +92,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 .stream()
                 .map(productRepository::findByItemId)
                 .filter(Optional::isPresent)
-                .map(optional -> (ProductModel) optional.get())
+                .map(optional -> (ProductModel)optional.get())
                 .toList();
         Map<ProductModel, Integer> produced_map = produced.stream()
                 .collect(Collectors.toMap(
@@ -201,8 +203,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 wareHouse.get(),
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
-                whReportFactorySite,
-                whReport.get(),
+                (WorkShiftReportModel)whReport.get(),
                 items_map,
                 unclaimedRemainsMap
         );
@@ -283,7 +284,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 wareHouse.get(),
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
-                sqReport.get(),
+                (SupplyRequirementReport) sqReport.get(),
                 items_map
         );
 

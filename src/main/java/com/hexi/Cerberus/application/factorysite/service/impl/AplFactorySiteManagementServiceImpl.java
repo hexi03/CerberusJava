@@ -1,5 +1,7 @@
 package com.hexi.Cerberus.application.factorysite.service.impl;
 
+import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteDetailsDTO;
+import com.hexi.Cerberus.application.factorysite.service.FactorySiteDomainToDtoMapper;
 import com.hexi.Cerberus.application.factorysite.service.FactorySiteManagementService;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteFactory;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,30 +29,38 @@ public class AplFactorySiteManagementServiceImpl implements FactorySiteManagemen
     public final MutableAclService aclService;
     public final FactorySiteFactory factorySiteFactory;
     public final FactorySiteUpdater factorySiteUpdater;
+    public final FactorySiteDomainToDtoMapper factorySiteDomainToDtoMapper;
 
     @Override
-    public Optional<FactorySite> displayBy(FactorySiteID factorySiteId) {
-        return factorySiteRepository.findById(factorySiteId);
+    public Optional<FactorySiteDetailsDTO> displayBy(FactorySiteID id) {
+        Optional<FactorySite> factorySite = factorySiteRepository.findById(id);
+        return factorySite.map(factorySiteDomainToDtoMapper::factorySiteToDetailsDTO);
     }
 
     @Override
-    public List<FactorySite> displayAllBy(Query query) {
-        return factorySiteRepository.findAllWithQuery(query);
+    public List<FactorySiteDetailsDTO> displayAllBy(Query query) {
+        return ((List<FactorySite>)factorySiteRepository.findAllWithQuery(query)).stream()
+                .map(factorySiteDomainToDtoMapper::factorySiteToDetailsDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<FactorySite> displayAllBy() {
-        return factorySiteRepository.findAll();
+    public List<FactorySiteDetailsDTO> displayAll() {
+        return ((List<FactorySite>)factorySiteRepository.findAll()).stream()
+                .map(factorySiteDomainToDtoMapper::factorySiteToDetailsDTO)
+                .collect(Collectors.toList());
+
     }
 
+
     @Override
-    public FactorySite create(CreateFactorySiteCmd cmd) {
+    public FactorySiteDetailsDTO create(CreateFactorySiteCmd cmd) {
         cmd.validate().onFailedThrow();
         FactorySite factorySite = factorySiteFactory.from(cmd);
         factorySiteRepository.append(factorySite);
         factorySite.initAcl(aclService);
         messagePublisher.publish(factorySite.edjectEvents());
-        return factorySite;
+        return factorySiteDomainToDtoMapper.factorySiteToDetailsDTO(factorySite);
     }
 
     @Override

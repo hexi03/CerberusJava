@@ -29,7 +29,7 @@ public class GroupModel extends Group {
     Collection<UserModel> users = new ArrayList<>();
 
     @Deprecated
-    public GroupModel() {
+    private GroupModel() {
         super();
 
     }

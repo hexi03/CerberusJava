@@ -6,10 +6,7 @@ import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Transactional
 public abstract class User implements SecuredEntity, AggregateRoot {
@@ -75,26 +72,23 @@ public abstract class User implements SecuredEntity, AggregateRoot {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof User)) return false;
-        final User other = (User) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!(o instanceof User other)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$id = this.getId();
         final Object other$id = other.getId();
-        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        if (!Objects.equals(this$id, other$id)) return false;
         final Object this$groups = this.getGroups();
         final Object other$groups = other.getGroups();
-        if (this$groups == null ? other$groups != null : !this$groups.equals(other$groups)) return false;
+        if (!Objects.equals(this$groups, other$groups)) return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (!Objects.equals(this$name, other$name)) return false;
         final Object this$email = this.getEmail();
         final Object other$email = other.getEmail();
-        if (this$email == null ? other$email != null : !this$email.equals(other$email)) return false;
+        if (!Objects.equals(this$email, other$email)) return false;
         final Object this$passwordHash = this.getPasswordHash();
         final Object other$passwordHash = other.getPasswordHash();
-        if (this$passwordHash == null ? other$passwordHash != null : !this$passwordHash.equals(other$passwordHash))
-            return false;
-        return true;
+        return Objects.equals(this$passwordHash, other$passwordHash);
     }
 
     protected boolean canEqual(final Object other) {
