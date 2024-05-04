@@ -7,18 +7,19 @@ import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.FactorySiteReport;
-import jakarta.persistence.Access;
-import jakarta.persistence.AccessType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 import java.util.Optional;
-
+@Entity
+@Access(AccessType.FIELD)
 @Getter
 @Setter
-@Access(AccessType.FIELD)
+
 public class FactorySiteReportModel extends ReportModel implements FactorySiteReport {
+    @ManyToOne(cascade = CascadeType.ALL)
     FactorySiteModel factorySite;
 
     protected FactorySiteReportModel() {

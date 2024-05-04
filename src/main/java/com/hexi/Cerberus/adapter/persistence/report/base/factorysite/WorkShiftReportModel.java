@@ -1,7 +1,9 @@
 package com.hexi.Cerberus.adapter.persistence.report.base.factorysite;
 
 import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
+import com.hexi.Cerberus.adapter.persistence.item.base.ItemEntry;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
+import com.hexi.Cerberus.adapter.persistence.product.base.ProductEntry;
 import com.hexi.Cerberus.adapter.persistence.product.base.ProductModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
@@ -10,20 +12,21 @@ import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
-import jakarta.persistence.Access;
-import jakarta.persistence.AccessType;
+import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+@Entity
 @Access(AccessType.FIELD)
 public class WorkShiftReportModel extends FactorySiteReportModel implements WorkShiftReport {
+    @ManyToOne(cascade = CascadeType.ALL)
     WareHouseModel targetWareHouseId;
-    Map<ProductModel, Integer> produced = new HashMap<>();
-    Map<ItemModel, Integer> losses = new HashMap<>();
-    Map<ItemModel, Integer> remains = new HashMap<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    Collection<ProductEntry> produced = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    Collection<ItemEntry> losses = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    Collection<ItemEntry> remains = new ArrayList<>();
 
     public WorkShiftReportModel(
             ReportID id,
@@ -37,9 +40,9 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
             Map<ItemModel, Integer> remains) {
         super(id, factorySite, createdAt, expirationDate, deletedAt);
         this.targetWareHouseId = targetWareHouseId;
-        this.produced = produced;
-        this.losses = losses;
-        this.remains = remains;
+        this.produced = produced.entrySet().stream().map(entry -> new ProductEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+        this.losses = losses.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+        this.remains = remains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
 
     public WorkShiftReportModel(
@@ -53,9 +56,10 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
             Map<ItemModel, Integer> remains) {
         super(id, factorySite, createdAt, expirationDate);
         this.targetWareHouseId = targetWareHouseId;
-        this.produced = produced;
-        this.losses = losses;
-        this.remains = remains;
+        this.produced = produced.entrySet().stream().map(entry -> new ProductEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+        this.losses = losses.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+        this.remains = remains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+
     }
 
     private WorkShiftReportModel() {
@@ -70,12 +74,11 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
     @Override
     public Map<Product, Integer> getProduced() {
         return produced
-                .entrySet()
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> entry.getKey(),
-                                entry -> entry.getValue()
+                                entry -> entry.getProduct(),
+                                entry -> entry.getAmount()
                         )
                 );
     }
@@ -84,19 +87,17 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
     public void setProduced(Map<Product, Integer> producedMap) {
         this.produced = producedMap
                 .entrySet()
-                .stream()
-                .collect(Collectors.toMap(entry -> (ProductModel) entry.getKey(), entry -> entry.getValue()));
+                .stream().map(entry -> new ProductEntry((ProductModel) entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
 
     @Override
     public Map<Item, Integer> getRemains() {
         return remains
-                .entrySet()
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> entry.getKey(),
-                                entry -> entry.getValue()
+                                entry -> entry.getItem(),
+                                entry -> entry.getAmount()
                         )
                 );
     }
@@ -105,19 +106,17 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
     public void setRemains(Map<Item, Integer> remainsMap) {
         this.remains = remainsMap
                 .entrySet()
-                .stream()
-                .collect(Collectors.toMap(entry -> (ItemModel) entry.getKey(), entry -> entry.getValue()));
+                .stream().map(entry -> new ItemEntry((ItemModel) entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
 
     @Override
     public Map<Item, Integer> getLosses() {
         return losses
-                .entrySet()
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> entry.getKey(),
-                                entry -> entry.getValue()
+                                entry -> entry.getItem(),
+                                entry -> entry.getAmount()
                         )
                 );
     }
@@ -126,7 +125,6 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
     public void setLosses(Map<Item, Integer> lossesMap) {
         this.losses = lossesMap
                 .entrySet()
-                .stream()
-                .collect(Collectors.toMap(entry -> (ItemModel) entry.getKey(), entry -> entry.getValue()));
+                .stream().map(entry -> new ItemEntry((ItemModel) entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
 }

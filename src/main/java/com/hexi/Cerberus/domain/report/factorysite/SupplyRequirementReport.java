@@ -9,6 +9,8 @@ public interface SupplyRequirementReport extends FactorySiteReport {
 
     void setTargetWareHouse(WareHouse wareHouse);
 
+    Map<Item,Integer> getRequirements();
+
     void setRequirements(Map<Item, Integer> reqMap);
 
     Map<Item, Integer> getItems();

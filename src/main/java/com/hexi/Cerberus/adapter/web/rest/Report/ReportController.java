@@ -64,6 +64,7 @@ public class ReportController {
 
     @PostMapping("/append")
     public ResponseEntity<ReportID> appendReport(CreateReportDTO dto) {
+        log.info(dto.toString());
         if (dto instanceof CreateSupplyRequirementReportDTO) {
             return append((CreateSupplyRequirementReportDTO) dto);
         } else if (dto instanceof CreateReleaseReportDTO) {

@@ -65,12 +65,12 @@ class TestReportAPI(unittest.TestCase):
         self.assertEqual(create_item_r_2.status_code, 201)
         self.item2.update({"id": create_item_r_2.json()})
         
-        product1 = {
-            "producedItemId": item1["id"],
-            "requirements": {item2["id"]["id"]: 2}
+        self.product1 = {
+            "producedItemId": self.item1["id"],
+            "requirements": {self.item2["id"]["id"]: 2}
         }
         
-        self.create_product_r_1 = requests.post(consts.API_REGISTRIES_PREFIX + "addProduct", json = product1, headers=self.headers)
+        create_product_r_1 = requests.post(consts.API_REGISTRIES_PREFIX + "addProduct", json = self.product1, headers=self.headers)
         self.assertEqual(create_product_r_1.status_code, 201)
         self.product1.update({"id": create_product_r_1.json()})
         
@@ -88,40 +88,20 @@ class TestReportAPI(unittest.TestCase):
         self.assertEqual(delete_r.status_code, 204)
         
     def test_complex(self):
-        
-        fetch_1_json=[fs1]
-        print("fetch_1: ")
-        fetch_r = requests.get(consts.API_FACTORYSITE_PREFIX + "fetch", headers = self.headers)
-        print("     " , fetch_r.json())
-        print("excepted:" , fetch_1_json)
-        self.assertEqual(fetch_r.status_code, 200)
-        self.assertEqual(fetch_r.json(), fetch_1_json)
-        
-        print("update_1: ")
-        fs1["name"] = "ShanhaiSakura"
-        update_r = requests.put(consts.API_FACTORYSITE_PREFIX + "update", json = fs1, headers=self.headers)
-        self.assertEqual(update_r.status_code, 204)
-        
-        print("fetch_2: ")
-        fetch_r = requests.get(consts.API_FACTORYSITE_PREFIX + "fetch", headers = self.headers)
-        print("     ", fetch_r.json())
-        self.assertEqual(fetch_r.status_code, 200)
-        self.assertEqual(fetch_r.json(), [fs1])
-        
-        print("fetch_one_1: ")
-        fetch_one_r = requests.get(consts.API_FACTORYSITE_PREFIX + "fetch", params = {"id": fs1["id"]["id"]}, headers = self.headers)
-        print("     ", fetch_one_r.json())
-        self.assertEqual(fetch_one_r.status_code, 200)
-        self.assertEqual(fetch_r.json(), [fs1])
-        
-        print("delete_2: ")
+    
+        report1 = {
+            "type":"inventarisation",
+            "wareHouseId": self.wh1["id"],
+            "items": {self.item2["id"]["id"]: 2}
+        }
+        print(report1)
+        create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report1, headers=self.headers)
+        self.assertEqual(create_report1.status_code, 201)
+        print("create_report1: ")
+        print("     " , create_report1.json())
+        item1.update({"id": create_report1.json()})
         
         
-        print("fetch_3: ")
-        fetch_r = requests.get(consts.API_FACTORYSITE_PREFIX + "fetch", headers = self.headers)
-        print("     ", fetch_r.json())
-        self.assertEqual(fetch_r.status_code, 200)
-        self.assertEqual(fetch_r.json(), [])
         
   
     

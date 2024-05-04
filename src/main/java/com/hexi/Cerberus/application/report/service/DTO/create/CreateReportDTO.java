@@ -6,7 +6,7 @@ import com.hexi.Cerberus.adapter.web.rest.Consts;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = CreateReportDTO.DISCRIMINATOR)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CreateInventarisationReportDTO.class, name = Consts.REPORT_WH_INVENTARISATION),
         @JsonSubTypes.Type(value = CreateWorkShiftReportDTO.class, name = Consts.REPORT_FS_WORKSHIFT),
@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = CreateReleaseReportDTO.class, name = Consts.REPORT_WH_RELEASE)
 
 })
-@NoArgsConstructor
-@Data
 public abstract class CreateReportDTO {
+    public static final String DISCRIMINATOR = "type";
+
 
 }

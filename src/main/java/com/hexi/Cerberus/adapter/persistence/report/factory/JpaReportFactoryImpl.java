@@ -284,7 +284,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 wareHouse.get(),
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
-                (SupplyRequirementReport) sqReport.get(),
+                (SupplyRequirementReportModel) sqReport.get(),
                 items_map
         );
 

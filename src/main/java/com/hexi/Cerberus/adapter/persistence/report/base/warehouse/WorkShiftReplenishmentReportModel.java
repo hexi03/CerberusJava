@@ -1,24 +1,25 @@
 package com.hexi.Cerberus.adapter.persistence.report.base.warehouse;
 
+import com.hexi.Cerberus.adapter.persistence.item.base.ItemEntry;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.WorkShiftReportModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
-import jakarta.persistence.Access;
-import jakarta.persistence.AccessType;
+import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+@Entity
 @Access(AccessType.FIELD)
 public class WorkShiftReplenishmentReportModel extends WareHouseReportModel implements ItemStorageOperationReport {
+    @ManyToOne(cascade = CascadeType.ALL)
     WorkShiftReportModel workShiftReport;
-    Map<ItemModel, Integer> items = new HashMap<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    Collection<ItemEntry> items = new ArrayList<>();
     //Невостребованные остатки на возврат
-    Map<ItemModel, Integer> unclaimedRemains;
+    @OneToMany(cascade = CascadeType.ALL)
+    Collection<ItemEntry> unclaimedRemains = new ArrayList<>();
 
     public WorkShiftReplenishmentReportModel(
             ReportID id,
@@ -30,8 +31,8 @@ public class WorkShiftReplenishmentReportModel extends WareHouseReportModel impl
             Map<ItemModel, Integer> items,
             Map<ItemModel, Integer> unclaimedRemains) {
         super(id, wareHouse, createdAt, expirationDate, deletedAt);
-        this.items = items;
-        this.unclaimedRemains = unclaimedRemains;
+        this.items = items.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+        this.unclaimedRemains = unclaimedRemains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.workShiftReport = workShiftReport;
     }
 
@@ -44,8 +45,9 @@ public class WorkShiftReplenishmentReportModel extends WareHouseReportModel impl
             Map<ItemModel, Integer> items,
             Map<ItemModel, Integer> unclaimedRemains) {
         super(id, wareHouse, createdAt, expirationDate);
-        this.items = items;
-        this.unclaimedRemains = unclaimedRemains;
+        this.items = items.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+        this.unclaimedRemains = unclaimedRemains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+
         this.workShiftReport = workShiftReport;
     }
 
@@ -57,12 +59,11 @@ public class WorkShiftReplenishmentReportModel extends WareHouseReportModel impl
     @Override
     public Map<Item, Integer> getItems() {
         return items
-                .entrySet()
                 .stream()
                 .collect(
                         Collectors.toMap(
-                                entry -> entry.getKey(),
-                                entry -> entry.getValue()
+                                entry -> entry.getItem(),
+                                entry -> entry.getAmount()
                         )
                 );
     }

@@ -5,14 +5,15 @@ import com.hexi.Cerberus.adapter.persistence.report.base.ReportModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
-import jakarta.persistence.Access;
-import jakarta.persistence.AccessType;
+import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.Optional;
 
+@Entity
 @Access(AccessType.FIELD)
 public abstract class WareHouseReportModel extends ReportModel {
+    @ManyToOne(cascade = CascadeType.ALL)
     WareHouseModel wareHouse;
 
     protected WareHouseReportModel() {
