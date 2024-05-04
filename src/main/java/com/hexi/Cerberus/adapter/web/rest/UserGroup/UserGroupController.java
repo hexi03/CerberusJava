@@ -42,8 +42,8 @@ public class UserGroupController {
 
     //USER
     @GetMapping("/fetchUser")
-    public ResponseEntity<List<UserDetailsDTO>> fetchUser(@PathVariable(required = false) UserID id) {
-        if (id != null) {
+    public ResponseEntity<List<UserDetailsDTO>> fetchUser(@RequestParam(required = false)  UserID id) {
+        if (id == null) {
             return ResponseEntity.ok(userManagementService
                     .displayAll()
             );
@@ -59,12 +59,13 @@ public class UserGroupController {
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<UserID> addUser(CreateUserDTO dto) {
+    public ResponseEntity<UserID> addUser(@RequestBody  CreateUserDTO dto) {
         UserID id = userManagementService.create(
                 CreateUserCmd
                         .builder()
                         .id(CommandId.generate())
                         .name(dto.getName())
+                        .email(dto.getEmail())
                         .password(dto.getPassword())
                         .build()
         ).getId();
@@ -73,30 +74,31 @@ public class UserGroupController {
     }
 
     @PutMapping("/updateUser")
-    public ResponseEntity<Void> updateUser(UserUpdateDetailsDTO dto) {
+    public ResponseEntity<Void> updateUser(@RequestBody UserUpdateDetailsDTO dto) {
         userManagementService.updateDetails(
                 UpdateUserDetailsCmd
                         .builder()
                         .id(CommandId.generate())
                         .userId(dto.getId())
                         .name(dto.getName())
+                        .email(dto.getEmail())
                         .password(dto.getPassword())
                         .build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/removeUser")
-    public ResponseEntity<Void> removeUser(UserID id) {
+    public ResponseEntity<Void> removeUser(@RequestParam UserID id) {
         userManagementService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
     //GROUP
     @GetMapping("/fetchGroup")
-    public ResponseEntity<List<GroupDetailsDTO>> fetchGroup(@PathVariable(required = false) GroupID id) {
-        if (id != null) {
+    public ResponseEntity<List<GroupDetailsDTO>> fetchGroup(@RequestParam(required = false)  GroupID id) {
+        if (id == null) {
             return ResponseEntity.ok(groupManagementService
                     .displayAll()
             );
@@ -110,7 +112,8 @@ public class UserGroupController {
     }
 
     @PostMapping("/addGroup")
-    public ResponseEntity<GroupID> addGroup(CreateGroupDTO dto) {
+    public ResponseEntity<GroupID> addGroup(@RequestBody CreateGroupDTO dto) {
+        log.info(dto.toString());
         GroupID id = groupManagementService.create(
                 CreateGroupCmd
                         .builder()
@@ -122,7 +125,7 @@ public class UserGroupController {
     }
 
     @PutMapping("/updateGroup")
-    public ResponseEntity<Void> updateGroup(GroupUpdateDetailsDTO dto) {
+    public ResponseEntity<Void> updateGroup(@RequestBody GroupUpdateDetailsDTO dto) {
         groupManagementService.updateDetails(
                 UpdateGroupDetailsCmd
                         .builder()
@@ -131,17 +134,17 @@ public class UserGroupController {
                         .name(dto.getName())
                         .build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/removeGroup")
-    public ResponseEntity<Void> removeGroup(GroupID id) {
+    public ResponseEntity<Void> removeGroup(@RequestParam GroupID id) {
         groupManagementService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping("/includeUsers")
-    public ResponseEntity<Void> updateGroup(GroupMembersModificationDTO dto) {
+    @PutMapping("/includeUsers")
+    public ResponseEntity<Void> updateGroup(@RequestBody GroupMembersModificationDTO dto) {
         if (dto.isExclude()) {
             groupManagementService.excludeUsers(
                     GroupExcludeUsersCmd
@@ -162,7 +165,7 @@ public class UserGroupController {
             );
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 

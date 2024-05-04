@@ -46,8 +46,8 @@ public abstract class WareHouse implements SecuredEntity, AggregateRoot, Departm
         final Object this$id = this.getId();
         final Object other$id = other.getId();
         if (!Objects.equals(this$id, other$id)) return false;
-        final Object this$parentDepartment = this.getParentDepartment();
-        final Object other$parentDepartment = other.getParentDepartment();
+        final Object this$parentDepartment = this.getParentDepartment().getId();
+        final Object other$parentDepartment = other.getParentDepartment().getId();
         if (!Objects.equals(this$parentDepartment, other$parentDepartment))
             return false;
         final Object this$name = this.getName();
@@ -64,7 +64,7 @@ public abstract class WareHouse implements SecuredEntity, AggregateRoot, Departm
         int result = 1;
         final Object $id = this.getId();
         result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-        final Object $parentDepartment = this.getParentDepartment();
+        final Object $parentDepartment = this.getParentDepartment().getId();
         result = result * PRIME + ($parentDepartment == null ? 43 : $parentDepartment.hashCode());
         final Object $name = this.getName();
         result = result * PRIME + ($name == null ? 43 : $name.hashCode());
@@ -72,6 +72,6 @@ public abstract class WareHouse implements SecuredEntity, AggregateRoot, Departm
     }
 
     public String toString() {
-        return "WareHouse(id=" + this.getId() + ", parentDepartment=" + this.getParentDepartment() + ", name=" + this.getName() + ")";
+        return "WareHouse(id=" + this.getId() + ", parentDepartment=" + this.getParentDepartment().getId() + ", name=" + this.getName() + ")";
     }
 }

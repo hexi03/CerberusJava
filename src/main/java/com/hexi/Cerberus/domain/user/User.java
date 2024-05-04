@@ -77,8 +77,8 @@ public abstract class User implements SecuredEntity, AggregateRoot {
         final Object this$id = this.getId();
         final Object other$id = other.getId();
         if (!Objects.equals(this$id, other$id)) return false;
-        final Object this$groups = this.getGroups();
-        final Object other$groups = other.getGroups();
+        final Object this$groups = this.getGroups().stream().map(group -> group.getId()).toArray();
+        final Object other$groups = other.getGroups().stream().map(group -> group.getId()).toArray();
         if (!Objects.equals(this$groups, other$groups)) return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
@@ -100,7 +100,7 @@ public abstract class User implements SecuredEntity, AggregateRoot {
         int result = 1;
         final Object $id = this.getId();
         result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-        final Object $groups = this.getGroups();
+        final Object $groups = this.getGroups().stream().map(group -> group.getId()).toArray();
         result = result * PRIME + ($groups == null ? 43 : $groups.hashCode());
         final Object $name = this.getName();
         result = result * PRIME + ($name == null ? 43 : $name.hashCode());
@@ -112,6 +112,6 @@ public abstract class User implements SecuredEntity, AggregateRoot {
     }
 
     public String toString() {
-        return "User(id=" + this.getId() + ", groups=" + this.getGroups() + ", name=" + this.getName() + ", email=" + this.getEmail() + ", passwordHash=" + this.getPasswordHash() + ")";
+        return "User(id=" + this.getId() + ", groups=" + this.getGroups().stream().map(group -> group.getId()).toList() + ", name=" + this.getName() + ", email=" + this.getEmail() + ", passwordHash=" + this.getPasswordHash() + ")";
     }
 }

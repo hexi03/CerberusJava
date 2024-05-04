@@ -4,4 +4,5 @@ import java.util.Optional;
 
 public interface EntityId<T> {
     T getId();
+
 }

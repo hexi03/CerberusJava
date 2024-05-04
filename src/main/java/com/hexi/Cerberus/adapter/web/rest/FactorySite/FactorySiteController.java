@@ -80,7 +80,7 @@ public class FactorySiteController {
                         .name(dto.getName())
                         .build()
         );
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/delete")
@@ -90,18 +90,23 @@ public class FactorySiteController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/updateSupply")
+    @PutMapping("/updateSupply")
     public ResponseEntity<Void> updateFactorySiteSupply(@RequestBody FactorySiteUpdateSupplyDTO dto) {
-        log.debug(dto.toString());
-        factorySiteService.updateSupply(
-                UpdateFactorySiteSupplyCmd
-                        .builder()
-                        .id(CommandId.generate())
-                        .factorySiteId(dto.getId())
-                        .suppliers(dto.getSuppliers())
-                        .build()
-        );
-        return new ResponseEntity<>(HttpStatus.OK);
+        log.info(dto.toString());
+        try {
+            factorySiteService.updateSupply(
+                    UpdateFactorySiteSupplyCmd
+                            .builder()
+                            .id(CommandId.generate())
+                            .factorySiteId(dto.getId())
+                            .suppliers(dto.getSuppliers())
+                            .build()
+            );
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

@@ -22,4 +22,7 @@ public class GroupID implements EntityId<UUID> {
     public GroupID(GroupID groupID) {
         id = groupID.getId();
     }
+    public String toString() {
+        return this.getId().toString();
+    }
 }

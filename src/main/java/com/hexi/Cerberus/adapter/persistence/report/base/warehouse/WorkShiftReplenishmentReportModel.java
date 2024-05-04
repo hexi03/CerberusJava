@@ -5,13 +5,15 @@ import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.WorkShiftRe
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@Access(AccessType.FIELD)
 public class WorkShiftReplenishmentReportModel extends WareHouseReportModel implements ItemStorageOperationReport {
     WorkShiftReportModel workShiftReport;
     Map<ItemModel, Integer> items = new HashMap<>();

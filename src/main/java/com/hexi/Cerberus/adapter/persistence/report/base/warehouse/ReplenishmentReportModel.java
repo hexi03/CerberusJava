@@ -5,6 +5,8 @@ import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -12,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
+@Access(AccessType.FIELD)
 public class ReplenishmentReportModel extends WareHouseReportModel implements ItemStorageOperationReport {
     Map<ItemModel, Integer> items = new HashMap<>();
 

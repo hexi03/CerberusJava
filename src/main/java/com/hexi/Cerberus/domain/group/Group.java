@@ -25,7 +25,7 @@ public abstract class Group implements SecuredEntity, AggregateRoot {
     protected abstract void appendUser(User user);
 
     public void addUser(User user) {
-        user.attachToGroup(this);
+        //user.attachToGroup(this);
         appendUser(user);
         events.add(new UserAttachedFromGroupEvent(this.getId(), user.getId()));
     }
@@ -48,7 +48,7 @@ public abstract class Group implements SecuredEntity, AggregateRoot {
     public User removeUser(UserID uid) {
         Optional<User> tmp_user = getUsers().stream().filter((u) -> u.getId().equals(uid)).findAny();
         tmp_user.orElseThrow(() -> new RuntimeException(String.format("There is no user with id %s", uid.toString())));
-        tmp_user.get().detachFromGroup(this);
+        //tmp_user.get().detachFromGroup(this);
         disposeUser(tmp_user.orElseThrow());
         events.add(new UserDetachedFromGroupEvent(this.getId(), tmp_user.get().getId()));
         return tmp_user.get();
@@ -86,8 +86,8 @@ public abstract class Group implements SecuredEntity, AggregateRoot {
         final Object this$id = this.getId();
         final Object other$id = other.getId();
         if (!Objects.equals(this$id, other$id)) return false;
-        final Object this$users = this.getUsers();
-        final Object other$users = other.getUsers();
+        final Object this$users = this.getUsers().stream().map(group -> group.getId()).toArray();
+        final Object other$users = other.getUsers().stream().map(group -> group.getId()).toArray();
         if (!Objects.equals(this$users, other$users)) return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
@@ -103,7 +103,7 @@ public abstract class Group implements SecuredEntity, AggregateRoot {
         int result = 1;
         final Object $id = this.getId();
         result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-        final Object $users = this.getUsers();
+        final Object $users = this.getUsers().stream().map(group -> group.getId()).toArray();
         result = result * PRIME + ($users == null ? 43 : $users.hashCode());
         final Object $name = this.getName();
         result = result * PRIME + ($name == null ? 43 : $name.hashCode());
@@ -111,6 +111,6 @@ public abstract class Group implements SecuredEntity, AggregateRoot {
     }
 
     public String toString() {
-        return "Group(id=" + this.getId() + ", users=" + this.getUsers() + ", name=" + this.getName() + ")";
+        return "Group(id=" + this.getId() + ", users=" + this.getUsers().stream().map(group -> group.getId()).toList() + ", name=" + this.getName() + ")";
     }
 }

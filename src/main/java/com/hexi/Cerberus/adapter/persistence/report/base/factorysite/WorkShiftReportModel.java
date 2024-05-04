@@ -10,13 +10,15 @@ import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@Access(AccessType.FIELD)
 public class WorkShiftReportModel extends FactorySiteReportModel implements WorkShiftReport {
     WareHouseModel targetWareHouseId;
     Map<ProductModel, Integer> produced = new HashMap<>();

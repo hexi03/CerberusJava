@@ -10,7 +10,9 @@ import com.hexi.Cerberus.domain.product.ProductID;
 import com.hexi.Cerberus.domain.product.command.CreateProductCmd;
 import lombok.RequiredArgsConstructor;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,13 +23,12 @@ public class JpaProductFactoryImpl implements ProductFactory {
     public Product from(CreateProductCmd cmd) {
         Optional<Item> productItem = itemRepository.findById(cmd.getItemId());
         productItem.orElseThrow(() -> new RuntimeException(String.format("There is no product item with id: %s", cmd.getItemId().toString())));
-        List<ItemModel> requirements = cmd
-                .getRequirements()
+        Map<ItemModel, Integer> requirements = cmd
+                .getRequirements().entrySet()
                 .stream()
-                .map(itemID -> itemRepository.findById(itemID))
-                .filter(item -> item.isPresent())
-                .map(item -> (ItemModel) item.get())
-                .collect(Collectors.toList());
+                .map(entry -> new AbstractMap.SimpleImmutableEntry<>(itemRepository.findById(entry.getKey()),entry.getValue()))
+                .filter(item -> item.getKey().isPresent())
+                .collect(Collectors.toMap(entry -> (ItemModel) entry.getKey().get(), entry -> entry.getValue()));
 
         return new ProductModel(new ProductID(), productItem.get(), requirements);
     }

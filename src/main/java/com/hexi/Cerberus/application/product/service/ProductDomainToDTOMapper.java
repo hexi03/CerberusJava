@@ -1,8 +1,6 @@
 package com.hexi.Cerberus.application.product.service;
 
-import com.hexi.Cerberus.application.item.service.DTO.ItemDetailsDTO;
 import com.hexi.Cerberus.application.product.service.DTO.ProductDetailsDTO;
-import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.product.Product;
 import org.mapstruct.Mapper;
 
@@ -16,8 +14,8 @@ public interface ProductDomainToDTOMapper {
         return ProductDetailsDTO
                 .builder()
                 .id(product.getId())
-                .productItemId(product.getProduction().getId())
-                .requirements(product.getRequirements().stream().map(item -> item.getId()).collect(Collectors.toList()))
+                .producedItemId(product.getProduction().getId())
+                .requirements(product.getRequirements().entrySet().stream().collect(Collectors.toMap(o -> o.getKey().getId(), o -> o.getValue())))
                 .build();
     }
 }

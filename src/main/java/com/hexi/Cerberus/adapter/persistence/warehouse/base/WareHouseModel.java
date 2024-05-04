@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "warehouse")
-
+@Access(AccessType.FIELD)
 @Getter
 @Setter
 public class WareHouseModel extends WareHouse {

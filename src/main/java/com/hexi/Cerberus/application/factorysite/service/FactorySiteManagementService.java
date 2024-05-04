@@ -22,7 +22,7 @@ public interface FactorySiteManagementService {
 
     void updateDetails(UpdateFactorySiteDetailsCmd cmd);
 
-    void updateSupply(UpdateFactorySiteSupplyCmd cmd);
+    void updateSupply(UpdateFactorySiteSupplyCmd cmd) throws RuntimeException;
 
     void delete(FactorySiteID id);
 }

@@ -205,7 +205,7 @@ public class ReportController {
                         .targetWareHouseId(dto.getTargetWareHouseId())
                         .items(dto.getItems()).build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     public ResponseEntity<Void> update(UpdateReleaseReportDTO dto) {
@@ -218,7 +218,7 @@ public class ReportController {
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     public ResponseEntity<Void> update(UpdateInventarisationReportDTO dto) {
@@ -230,7 +230,7 @@ public class ReportController {
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     public ResponseEntity<Void> update(UpdateReplenishmentReportDTO dto) {
@@ -242,7 +242,7 @@ public class ReportController {
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     public ResponseEntity<Void> update(UpdateShipmentReportDTO dto) {
@@ -254,7 +254,7 @@ public class ReportController {
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     public ResponseEntity<Void> update(UpdateWorkShiftReplenishmentReportDTO dto) {
@@ -268,7 +268,7 @@ public class ReportController {
                         .unclaimedRemains(dto.getUnclaimedRemains())
                         .items(dto.getItems()).build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     public ResponseEntity<Void> update(UpdateWorkShiftReportDTO dto) {
@@ -284,7 +284,7 @@ public class ReportController {
                         .losses(dto.getLosses())
                         .build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

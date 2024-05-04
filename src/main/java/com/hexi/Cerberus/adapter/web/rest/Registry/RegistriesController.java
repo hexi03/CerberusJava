@@ -7,11 +7,9 @@ import com.hexi.Cerberus.application.item.service.DTO.UpdateItemDTO;
 import com.hexi.Cerberus.application.product.service.ProductManagementService;
 import com.hexi.Cerberus.application.item.service.ItemManagementService;
 import com.hexi.Cerberus.domain.item.command.UpdateItemCmd;
-import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.product.ProductID;
 import com.hexi.Cerberus.domain.product.command.CreateProductCmd;
 import com.hexi.Cerberus.domain.product.command.UpdateProductCmd;
-import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.item.command.CreateItemCmd;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @DrivingAdapter
@@ -40,8 +37,8 @@ public class RegistriesController {
 
     //USER
     @GetMapping("/fetchItem")
-    public ResponseEntity<List<ItemDetailsDTO>> fetchItem(@PathVariable(required = false) ItemID id) {
-        if (id != null) {
+    public ResponseEntity<List<ItemDetailsDTO>> fetchItem(@RequestParam(required = false) ItemID id) {
+        if (id == null) {
             return ResponseEntity.ok(itemManagementService
                     .displayAll()
             );
@@ -55,13 +52,14 @@ public class RegistriesController {
     }
 
     @PostMapping("/addItem")
-    public ResponseEntity<ItemID> addItem(CreateItemDTO dto) {
+    public ResponseEntity<ItemID> addItem(@RequestBody CreateItemDTO dto) {
+        log.info(dto.toString());
         ItemID id = itemManagementService.create(
                 CreateItemCmd
                         .builder()
                         .id(CommandId.generate())
                         .name(dto.getName())
-
+                        .units(dto.getUnits())
                         .build()
         ).getId();
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -69,20 +67,21 @@ public class RegistriesController {
     }
 
     @PutMapping("/updateItem")
-    public ResponseEntity<Void> updateItem(UpdateItemDTO dto) {
+    public ResponseEntity<Void> updateItem(@RequestBody UpdateItemDTO dto) {
         itemManagementService.updateDetails(
                 UpdateItemCmd
                         .builder()
                         .id(CommandId.generate())
                         .itemId(dto.getId())
                         .name(dto.getName())
+                        .units(dto.getUnits())
                         .build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/removeItem")
-    public ResponseEntity<Void> removeItem(ItemID id) {
+    public ResponseEntity<Void> removeItem(@RequestParam ItemID id) {
         itemManagementService.setDeleted(id);
         return ResponseEntity.ok().build();
     }
@@ -90,8 +89,8 @@ public class RegistriesController {
 
     //GROUP
     @GetMapping("/fetchProduct")
-    public ResponseEntity<List<ProductDetailsDTO>> fetchProduct(@PathVariable(required = false) ProductID id) {
-        if (id != null) {
+    public ResponseEntity<List<ProductDetailsDTO>> fetchProduct(@RequestParam(required = false) ProductID id) {
+        if (id == null) {
             return ResponseEntity.ok(productManagementService
                     .displayAll()
             );
@@ -105,20 +104,22 @@ public class RegistriesController {
     }
 
     @PostMapping("/addProduct")
-    public ResponseEntity<ProductID> addProduct(CreateProductDTO dto) {
+    public ResponseEntity<ProductID> addProduct(@RequestBody CreateProductDTO dto) {
+        log.info(dto.toString());
         ProductID id = productManagementService.create(
                 CreateProductCmd
                         .builder()
                         .id(CommandId.generate())
-                        .itemId(dto.getProductItemId())
+                        .itemId(dto.getProducedItemId())
                         .requirements(dto.getRequirements())
                         .build()
         ).getId();
+        log.info(id.toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
     @PutMapping("/updateProduct")
-    public ResponseEntity<Void> updateProduct(UpdateProductDTO dto) {
+    public ResponseEntity<Void> updateProduct(@RequestBody UpdateProductDTO dto) {
         productManagementService.updateDetails(
                 UpdateProductCmd
 
@@ -129,11 +130,11 @@ public class RegistriesController {
                         .requirements(dto.getRequirements())
                         .build()
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/removeProduct")
-    public ResponseEntity<Void> removeProduct(ProductID id) {
+    public ResponseEntity<Void> removeProduct(@RequestParam ProductID id) {
         productManagementService.setDeleted(id);
         return ResponseEntity.ok().build();
     }

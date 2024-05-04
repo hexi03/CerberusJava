@@ -12,7 +12,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "report_registry")
-
+@Access(AccessType.FIELD)
 public class ReportModel implements Report {
     @EmbeddedId
     ReportID id;

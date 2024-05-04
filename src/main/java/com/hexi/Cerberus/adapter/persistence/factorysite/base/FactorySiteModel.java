@@ -1,5 +1,7 @@
 package com.hexi.Cerberus.adapter.persistence.factorysite.base;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
 import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.department.Department;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "factorysite")
-
+@Access(AccessType.FIELD)
 public class FactorySiteModel extends FactorySite {
 
     @EmbeddedId
@@ -78,13 +80,13 @@ public class FactorySiteModel extends FactorySite {
     }
 
     @Override
-    public Collection<WareHouse> getSuppliers() {
-        return suppliers.stream().map(wareHouseModel -> (WareHouse) wareHouseModel).collect(Collectors.toSet());
+    public ImmutableCollection<WareHouse> getSuppliers() {
+        return  ImmutableList.copyOf(suppliers.stream().map(wareHouseModel -> (WareHouse) wareHouseModel).collect(Collectors.toSet()));
     }
 
     @SneakyThrows
     @Override
-    protected void addSupplier(WareHouse wh) {
+    public void addSupplier(WareHouse wh) {
         if (wh.getClass() == WareHouseModel.class) {
             suppliers.add((WareHouseModel) wh);
         } else {
@@ -92,13 +94,20 @@ public class FactorySiteModel extends FactorySite {
         }
     }
 
+
+
     @Override
-    protected void removeSupplier(WareHouse wh) {
+    public void setSuppliers(Collection<WareHouse> whs) {
+        suppliers = whs.stream().map(wareHouse -> (WareHouseModel) wareHouse).collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeSupplier(WareHouse wh) {
         suppliers = suppliers.stream().filter(wareHouse -> !wareHouse.getId().equals(wh.getId())).collect(Collectors.toList());
     }
 
     @Override
-    protected Optional<WareHouse> removeSupplier(WareHouseID id) {
+    public Optional<WareHouse> removeSupplier(WareHouseID id) {
         Optional<WareHouseModel> item = suppliers.stream().filter(wareHouse -> wareHouse.getId().equals(id)).findAny();
         suppliers = suppliers.stream().filter(wareHouse -> !wareHouse.getId().equals(id)).collect(Collectors.toList());
         return item.map(Function.identity());

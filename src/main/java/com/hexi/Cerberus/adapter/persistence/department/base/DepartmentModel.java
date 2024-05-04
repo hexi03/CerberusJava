@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "department")
-
+@Access(AccessType.FIELD)
 
 public class DepartmentModel extends Department {
 

@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class UserUpdateDetailsDTO {
     UserID id;
     String name;
+    String email;
     String password;
 }

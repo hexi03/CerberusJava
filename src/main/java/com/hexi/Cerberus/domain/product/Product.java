@@ -35,9 +35,9 @@ public abstract class Product implements AggregateRoot, Entity {
 
     public abstract void setProduction(Item production);
 
-    public abstract Collection<Item> getRequirements();
+    public abstract Map<Item, Integer> getRequirements();
 
-    public abstract void setRequirements(List<Item> requirements);
+    public abstract void setRequirements(Map<Item, Integer> requirements);
 
     public abstract Optional<Date> getDeletedAt();
 

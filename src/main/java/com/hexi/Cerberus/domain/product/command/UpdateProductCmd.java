@@ -10,13 +10,14 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
 public class UpdateProductCmd implements Command {
     CommandId id;
     ProductID productId;
-    List<ItemID> requirements;
+    Map<ItemID, Integer> requirements;
 
     @Override
     public CommandId getId() {
@@ -28,8 +29,8 @@ public class UpdateProductCmd implements Command {
         List<String> problems = new ArrayList<>();
         if (id == null) problems.add("Command id is null");
         if (productId == null) problems.add("Item id is null");
-        if (requirements != null || requirements.stream().filter(userID -> userID == null).count() != 0)
-            problems.add("Requireement id(s) is null");
+        if (requirements == null || requirements.entrySet().stream().filter(userID -> userID == null).count() != 0)
+            problems.add("Requirement id(s) is null");
 
         return new ValidationResult(problems);
     }

@@ -28,7 +28,7 @@ public class UpdateFactorySiteSupplyCmd implements Command {
         List<String> problems = new ArrayList<>();
         if (id == null) problems.add("Command id is null");
         if (factorySiteId == null) problems.add("FactorySite id is null");
-        if (suppliers != null || suppliers.stream().filter(wareHouseID -> wareHouseID == null).count() != 0)
+        if (suppliers == null || suppliers.stream().filter(wareHouseID -> wareHouseID == null).count() != 0)
             problems.add("Supplier id(s) is null");
 
         return new ValidationResult(problems);

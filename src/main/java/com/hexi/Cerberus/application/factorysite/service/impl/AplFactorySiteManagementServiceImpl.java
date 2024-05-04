@@ -11,12 +11,15 @@ import com.hexi.Cerberus.domain.factorysite.command.CreateFactorySiteCmd;
 import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteDetailsCmd;
 import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteSupplyCmd;
 import com.hexi.Cerberus.domain.factorysite.repository.FactorySiteRepository;
+import com.hexi.Cerberus.domain.warehouse.WareHouse;
+import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ public class AplFactorySiteManagementServiceImpl implements FactorySiteManagemen
     public final FactorySiteFactory factorySiteFactory;
     public final FactorySiteUpdater factorySiteUpdater;
     public final FactorySiteDomainToDtoMapper factorySiteDomainToDtoMapper;
+    public final WareHouseRepository wareHouseRepository;
 
     @Override
     public Optional<FactorySiteDetailsDTO> displayBy(FactorySiteID id) {
@@ -76,12 +80,15 @@ public class AplFactorySiteManagementServiceImpl implements FactorySiteManagemen
     }
 
     @Override
-    public void updateSupply(UpdateFactorySiteSupplyCmd cmd) {
+    public void updateSupply(UpdateFactorySiteSupplyCmd cmd) throws RuntimeException {
         cmd.validate().onFailedThrow();
-        Optional<FactorySite> factorySite = factorySiteRepository.findById(cmd.getFactorySiteId());
-        factorySite.orElseThrow(() -> new RuntimeException(String.format("There are no factorysite with id %s", cmd.getFactorySiteId().toString())));
-        messagePublisher.publish(factorySite.get().edjectEvents());
-        factorySiteRepository.update(factorySite.get());
+        FactorySite factorySite = (FactorySite) factorySiteRepository.findById(cmd.getFactorySiteId()).orElseThrow();
+        //cmd.getSuppliers().stream().map(wareHouseID -> (WareHouse)wareHouseRepository.findById(wareHouseID).orElse(null)).filter(o -> o != null).forEach(factorySite::addSupplier);
+        Collection<WareHouse> suppliers = cmd.getSuppliers().stream().map(wareHouseID -> (WareHouse)wareHouseRepository.findById(wareHouseID).orElse(null)).filter(o -> o != null).collect(Collectors.toList());
+        factorySite.setSuppliers(suppliers);
+        messagePublisher.publish(factorySite.edjectEvents());
+
+        factorySiteRepository.update(factorySite);
     }
 
     @Override

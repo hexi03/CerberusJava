@@ -22,4 +22,8 @@ public class ProductID implements EntityId<UUID> {
     }
 
     public ProductID(String id) { this.id = UUID.fromString(id); }
+
+    public String toString() {
+        return this.getId().toString();
+    }
 }

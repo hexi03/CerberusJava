@@ -6,6 +6,7 @@ import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "_group")
 @Access(value=AccessType.FIELD)
+
 public class GroupModel extends Group {
     @EmbeddedId
     GroupID id;
@@ -24,7 +26,9 @@ public class GroupModel extends Group {
     @ManyToMany
     @JoinTable(name = "user_group_assoc",
             joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+            inverseJoinColumns = @JoinColumn(name = "user_id"),
+            uniqueConstraints = {@UniqueConstraint(name = "unique_assoc", columnNames = {"group_id", "user_id"})
+    })
 
     Collection<UserModel> users = new ArrayList<>();
 
@@ -47,6 +51,7 @@ public class GroupModel extends Group {
     @SneakyThrows
     @Override
     protected void appendUser(User user) {
+
         if (user.getClass() == UserModel.class) {
             users.add((UserModel) user);
         } else {
@@ -62,7 +67,7 @@ public class GroupModel extends Group {
     @Override
     public Collection<User> getUsers() {
 
-        return users.stream().map(userModel -> (User) userModel).collect(Collectors.toSet());
+        return users.stream().map(userModel -> (User) userModel).collect(Collectors.toList());
     }
 
     @Override

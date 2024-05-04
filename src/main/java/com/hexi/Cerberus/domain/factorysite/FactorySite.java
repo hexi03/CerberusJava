@@ -1,5 +1,6 @@
 package com.hexi.Cerberus.domain.factorysite;
 
+import com.google.common.collect.ImmutableCollection;
 import com.hexi.Cerberus.domain.department.Department;
 import com.hexi.Cerberus.domain.department.contract.DepartmentSlave;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
@@ -42,13 +43,18 @@ public abstract class FactorySite implements SecuredEntity, AggregateRoot, Depar
 
     public abstract void setName(String name);
 
-    public abstract Collection<WareHouse> getSuppliers();
+    public abstract ImmutableCollection<WareHouse> getSuppliers();
 
-    protected abstract void addSupplier(WareHouse fs);
+    public abstract void addSupplier(WareHouse wh);
 
-    protected abstract void removeSupplier(WareHouse wh);
+    public void addSuppliers(Collection<WareHouse> whs){
+        whs.forEach(this::addSupplier);
+    };
+    public abstract void setSuppliers(Collection<WareHouse> whs);
 
-    protected abstract Optional<WareHouse> removeSupplier(WareHouseID id);
+    public abstract void removeSupplier(WareHouse wh);
+
+    public abstract Optional<WareHouse> removeSupplier(WareHouseID id);
 
     public boolean equals(final Object o) {
         if (o == this) return true;
@@ -57,15 +63,15 @@ public abstract class FactorySite implements SecuredEntity, AggregateRoot, Depar
         final Object this$id = this.getId();
         final Object other$id = other.getId();
         if (!Objects.equals(this$id, other$id)) return false;
-        final Object this$parentDepartment = this.getParentDepartment();
-        final Object other$parentDepartment = other.getParentDepartment();
+        final Object this$parentDepartment = this.getParentDepartment().getId();
+        final Object other$parentDepartment = other.getParentDepartment().getId();
         if (!Objects.equals(this$parentDepartment, other$parentDepartment))
             return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
         if (!Objects.equals(this$name, other$name)) return false;
-        final Object this$suppliers = this.getSuppliers();
-        final Object other$suppliers = other.getSuppliers();
+        final Object this$suppliers = this.getSuppliers().stream().map(o1 -> o1.getId()).toList();
+        final Object other$suppliers = other.getSuppliers().stream().map(o1 -> o1.getId()).toList();
         return Objects.equals(this$suppliers, other$suppliers);
     }
 
@@ -82,13 +88,13 @@ public abstract class FactorySite implements SecuredEntity, AggregateRoot, Depar
         result = result * PRIME + ($parentDepartment == null ? 43 : $parentDepartment.hashCode());
         final Object $name = this.getName();
         result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        final Object $suppliers = this.getSuppliers();
-        result = result * PRIME + ($suppliers == null ? 43 : $suppliers.hashCode());
+        final Collection<WareHouse> $suppliers = this.getSuppliers();
+        result = result * PRIME + ($suppliers == null ? 43 : $suppliers.stream().map(o -> o.getId()).toList().hashCode());
         return result;
     }
 
     public String toString() {
-        return "FactorySite(id=" + this.getId() + ", parentDepartment=" + this.getParentDepartment() + ", name=" + this.getName() + ", suppliers=" + this.getSuppliers() + ")";
+        return "FactorySite(id=" + this.getId() + ", parentDepartment=" + this.getParentDepartment() + ", name=" + this.getName() + ", suppliers=" + this.getSuppliers().stream().map(o1 -> o1.getId()).toList() + ")";
     }
 
     @Override

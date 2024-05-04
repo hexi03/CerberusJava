@@ -14,13 +14,13 @@ public interface GroupDomainToDTOMapper {
         return GroupDetailsDTO
                 .builder()
                 .id(group.getId())
-                .users(
-                        group
-                                .getUsers()
-                                .stream()
-                                .map(user -> user.getId())
-                                .collect(Collectors.toList())
-                )
+//                .users(
+//                        group
+//                                .getUsers()
+//                                .stream()
+//                                .map(user -> user.getId())
+//                                .collect(Collectors.toList())
+//                )
                 .name(group.getName())
                 .build();
     }

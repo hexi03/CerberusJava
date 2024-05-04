@@ -21,5 +21,7 @@ public class ReportID implements EntityId<UUID> {
         this.id = id.getId();
     }
     public ReportID(String id) { this.id = UUID.fromString(id); }
-
+    public String toString() {
+        return this.getId().toString();
+    }
 }

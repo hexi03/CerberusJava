@@ -21,4 +21,8 @@ public class FactorySiteID implements EntityId<UUID> {
     }
     public FactorySiteID(String id) { this.id = UUID.fromString(id); }
 
+    public String toString() {
+        return this.getId().toString();
+    }
+
 }

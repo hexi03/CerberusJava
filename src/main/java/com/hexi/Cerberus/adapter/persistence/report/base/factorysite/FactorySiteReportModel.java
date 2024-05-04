@@ -7,6 +7,8 @@ import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.FactorySiteReport;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +17,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
+@Access(AccessType.FIELD)
 public class FactorySiteReportModel extends ReportModel implements FactorySiteReport {
     FactorySiteModel factorySite;
 

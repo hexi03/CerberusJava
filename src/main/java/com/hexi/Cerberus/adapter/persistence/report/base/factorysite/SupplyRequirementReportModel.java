@@ -8,6 +8,8 @@ import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -15,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
+@Access(AccessType.FIELD)
 public class SupplyRequirementReportModel extends FactorySiteReportModel implements SupplyRequirementReport {
     WareHouseModel targetWareHouse;
     Map<ItemModel, Integer> requirements = new HashMap<>();

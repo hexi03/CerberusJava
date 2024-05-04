@@ -1,5 +1,6 @@
 package com.hexi.Cerberus.adapter.persistence.product.base;
 
+import com.hexi.Cerberus.adapter.persistence.item.base.ItemEntry;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.product.Product;
@@ -11,18 +12,15 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "product_registry")
-
+@Access(AccessType.FIELD)
 public class ProductModel extends Product {
     @EmbeddedId
     ProductID id;
-    @ManyToOne
-    @JoinColumn(name = "production_item_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "production_item_id" )
     ItemModel producedItem;
-    @ManyToMany
-    @JoinTable(name = "product_required_item_assoc",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "requirement_item_id"))
-    List<ItemModel> requirements;
+    @OneToMany(cascade = CascadeType.ALL)
+    List<ItemEntry> requirements;
     Date deletedAt;
 
     @Deprecated
@@ -30,10 +28,10 @@ public class ProductModel extends Product {
         super();
     }
 
-    public ProductModel(ProductID productID, Item item, List<ItemModel> requirements) {
+    public ProductModel(ProductID productID, Item item, Map<ItemModel, Integer> requirements) {
         this.id = new ProductID(productID);
         this.producedItem = (ItemModel) item;
-        this.requirements = requirements.stream().map(item1 -> item1).toList();
+        this.requirements = requirements.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
 
     @Override
@@ -52,13 +50,13 @@ public class ProductModel extends Product {
     }
 
     @Override
-    public Collection<Item> getRequirements() {
-        return requirements.stream().map(itemModel -> (Item) itemModel).collect(Collectors.toSet());
+    public Map<Item, Integer> getRequirements() {
+        return requirements.stream().collect(Collectors.toMap(entry -> (Item)entry.getItem(), entry -> entry.getAmount()));
     }
 
     @Override
-    public void setRequirements(List<Item> requirements) {
-        this.requirements = requirements.stream().map(itemModel -> (ItemModel) itemModel).collect(Collectors.toList());
+    public void setRequirements(Map<Item, Integer> requirements) {
+        this.requirements = requirements.entrySet().stream().map(entry -> new ItemEntry((ItemModel) entry.getKey(),entry.getValue())).collect(Collectors.toList());
 
     }
 

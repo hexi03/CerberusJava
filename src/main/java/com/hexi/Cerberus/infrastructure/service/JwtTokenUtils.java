@@ -3,12 +3,15 @@ package com.hexi.Cerberus.infrastructure.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +45,12 @@ public class JwtTokenUtils {
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
+
+
+//    private Key getSignInKey() {
+//        byte[] keyBytes = Decoders.BASE64.decode(secret);
+//        return Keys.hmacShaKeyFor(keyBytes);
+//    }
 
     public String getUsername(String token) {
         return getAllClaimsFromToken(token).getSubject();

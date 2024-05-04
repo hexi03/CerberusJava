@@ -33,7 +33,9 @@ public class UserModel extends User {
     @ManyToMany
     @JoinTable(name = "user_group_assoc",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id"))
+            inverseJoinColumns = @JoinColumn(name = "group_id"),
+            uniqueConstraints = {@UniqueConstraint(name = "unique_assoc", columnNames = {"group_id", "user_id"})}
+    )
     Collection<GroupModel> groups = new ArrayList<>();
 
     @Deprecated

@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "item_registry")
-
+@Access(AccessType.FIELD)
 public class ItemModel extends Item {
     @EmbeddedId
     ItemID id;

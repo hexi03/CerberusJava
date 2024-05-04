@@ -104,12 +104,12 @@ public abstract class Department implements SecuredEntity, AggregateRoot {
         final Object this$name = this.getName();
         final Object other$name = other.getName();
         if (!Objects.equals(this$name, other$name)) return false;
-        final Object this$factorySites = this.getFactorySites();
-        final Object other$factorySites = other.getFactorySites();
+        final Object this$factorySites = this.getFactorySites().stream().map(o1 -> o1.getId()).toList();
+        final Object other$factorySites = other.getFactorySites().stream().map(o1 -> o1.getId());
         if (!Objects.equals(this$factorySites, other$factorySites))
             return false;
-        final Object this$wareHouses = this.getWareHouses();
-        final Object other$wareHouses = other.getWareHouses();
+        final Object this$wareHouses = this.getWareHouses().stream().map(o1 -> o1.getId());
+        final Object other$wareHouses = other.getWareHouses().stream().map(o1 -> o1.getId());
         return Objects.equals(this$wareHouses, other$wareHouses);
     }
 
@@ -124,14 +124,14 @@ public abstract class Department implements SecuredEntity, AggregateRoot {
         result = result * PRIME + ($id == null ? 43 : $id.hashCode());
         final Object $name = this.getName();
         result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        final Object $factorySites = this.getFactorySites();
-        result = result * PRIME + ($factorySites == null ? 43 : $factorySites.hashCode());
-        final Object $wareHouses = this.getWareHouses();
-        result = result * PRIME + ($wareHouses == null ? 43 : $wareHouses.hashCode());
+        final ImmutableCollection<FactorySite> $factorySites = this.getFactorySites();
+        result = result * PRIME + ($factorySites == null ? 43 : $factorySites.stream().map(o -> o.getId()).toList().hashCode());
+        final ImmutableCollection<WareHouse> $wareHouses = this.getWareHouses();
+        result = result * PRIME + ($wareHouses == null ? 43 : $wareHouses.stream().map(o -> o.getId()).toList().hashCode());
         return result;
     }
 
     public String toString() {
-        return "Department(id=" + this.getId() + ", name=" + this.getName() + ", factorySites=" + this.getFactorySites() + ", wareHouses=" + this.getWareHouses() + ")";
+        return "Department(id=" + this.getId() + ", name=" + this.getName() + ", factorySites=" + this.getFactorySites().stream().map(o1 -> o1.getId()) + ", wareHouses=" + this.getWareHouses().stream().map(o1 -> o1.getId())+ ")";
     }
 }
