@@ -97,12 +97,12 @@ class TestReportAPI(unittest.TestCase):
         print(report1)
         create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report1, headers=self.headers)
         self.assertEqual(create_report1.status_code, 201)
-        print("create_report1: ")
+        print("create_inventarisation: ")
         print("     " , create_report1.json())
         report1.update({"id": create_report1.json()})
         
         fetch_one_1_json=[report1]
-        print("fetch_1: ")
+        print("fetch_one: ")
         fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"id": report1["id"]["id"]}, headers=self.headers)
         self.assertEqual(fetch_r.status_code, 200)
         print("     " , fetch_r.json())
@@ -110,8 +110,32 @@ class TestReportAPI(unittest.TestCase):
         self.assertEqual(fetch_r.json(), fetch_one_1_json)
         
         fetch_1_json=[report1]
-        print("fetch_1: ")
+        print("fetch_generics: ")
         fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10}, headers=self.headers)
+        print("     " , fetch_r.json())
+        print("excepted:" , fetch_1_json)
+        self.assertEqual(fetch_r.status_code, 200)
+        self.assertEqual(fetch_r.json(), fetch_1_json)
+
+        fetch_1_json=[report1]
+        print("fetch_warehouse_generic: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "warehouse_generic"}, headers=self.headers)
+        print("     " , fetch_r.json())
+        print("excepted:" , fetch_1_json)
+        self.assertEqual(fetch_r.status_code, 200)
+        self.assertEqual(fetch_r.json(), fetch_1_json)
+
+        fetch_1_json=[report1]
+        print("fetch_inventarisation: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "inventarisation"}, headers=self.headers)
+        print("     " , fetch_r.json())
+        print("excepted:" , fetch_1_json)
+        self.assertEqual(fetch_r.status_code, 200)
+        self.assertEqual(fetch_r.json(), fetch_1_json)
+
+        fetch_1_json=[]
+        print("fetch_release: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "release"}, headers=self.headers)
         print("     " , fetch_r.json())
         print("excepted:" , fetch_1_json)
         self.assertEqual(fetch_r.status_code, 200)

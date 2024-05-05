@@ -687,3 +687,5 @@ Zsrc/main/java/com/hexi/Cerberus/adapter/web/rest/UserGroup/UserGroupDomainToDTO
 Zsrc/main/java/com/hexi/Cerberus/adapter/web/rest/WareHouse/WareHouseDomainToDtoMapper.java,5/0/50efd73172c25ad9ee40fb24034b1c1fb1c44fc3
 ”
 dsrc/main/java/com/hexi/Cerberus/adapter/persistence/department/factory/JpaDepartmentFactoryImpl.java,e/9/e98120d8b803fe19b1f397c21386836b10dbdab9
+•
+esrc/main/java/com/hexi/Cerberus/adapter/persistence/report/repository/ReportSpecificationFactory.java,6/8/683a53079e31b5ceb548e4ac6ee75e484ae86aaf
