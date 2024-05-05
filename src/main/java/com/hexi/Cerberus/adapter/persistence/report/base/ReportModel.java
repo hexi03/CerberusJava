@@ -22,8 +22,9 @@ public class ReportModel implements Report {
     Date createdAt;
     @Temporal(TemporalType.TIMESTAMP)
     Date expirationDate;
+    @Transient
     ReportStatus status;
-
+    @Temporal(TemporalType.TIMESTAMP)
 
     Date deletedAt;
 

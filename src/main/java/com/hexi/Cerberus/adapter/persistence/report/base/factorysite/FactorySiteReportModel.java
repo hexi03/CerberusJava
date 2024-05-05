@@ -47,8 +47,8 @@ public class FactorySiteReportModel extends ReportModel implements FactorySiteRe
     }
 
     @Override
-    public FactorySiteID getFactorySiteId() {
-        return factorySite.getId();
+    public FactorySite getFactorySite() {
+        return (FactorySite)factorySite;
     }
 
 //    public FactorySiteReportModel(

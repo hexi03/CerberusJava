@@ -28,7 +28,7 @@ public class ReportController {
 
 
 
-    //FetchOne and FatchAll Copbined
+    //FetchOne and FetchAll Combined
     @GetMapping("/fetch")
     public ResponseEntity<List<ReportDetails>> fetch(
             @PathVariable(required = false) ReportID id,
@@ -63,7 +63,7 @@ public class ReportController {
 
 
     @PostMapping("/append")
-    public ResponseEntity<ReportID> appendReport(CreateReportDTO dto) {
+    public ResponseEntity<ReportID> appendReport(@RequestBody CreateReportDTO dto) {
         log.info(dto.toString());
         if (dto instanceof CreateSupplyRequirementReportDTO) {
             return append((CreateSupplyRequirementReportDTO) dto);
@@ -172,7 +172,7 @@ public class ReportController {
 
 
     @PostMapping("/update")
-    public ResponseEntity<Void> updateReport(UpdateReportDTO dto) {
+    public ResponseEntity<Void> updateReport(@RequestBody UpdateReportDTO dto) {
         if (dto instanceof UpdateSupplyRequirementReportDTO) {
             return update((UpdateSupplyRequirementReportDTO) dto);
         } else if (dto instanceof UpdateReleaseReportDTO) {

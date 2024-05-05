@@ -22,9 +22,12 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
     @ManyToOne(cascade = CascadeType.ALL)
     WareHouseModel targetWareHouseId;
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "work_shift_report_produced_product_entry_assoc")
     Collection<ProductEntry> produced = new ArrayList<>();
+    @JoinTable(name = "work_shift_report_losses_item_entry_assoc")
     @OneToMany(cascade = CascadeType.ALL)
     Collection<ItemEntry> losses = new ArrayList<>();
+    @JoinTable(name = "work_shift_report_remains_item_entry_assoc")
     @OneToMany(cascade = CascadeType.ALL)
     Collection<ItemEntry> remains = new ArrayList<>();
 

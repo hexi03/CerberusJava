@@ -99,7 +99,7 @@ class TestReportAPI(unittest.TestCase):
         self.assertEqual(create_report1.status_code, 201)
         print("create_report1: ")
         print("     " , create_report1.json())
-        item1.update({"id": create_report1.json()})
+        report1.update({"id": create_report1.json()})
         
         
         

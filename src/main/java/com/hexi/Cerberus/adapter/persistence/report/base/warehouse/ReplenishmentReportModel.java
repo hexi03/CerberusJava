@@ -5,6 +5,7 @@ import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
+import com.hexi.Cerberus.domain.report.warehouse.ReplenishmentReport;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.*;
 
@@ -13,8 +14,9 @@ import java.util.stream.Collectors;
 
 @Entity
 @Access(AccessType.FIELD)
-public class ReplenishmentReportModel extends WareHouseReportModel implements ItemStorageOperationReport {
+public class ReplenishmentReportModel extends WareHouseReportModel implements ItemStorageOperationReport, ReplenishmentReport {
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "replenishment_report_items_item_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();
 
     public ReplenishmentReportModel(
@@ -54,4 +56,8 @@ public class ReplenishmentReportModel extends WareHouseReportModel implements It
                 );
     }
 
+    @Override
+    public void setItems(Map<Item, Integer> reqMap) {
+        this.items = reqMap.entrySet().stream().map(entry -> new ItemEntry((ItemModel)entry.getKey(),entry.getValue())).collect(Collectors.toList());
+    }
 }

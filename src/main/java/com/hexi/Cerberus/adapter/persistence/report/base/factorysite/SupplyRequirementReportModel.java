@@ -19,6 +19,7 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
     @ManyToOne(cascade = CascadeType.ALL)
     WareHouseModel targetWareHouse;
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "supply_requirement_report_requirements_item_entry_assoc")
     Collection<ItemEntry> requirements = new ArrayList<>();
 
     public SupplyRequirementReportModel(
@@ -77,8 +78,4 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
 
     }
 
-    @Override
-    public Map<Item, Integer> getItems() {
-        return null;
-    }
 }

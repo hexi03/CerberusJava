@@ -6,8 +6,10 @@ import com.hexi.Cerberus.adapter.persistence.report.base.ReportModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.SupplyRequirementReportModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
+import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
+import com.hexi.Cerberus.domain.report.warehouse.ReleaseReport;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -15,10 +17,11 @@ import java.util.stream.Collectors;
 
 @Entity
 @Access(AccessType.FIELD)
-public class ReleaseReportModel extends WareHouseReportModel implements ItemStorageOperationReport {
+public class ReleaseReportModel extends WareHouseReportModel implements ItemStorageOperationReport, ReleaseReport {
     @ManyToOne(cascade = CascadeType.ALL)
     SupplyRequirementReportModel supplyReqReport;
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "release_report_items_item_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();
 
     public ReleaseReportModel(
@@ -64,4 +67,13 @@ public class ReleaseReportModel extends WareHouseReportModel implements ItemStor
                 );
     }
 
+    @Override
+    public void setSupplyReqReportId(Report report) {
+        this.supplyReqReport = (SupplyRequirementReportModel) report;
+    }
+
+    @Override
+    public void setItems(Map<Item, Integer> reqMap) {
+        this.items = reqMap.entrySet().stream().map(entry -> new ItemEntry((ItemModel)entry.getKey(),entry.getValue())).collect(Collectors.toList());
+    }
 }

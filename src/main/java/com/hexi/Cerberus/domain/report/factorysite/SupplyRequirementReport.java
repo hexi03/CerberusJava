@@ -13,5 +13,4 @@ public interface SupplyRequirementReport extends FactorySiteReport {
 
     void setRequirements(Map<Item, Integer> reqMap);
 
-    Map<Item, Integer> getItems();
 }

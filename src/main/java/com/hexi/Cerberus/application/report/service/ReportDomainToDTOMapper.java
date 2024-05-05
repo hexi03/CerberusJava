@@ -43,88 +43,68 @@ public interface ReportDomainToDTOMapper {
     }
 
     default ReportDetails toReportDetails(Report report) {
-        return switch (report) {
-            case InventarisationReport report1 -> DetailsInventarisationReportDTO
-                    .builder()
+        if (report instanceof InventarisationReport report1) {
+            return DetailsInventarisationReportDTO.builder()
                     .id(report1.getId())
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
-                    .wareHouseId(report1.getWareHouseId())
-                    .items(
-                            toItemIdMap(report1.getItems())
-                    )
+                    .wareHouseId(report1.getWareHouse().getId())
+                    .items(toItemIdMap(report1.getItems()))
                     .build();
-            case ReleaseReport report1 -> DetailsReleaseReportDTO
-                    .builder()
+        } else if (report instanceof ReleaseReport report1) {
+            return DetailsReleaseReportDTO.builder()
                     .id(report1.getId())
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
-                    .wareHouseId(report1.getWareHouseId())
-                    .items(
-                            toItemIdMap(report1.getItems())
-                    )
+                    .wareHouseId(report1.getWareHouse().getId())
+                    .items(toItemIdMap(report1.getItems()))
                     .build();
-            case ReplenishmentReport report1 -> DetailsReplenishmentReportDTO
-                    .builder()
+        } else if (report instanceof ReplenishmentReport report1 ) {
+            return DetailsReplenishmentReportDTO.builder()
                     .id(report1.getId())
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
-                    .wareHouseId(report1.getWareHouseId())
-                    .items(
-                            toItemIdMap(report1.getItems())
-                    )
+                    .wareHouseId(report1.getWareHouse().getId())
+                    .items(toItemIdMap(report1.getItems()))
                     .build();
-
-            case ShipmentReport report1 -> DetailsShipmentReportDTO
-                    .builder()
+        } else if ( report instanceof WorkShiftReplenishmentReport report1) {
+            return DetailsWorkShiftReplenishmentReportDTO.builder()
                     .id(report1.getId())
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
-                    .wareHouseId(report1.getWareHouseId())
-                    .items(
-                            toItemIdMap(report1.getItems())
-                    )
+                    .wareHouseId(report1.getWareHouse().getId())
+                    .items(toItemIdMap(report1.getItems()))
+                    .unclaimedRemains(toItemIdMap(report1.getUnclaimedRemains()))
                     .build();
-            case WorkShiftReplenishmentReport report1 -> DetailsReplenishmentReportDTO
-                    .builder()
+        } else if (report instanceof ShipmentReport report1) {
+            return DetailsShipmentReportDTO.builder()
                     .id(report1.getId())
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
-                    .wareHouseId(report1.getWareHouseId())
-                    .items(
-                            toItemIdMap(report1.getItems())
-                    )
+                    .wareHouseId(report1.getWareHouse().getId())
+                    .items(toItemIdMap(report1.getItems()))
                     .build();
-
-            case WorkShiftReport report1 -> DetailsWorkShiftReportDTO
-                    .builder()
+        } else if (report instanceof WorkShiftReport report1) {
+            return DetailsWorkShiftReportDTO.builder()
                     .id(report1.getId())
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
-                    .factorySiteId(report1.getFactorySiteId())
-                    .produced(
-                            toProductItemIdMap(report1.getProduced())
-                    )
-                    .remains(
-                            toItemIdMap(report1.getRemains())
-                    )
-                    .losses(
-                            toItemIdMap(report1.getLosses())
-                    )
+                    .factorySiteId(report1.getFactorySite().getId())
+                    .produced(toProductItemIdMap(report1.getProduced()))
+                    .remains(toItemIdMap(report1.getRemains()))
+                    .losses(toItemIdMap(report1.getLosses()))
                     .build();
-            case SupplyRequirementReport report1 -> DetailsSupplyRequirementReportDTO
-                    .builder()
+        } else if (report instanceof SupplyRequirementReport report1) {
+            return DetailsSupplyRequirementReportDTO.builder()
                     .id(report1.getId())
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
-                    .factorySiteID(report1.getFactorySiteId())
-                    .items(
-                            toItemIdMap(report1.getItems())
-                    )
+                    .factorySiteID(report1.getFactorySite().getId())
+                    .items(toItemIdMap(report1.getRequirements()))
                     .build();
-
-            default -> throw new IllegalStateException("Unexpected value: " + report);
-        };
+        } else {
+            throw new IllegalStateException("Unexpected value: " + report);
+        }
     }
 
 }

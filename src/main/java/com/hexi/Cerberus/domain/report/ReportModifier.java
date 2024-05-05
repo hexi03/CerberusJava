@@ -147,7 +147,7 @@ public class ReportModifier {
 
 
     public void updateBy(WorkShiftReplenishmentReport workShiftReplenishmentReport, UpdateWorkShiftReplenishmentReportCmd cmd) {
-        Optional<Report> WHReport = reportRepository.findById(cmd.getWorkShiftReportId());
+        Optional<WorkShiftReport> WHReport = reportRepository.findById(cmd.getWorkShiftReportId());
         if (!(WHReport.get() instanceof WorkShiftReport))
             throw new RuntimeException("Report id associated with incorrect report type");
 
@@ -166,7 +166,7 @@ public class ReportModifier {
         ));
 
         workShiftReplenishmentReport.setCreatedAt(new Date());
-        workShiftReplenishmentReport.setWorkShiftReportId(WHReport.get());
+        workShiftReplenishmentReport.setWorkShiftReport(WHReport.get());
         workShiftReplenishmentReport.setItems(reqMap);
 
     }

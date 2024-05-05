@@ -20,6 +20,7 @@ public class ProductModel extends Product {
     @JoinColumn(name = "production_item_id" )
     ItemModel producedItem;
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "product_requirements_item_entry_assoc")
     List<ItemEntry> requirements;
     Date deletedAt;
 

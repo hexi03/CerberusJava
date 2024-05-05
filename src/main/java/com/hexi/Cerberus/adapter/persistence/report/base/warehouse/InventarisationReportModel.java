@@ -3,7 +3,9 @@ package com.hexi.Cerberus.adapter.persistence.report.base.warehouse;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemEntry;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
+import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
+import com.hexi.Cerberus.domain.report.warehouse.InventarisationReport;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.*;
 
@@ -12,8 +14,9 @@ import java.util.stream.Collectors;
 
 @Entity
 @Access(AccessType.FIELD)
-public class InventarisationReportModel extends WareHouseReportModel {
+public class InventarisationReportModel extends WareHouseReportModel implements InventarisationReport {
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "inventarisation_report_items_item_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();
 
     public InventarisationReportModel(
@@ -41,4 +44,20 @@ public class InventarisationReportModel extends WareHouseReportModel {
         super();
     }
 
+    @Override
+    public Map<Item, Integer> getItems() {
+        return items
+                .stream()
+                .collect(
+                        Collectors.toMap(
+                                entry -> entry.getItem(),
+                                entry -> entry.getAmount()
+                        )
+                );
+    }
+
+    @Override
+    public void setItems(Map<Item, Integer> reqMap) {
+        this.items = reqMap.entrySet().stream().map(entry -> new ItemEntry((ItemModel)entry.getKey(),entry.getValue())).collect(Collectors.toList());
+    }
 }
