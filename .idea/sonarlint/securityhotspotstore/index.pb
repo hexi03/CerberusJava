@@ -689,3 +689,19 @@ Zsrc/main/java/com/hexi/Cerberus/adapter/web/rest/WareHouse/WareHouseDomainToDto
 dsrc/main/java/com/hexi/Cerberus/adapter/persistence/department/factory/JpaDepartmentFactoryImpl.java,e/9/e98120d8b803fe19b1f397c21386836b10dbdab9
 •
 esrc/main/java/com/hexi/Cerberus/adapter/persistence/report/repository/ReportSpecificationFactory.java,6/8/683a53079e31b5ceb548e4ac6ee75e484ae86aaf
+Š
+Zsrc/main/java/com/hexi/Cerberus/application/report/service/DTO/create/CreateReportDTO.java,7/8/788084a0891f9c398802e7be82bf343922ce7c30
+›
+ksrc/main/java/com/hexi/Cerberus/application/report/service/DTO/create/CreateSupplyRequirementReportDTO.java,9/5/9509745294ad2c3b695aef72a341fdbe57c66f83
+“
+csrc/main/java/com/hexi/Cerberus/application/report/service/DTO/create/CreateWorkShiftReportDTO.java,3/6/361a0da178a61755107a4b54c694e19a0c334e81
+ 
+psrc/main/java/com/hexi/Cerberus/application/report/service/DTO/create/CreateWorkShiftReplenishmentReportDTO.java,4/b/4b9c26d36e2751da88dd58c2f5a9e1e891350164
+‘
+asrc/main/java/com/hexi/Cerberus/application/report/service/DTO/create/CreateReleaseReportDTO.java,1/d/1db30d659d34b4232cf67c058a879c1de1dd435c
+—
+gsrc/main/java/com/hexi/Cerberus/adapter/persistence/report/base/warehouse/WorkShiftR11tReportModel.java,8/1/81a2419fde95e6492e5208a108aaf1cbcd54638f
+‡
+Wsrc/main/java/com/hexi/Cerberus/application/report/service/ReportDomainToDTOMapper.java,3/e/3e9b7495c3b203797f8ac0f4615c2249fed5e327
+•
+esrc/main/java/com/hexi/Cerberus/application/report/service/DTO/details/DetailsWorkShiftReportDTO.java,0/2/02c94b63d865db4dd59cf70911adfdc58a707451

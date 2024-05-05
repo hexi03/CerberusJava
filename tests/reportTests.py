@@ -89,65 +89,145 @@ class TestReportAPI(unittest.TestCase):
         
     def test_complex(self):
     
-        report1 = {
+        report_inventarisation = {
             "type":"inventarisation",
             "wareHouseId": self.wh1["id"],
             "items": {self.item2["id"]["id"]: 2}
         }
-        print(report1)
-        create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report1, headers=self.headers)
+
+        create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report_inventarisation, headers=self.headers)
         self.assertEqual(create_report1.status_code, 201)
         print("create_inventarisation: ")
         print("     " , create_report1.json())
-        report1.update({"id": create_report1.json()})
+        report_inventarisation.update({"id": create_report1.json()})
+
+
+
+
+
+        report_shipment = {
+            "type":"shipment",
+            "wareHouseId": self.wh1["id"],
+            "items": {self.item2["id"]["id"]: 2}
+        }
+
+        create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report_shipment, headers=self.headers)
+        self.assertEqual(create_report1.status_code, 201)
+        print("create_shipment: ")
+        print("     " , create_report1.json())
+        report_shipment.update({"id": create_report1.json()})
+
+        report_replenish = {
+            "type":"replenishment",
+            "wareHouseId": self.wh1["id"],
+            "items": {self.item2["id"]["id"]: 2}
+        }
+
+        create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report_replenish, headers=self.headers)
+        self.assertEqual(create_report1.status_code, 201)
+        print("create_replenish: ")
+        print("     " , create_report1.json())
+        report_replenish.update({"id": create_report1.json()})
+
+
+
+
+
+        report_supply_req = {
+            "type":"supplyrequirement",
+            "factorySiteId": self.fs1["id"],
+            "targetWareHouseId" : self.wh1["id"],
+            "items": {self.item2["id"]["id"]: 2}
+        }
+        print(report_supply_req)
+        create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report_supply_req, headers=self.headers)
+        self.assertEqual(create_report1.status_code, 201)
+        print("create_supplyrequirement: ")
+        print("     " , create_report1.json())
+        report_supply_req.update({"id": create_report1.json()})
+
+        report_work_shift = {
+            "type":"workshift",
+            "factorySiteId": self.fs1["id"],
+            "targetWareHouseId" : self.wh1["id"],
+            "produced": {self.item1["id"]["id"] : 1},
+            "losses": {self.item2["id"]["id"]: 2}
+        }
+        print(report_work_shift)
+        create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report_work_shift, headers=self.headers)
+        self.assertEqual(create_report1.status_code, 201)
+        print("create_workshift: ")
+        print("     " , create_report1.json())
+        report_work_shift.update({"id": create_report1.json()})
         
-        fetch_one_1_json=[report1]
+        
+        report_wsreplenish = {
+            "type":"workshiftreplenishment",
+            "workShiftReportId" : report_work_shift["id"],
+            "wareHouseId": self.wh1["id"],
+            "items": {self.item2["id"]["id"]: 2}
+        }
+        print(report_wsreplenish)
+        create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report_wsreplenish, headers=self.headers)
+        self.assertEqual(create_report1.status_code, 201)
+        print("create_workshift_replenish: ")
+        print("     " , create_report1.json())
+        report_wsreplenish.update({"id": create_report1.json()})
+    
+        report_release = {
+            "type":"release",
+            "supplyReqReportId" : report_supply_req["id"],
+            "wareHouseId": self.wh1["id"],
+            "items": {self.item2["id"]["id"]: 2}
+        }
+        comp = lambda res: res["id"]["id"]
+        create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report_release, headers=self.headers)
+        self.assertEqual(create_report1.status_code, 201)
+        print("create_release: ")
+        print("     " , create_report1.json())
+        report_release.update({"id": create_report1.json()})
+        
+        fetch_one_1_json=[report_inventarisation]
         print("fetch_one: ")
-        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"id": report1["id"]["id"]}, headers=self.headers)
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"id": report_inventarisation["id"]["id"]}, headers=self.headers)
         self.assertEqual(fetch_r.status_code, 200)
-        print("     " , fetch_r.json())
-        print("excepted:" , fetch_one_1_json)
-        self.assertEqual(fetch_r.json(), fetch_one_1_json)
-        
-        fetch_1_json=[report1]
+        print("     " , sorted(fetch_r.json(), key=comp))
+        print("excepted:" , sorted(fetch_one_1_json, key=comp))
+        self.assertEqual(sorted(fetch_r.json(), key=comp), sorted(fetch_one_1_json, key=comp))
+
+        fetch_1_json = [report_inventarisation, report_release, report_replenish, report_shipment, report_supply_req, report_work_shift, report_wsreplenish]
         print("fetch_generics: ")
         fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10}, headers=self.headers)
-        print("     " , fetch_r.json())
-        print("excepted:" , fetch_1_json)
+        print("     " , sorted(fetch_r.json(), key=comp))
+        print("excepted:" , sorted(fetch_1_json, key=comp))
         self.assertEqual(fetch_r.status_code, 200)
-        self.assertEqual(fetch_r.json(), fetch_1_json)
+        self.assertEqual(sorted(fetch_r.json(), key=comp), sorted(fetch_1_json, key=comp))
 
-        fetch_1_json=[report1]
+        fetch_1_json = [report_inventarisation, report_release, report_replenish, report_shipment, report_wsreplenish]
         print("fetch_warehouse_generic: ")
         fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "warehouse_generic"}, headers=self.headers)
         print("     " , fetch_r.json())
         print("excepted:" , fetch_1_json)
         self.assertEqual(fetch_r.status_code, 200)
-        self.assertEqual(fetch_r.json(), fetch_1_json)
+        self.assertEqual(sorted(fetch_r.json(), key=comp), sorted(fetch_1_json, key=comp))
 
-        fetch_1_json=[report1]
+        fetch_1_json=[report_inventarisation]
         print("fetch_inventarisation: ")
         fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "inventarisation"}, headers=self.headers)
         print("     " , fetch_r.json())
         print("excepted:" , fetch_1_json)
         self.assertEqual(fetch_r.status_code, 200)
-        self.assertEqual(fetch_r.json(), fetch_1_json)
+        self.assertEqual(sorted(fetch_r.json(), key=comp), sorted(fetch_1_json, key=comp))
 
-        fetch_1_json=[]
+        fetch_1_json=[report_release]
         print("fetch_release: ")
         fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "release"}, headers=self.headers)
         print("     " , fetch_r.json())
         print("excepted:" , fetch_1_json)
         self.assertEqual(fetch_r.status_code, 200)
-        self.assertEqual(fetch_r.json(), fetch_1_json)
-        
-        
-        
-  
-    
-    
-        
-        
+        self.assertEqual(sorted(fetch_r.json(), key=comp), sorted(fetch_1_json, key=comp))
+
+
         
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestReportAPI)

@@ -1,5 +1,6 @@
 package com.hexi.Cerberus.domain.report.factorysite;
 
+import com.hexi.Cerberus.application.report.service.DTO.details.ReportDetails;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
@@ -20,4 +21,6 @@ public interface WorkShiftReport extends FactorySiteReport {
     Map<Item, Integer> getLosses();
 
     void setLosses(Map<Item, Integer> lossesMap);
+
+    WareHouse getTargetWareHouse();
 }

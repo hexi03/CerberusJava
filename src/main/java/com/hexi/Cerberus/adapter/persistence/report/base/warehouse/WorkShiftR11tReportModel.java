@@ -5,19 +5,16 @@ import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.WorkShiftReportModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
-import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.warehouse.WorkShiftReplenishmentReport;
-import com.hexi.Cerberus.domain.warehouse.WareHouse;
-import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import jakarta.persistence.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 @Entity
 @Access(AccessType.FIELD)
-public class WorkShiftReplenishmentReportModel extends WareHouseReportModel implements ItemStorageOperationReport, WorkShiftReplenishmentReport {
+public class WorkShiftR11tReportModel extends WareHouseReportModel implements ItemStorageOperationReport, WorkShiftReplenishmentReport {
     @ManyToOne(cascade = CascadeType.ALL)
     WorkShiftReportModel workShiftReport;
     @OneToMany(cascade = CascadeType.ALL)
@@ -28,7 +25,7 @@ public class WorkShiftReplenishmentReportModel extends WareHouseReportModel impl
     @JoinTable(name = "work_shift_repl_report_unclaimed_remains_item_entry_assoc")
     Collection<ItemEntry> unclaimedRemains = new ArrayList<>();
 
-    public WorkShiftReplenishmentReportModel(
+    public WorkShiftR11tReportModel(
             ReportID id,
             WareHouseModel wareHouse,
             Date createdAt,
@@ -43,7 +40,7 @@ public class WorkShiftReplenishmentReportModel extends WareHouseReportModel impl
         this.workShiftReport = workShiftReport;
     }
 
-    public WorkShiftReplenishmentReportModel(
+    public WorkShiftR11tReportModel(
             ReportID id,
             WareHouseModel wareHouse,
             Date createdAt,
@@ -59,7 +56,7 @@ public class WorkShiftReplenishmentReportModel extends WareHouseReportModel impl
     }
 
 
-    private WorkShiftReplenishmentReportModel() {
+    private WorkShiftR11tReportModel() {
         super();
     }
 

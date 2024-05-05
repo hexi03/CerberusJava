@@ -78,4 +78,9 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
 
     }
 
+    @Override
+    public WareHouse getTargetWareHouse() {
+        return (WareHouse) targetWareHouse;
+    }
+
 }

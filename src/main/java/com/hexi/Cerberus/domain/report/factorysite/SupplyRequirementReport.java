@@ -1,5 +1,6 @@
 package com.hexi.Cerberus.domain.report.factorysite;
 
+import com.hexi.Cerberus.application.report.service.DTO.details.ReportDetails;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 
@@ -13,4 +14,5 @@ public interface SupplyRequirementReport extends FactorySiteReport {
 
     void setRequirements(Map<Item, Integer> reqMap);
 
+    WareHouse getTargetWareHouse();
 }

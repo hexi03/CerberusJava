@@ -9,25 +9,19 @@ import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.WorkShiftRe
 import com.hexi.Cerberus.adapter.persistence.report.base.warehouse.*;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.config.CerberusParameters;
-import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.repository.FactorySiteRepository;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
-import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportFactory;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.command.create.*;
-import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -85,51 +79,55 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 "Error while creating report: " +
                         String.format("Invalid target warehouse id: %s", cmd.getTargetWareHouseId().toString())
         ));
-
-        List<ProductModel> produced = cmd
+        Map<ProductModel, Integer> produced_map;
+        if (cmd.getRemains() == null)
+            produced_map = new HashMap<>();
+        else
+            produced_map = cmd
                 .getProduced()
                 .keySet()
                 .stream()
                 .map(productRepository::findByItemId)
                 .filter(Optional::isPresent)
                 .map(optional -> (ProductModel)optional.get())
-                .toList();
-        Map<ProductModel, Integer> produced_map = produced.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         item -> cmd.getProduced().get(item.getId()),
                         Integer::sum
                 ));
 
-        List<ItemModel> losses = cmd
-                .getProduced()
+        Map<ItemModel, Integer> losses_map;
+        if (cmd.getLosses() == null)
+            losses_map = new HashMap<>();
+        else
+            losses_map = cmd
+                    .getLosses()
+                    .keySet()
+                    .stream()
+                    .map(itemID -> itemRepository.findById(itemID))
+                    .filter(Optional::isPresent)
+                    .map(optional -> (ItemModel) optional.get())
+                    .collect(Collectors.toMap(
+                            Function.identity(),
+                            item -> cmd.getLosses().get(item.getId()),
+                            Integer::sum
+                    ));
+        Map<ItemModel, Integer>  remains_map;
+        if (cmd.getRemains() == null)
+            remains_map = new HashMap<>();
+        else
+            remains_map = cmd
+                .getRemains()
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
                 .filter(Optional::isPresent)
                 .map(optional -> (ItemModel) optional.get())
-                .toList();
-        Map<ItemModel, Integer> losses_map = losses.stream()
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        item -> cmd.getLosses().get(item.getId()),
-                        Integer::sum
-                ));
-
-        List<ItemModel> remains = cmd
-                .getProduced()
-                .keySet()
-                .stream()
-                .map(itemID -> itemRepository.findById(itemID))
-                .filter(Optional::isPresent)
-                .map(optional -> (ItemModel) optional.get())
-                .toList();
-        Map<ItemModel, Integer> remains_map = losses.stream()
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        item -> cmd.getLosses().get(item.getId()),
-                        Integer::sum
-                ));
+                    .collect(Collectors.toMap(
+                            Function.identity(),
+                            item -> cmd.getLosses().get(item.getId()),
+                            Integer::sum
+                    ));
 
         return new WorkShiftReportModel(
                 new ReportID(),
@@ -147,7 +145,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
     private Report createWorkShiftReplenishmentReport(CreateWorkShiftReplenishmentReportCmd cmd) {
         Optional<FactorySiteModel> factorySite;
         Optional<WareHouseModel> wareHouse;
-        List<ItemModel> items;
         Map<ItemModel, Integer> items_map;
 
         Optional<ReportModel> whReport = reportRepository.findById(cmd.getWorkShiftReportId());
@@ -168,37 +165,37 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
         ));
 
-        items = cmd
+        items_map = cmd
                 .getItems()
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
                 .filter(Optional::isPresent)
                 .map(optional -> (ItemModel) optional.get())
-                .toList();
-        items_map = items.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         item -> cmd.getItems().get(item.getId()),
                         Integer::sum
                 ));
+        Map<ItemModel, Integer> unclaimedRemainsMap;
 
-        List<ItemModel> unclaimedRemains = cmd
+        if (cmd.getUnclaimedRemains() == null)
+            unclaimedRemainsMap = new HashMap<>();
+        else
+            unclaimedRemainsMap = cmd
                 .getUnclaimedRemains()
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
                 .filter(Optional::isPresent)
                 .map(optional -> (ItemModel) optional.get())
-                .toList();
-        Map<ItemModel, Integer> unclaimedRemainsMap = unclaimedRemains.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         item -> cmd.getUnclaimedRemains().get(item.getId()),
                         Integer::sum
                 ));
 
-        return new WorkShiftReplenishmentReportModel(
+        return new WorkShiftR11tReportModel(
                 new ReportID(),
                 wareHouse.get(),
                 new Date(),
@@ -212,7 +209,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
 
     private Report createReplenishmentReport(CreateReplenishmentReportCmd cmd) {
         Optional<WareHouseModel> wareHouse;
-        List<ItemModel> items;
         Map<ItemModel, Integer> items_map;
 
         wareHouse = wareHouseRepository.findById(cmd.getWareHouseId());
@@ -221,15 +217,13 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
         ));
 
-        items = cmd
+        items_map = cmd
                 .getItems()
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
                 .filter(Optional::isPresent)
                 .map(optional -> (ItemModel) optional.get())
-                .toList();
-        items_map = items.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         item -> cmd.getItems().get(item.getId()),
@@ -249,7 +243,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
     private Report createReleaseReport(CreateReleaseReportCmd cmd) {
 
         Optional<WareHouseModel> wareHouse;
-        List<ItemModel> items;
         Map<ItemModel, Integer> items_map;
 
         Optional<ReportModel> sqReport = reportRepository.findById(cmd.getSupplyReqReportId());
@@ -264,15 +257,13 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
         ));
 
-        items = cmd
+        items_map = cmd
                 .getItems()
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
                 .filter(Optional::isPresent)
                 .map(optional -> (ItemModel) optional.get())
-                .toList();
-        items_map = items.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         item -> cmd.getItems().get(item.getId()),
@@ -292,7 +283,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
 
     private Report createShipmentReport(CreateShipmentReportCmd cmd) {
         Optional<WareHouseModel> wareHouse;
-        List<ItemModel> items;
         Map<ItemModel, Integer> items_map;
 
         wareHouse = wareHouseRepository.findById(cmd.getWareHouseId());
@@ -301,15 +291,13 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
         ));
 
-        items = cmd
+        items_map = cmd
                 .getItems()
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
                 .filter(Optional::isPresent)
                 .map(optional -> (ItemModel) optional.get())
-                .toList();
-        items_map = items.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         item -> cmd.getItems().get(item.getId()),
@@ -328,7 +316,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
 
     private Report createInventarisationReport(CreateInventarisationReportCmd cmd) {
         Optional<WareHouseModel> wareHouse;
-        List<ItemModel> items;
         Map<ItemModel, Integer> items_map;
 
         wareHouse = wareHouseRepository.findById(cmd.getWareHouseId());
@@ -337,15 +324,13 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
         ));
 
-        items = cmd
+        items_map = cmd
                 .getItems()
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
                 .filter(Optional::isPresent)
                 .map(optional -> (ItemModel) optional.get())
-                .toList();
-        items_map = items.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         item -> cmd.getItems().get(item.getId()),
@@ -364,7 +349,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
     private Report createSupplyRequirementReport(CreateSupplyRequirementReportCmd cmd) {
         Optional<FactorySiteModel> factorySite;
         Optional<WareHouseModel> wareHouse;
-        List<ItemModel> items;
         Map<ItemModel, Integer> items_map;
 
         factorySite = factorySiteRepository.findById(cmd.getFactorySiteID());
@@ -379,15 +363,13 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         String.format("Invalid target warehouse id: %s", cmd.getTargetWareHouseId().toString())
         ));
 
-        items = cmd
+        items_map = cmd
                 .getItems()
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
                 .filter(Optional::isPresent)
                 .map(optional -> (ItemModel) optional.get())
-                .toList();
-        items_map = items.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         item -> cmd.getItems().get(item.getId()),

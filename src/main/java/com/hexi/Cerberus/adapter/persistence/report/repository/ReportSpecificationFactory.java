@@ -49,7 +49,7 @@ public class ReportSpecificationFactory {
         if (base == InventarisationReport.class) return InventarisationReportModel.class;
         if (base == ShipmentReport.class) return ShipmentReportModel.class;
         if (base == ReplenishmentReport.class) return ReplenishmentReportModel.class;
-        if (base == WorkShiftReplenishmentReport.class) return WorkShiftReplenishmentReportModel.class;
+        if (base == WorkShiftReplenishmentReport.class) return WorkShiftR11tReportModel.class;
         if (base == ReleaseReport.class) return ReleaseReportModel.class;
         if (base == WareHouseReport.class) return WareHouseReportModel.class;
         if (base == Report.class) return ReportModel.class;
@@ -404,7 +404,7 @@ public class ReportSpecificationFactory {
     private static Specification<ReportModel> workShiftReplenishmentReportFilter(WorkShiftReplenishmentReportFilterCriteria filterCriteria) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            Root<WorkShiftReplenishmentReportModel> root1 = criteriaBuilder.treat(root, WorkShiftReplenishmentReportModel.class);
+            Root<WorkShiftR11tReportModel> root1 = criteriaBuilder.treat(root, WorkShiftR11tReportModel.class);
             if (filterCriteria.getTargetFactorySiteId() != null) {
                 Predicate factorySitePredicate = criteriaBuilder.equal(root1.get("workShiftReport").get("factorySite").get("id"), filterCriteria.getTargetFactorySiteId());
                 predicates.add(factorySitePredicate);

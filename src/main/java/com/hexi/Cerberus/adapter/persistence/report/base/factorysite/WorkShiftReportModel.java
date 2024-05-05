@@ -130,4 +130,9 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
                 .entrySet()
                 .stream().map(entry -> new ItemEntry((ItemModel) entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
+
+    @Override
+    public WareHouse getTargetWareHouse() {
+        return (WareHouse) targetWareHouseId;
+    }
 }
