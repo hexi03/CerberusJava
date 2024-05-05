@@ -2,6 +2,7 @@ package com.hexi.Cerberus.adapter.persistence.warehouse.base;
 
 import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
 import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
+import com.hexi.Cerberus.adapter.persistence.report.base.warehouse.WareHouseReportModel;
 import com.hexi.Cerberus.domain.department.Department;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
@@ -35,6 +36,8 @@ public class WareHouseModel extends WareHouse {
             joinColumns = @JoinColumn(name = "warehouse_id"),
             inverseJoinColumns = @JoinColumn(name = "factorysite_id"))
     private Collection<FactorySiteModel> consumers;
+
+
 
     @Deprecated
     private WareHouseModel() {

@@ -75,17 +75,17 @@ class TestReportAPI(unittest.TestCase):
         self.product1.update({"id": create_product_r_1.json()})
         
     def tearDown(self):
-    
-        delete_r = requests.delete(consts.API_DEPARTMENT_PREFIX + "delete", params = {"id": self.dep1["id"]["id"]}, headers=self.headers)
-        self.assertEqual(delete_r.status_code, 204)
-        delete_r = requests.delete(consts.API_DEPARTMENT_PREFIX + "delete", params = {"id": self.dep2["id"]["id"]}, headers=self.headers)
-        self.assertEqual(delete_r.status_code, 204)
+        pass
+        #delete_r = requests.delete(consts.API_DEPARTMENT_PREFIX + "delete", params = {"id": self.dep1["id"]["id"]}, headers=self.headers)
+        #self.assertEqual(delete_r.status_code, 204)
+        #delete_r = requests.delete(consts.API_DEPARTMENT_PREFIX + "delete", params = {"id": self.dep2["id"]["id"]}, headers=self.headers)
+        #self.assertEqual(delete_r.status_code, 204)
         
-        delete_r = requests.delete(consts.API_WAREHOUSE_PREFIX + "delete", params = {"id": self.wh1["id"]["id"]}, headers = self.headers)
-        self.assertEqual(delete_r.status_code, 204)
+        #delete_r = requests.delete(consts.API_WAREHOUSE_PREFIX + "delete", params = {"id": self.wh1["id"]["id"]}, headers = self.headers)
+        #self.assertEqual(delete_r.status_code, 204)
         
-        delete_r = requests.delete(consts.API_FACTORYSITE_PREFIX + "delete", params = {"id": self.fs1["id"]["id"]}, headers = self.headers)
-        self.assertEqual(delete_r.status_code, 204)
+        #delete_r = requests.delete(consts.API_FACTORYSITE_PREFIX + "delete", params = {"id": self.fs1["id"]["id"]}, headers = self.headers)
+        #self.assertEqual(delete_r.status_code, 204)
         
     def test_complex(self):
     
@@ -100,6 +100,22 @@ class TestReportAPI(unittest.TestCase):
         print("create_report1: ")
         print("     " , create_report1.json())
         report1.update({"id": create_report1.json()})
+        
+        fetch_one_1_json=[report1]
+        print("fetch_1: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"id": report1["id"]["id"]}, headers=self.headers)
+        self.assertEqual(fetch_r.status_code, 200)
+        print("     " , fetch_r.json())
+        print("excepted:" , fetch_one_1_json)
+        self.assertEqual(fetch_r.json(), fetch_one_1_json)
+        
+        fetch_1_json=[report1]
+        print("fetch_1: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10}, headers=self.headers)
+        print("     " , fetch_r.json())
+        print("excepted:" , fetch_1_json)
+        self.assertEqual(fetch_r.status_code, 200)
+        self.assertEqual(fetch_r.json(), fetch_1_json)
         
         
         

@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class ReportSpecificationBuilder {
+public class ReportSpecificationFactory {
 
     private static EntityManager manager;
 
@@ -452,16 +452,16 @@ public class ReportSpecificationBuilder {
 
     @SneakyThrows
     public static Specification<ReportModel> getSpec(Query domainQuery) {
-        if (domainQuery.getTargetEntity() == SupplyRequirementReport.class) return ( ReportSpecificationBuilder.genericSupplyRequirementReport(domainQuery));
-        if (domainQuery.getTargetEntity() == WorkShiftReport.class) return ( ReportSpecificationBuilder.genericSupplyRequirementReport(domainQuery));
-        if (domainQuery.getTargetEntity() == FactorySiteReport.class) return ( ReportSpecificationBuilder.genericFactorySiteReport(domainQuery));
-        if (domainQuery.getTargetEntity() == InventarisationReport.class) return ( ReportSpecificationBuilder.genericInventarisationReport(domainQuery));
-        if (domainQuery.getTargetEntity() == ShipmentReport.class) return ( ReportSpecificationBuilder.genericShipmentReport(domainQuery));
-        if (domainQuery.getTargetEntity() == ReplenishmentReport.class) return ( ReportSpecificationBuilder.genericReplenishmentReport(domainQuery));
-        if (domainQuery.getTargetEntity() == WorkShiftReplenishmentReport.class) return ( ReportSpecificationBuilder.genericWorkShiftReplenishmentReport(domainQuery));
-        if (domainQuery.getTargetEntity() == ReleaseReport.class) return  ( ReportSpecificationBuilder.genericReleaseReport(domainQuery));
-        if (domainQuery.getTargetEntity() == WareHouseReport.class) return ( ReportSpecificationBuilder.genericWareHouseReport(domainQuery));
-        if (domainQuery.getTargetEntity() == Report.class) return ( ReportSpecificationBuilder.genericReport(domainQuery));
+        if (domainQuery.getTargetEntity() == SupplyRequirementReport.class) return ( ReportSpecificationFactory.genericSupplyRequirementReport(domainQuery));
+        if (domainQuery.getTargetEntity() == WorkShiftReport.class) return ( ReportSpecificationFactory.genericSupplyRequirementReport(domainQuery));
+        if (domainQuery.getTargetEntity() == FactorySiteReport.class) return ( ReportSpecificationFactory.genericFactorySiteReport(domainQuery));
+        if (domainQuery.getTargetEntity() == InventarisationReport.class) return ( ReportSpecificationFactory.genericInventarisationReport(domainQuery));
+        if (domainQuery.getTargetEntity() == ShipmentReport.class) return ( ReportSpecificationFactory.genericShipmentReport(domainQuery));
+        if (domainQuery.getTargetEntity() == ReplenishmentReport.class) return ( ReportSpecificationFactory.genericReplenishmentReport(domainQuery));
+        if (domainQuery.getTargetEntity() == WorkShiftReplenishmentReport.class) return ( ReportSpecificationFactory.genericWorkShiftReplenishmentReport(domainQuery));
+        if (domainQuery.getTargetEntity() == ReleaseReport.class) return  ( ReportSpecificationFactory.genericReleaseReport(domainQuery));
+        if (domainQuery.getTargetEntity() == WareHouseReport.class) return ( ReportSpecificationFactory.genericWareHouseReport(domainQuery));
+        if (domainQuery.getTargetEntity() == Report.class) return ( ReportSpecificationFactory.genericReport(domainQuery));
         throw new ExecutionControl.NotImplementedException("");
     }
 

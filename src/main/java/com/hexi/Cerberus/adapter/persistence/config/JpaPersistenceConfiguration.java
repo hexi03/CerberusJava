@@ -12,7 +12,7 @@ import com.hexi.Cerberus.adapter.persistence.product.factory.JpaProductFactoryIm
 import com.hexi.Cerberus.adapter.persistence.product.repository.JpaProductRepository;
 import com.hexi.Cerberus.adapter.persistence.report.factory.JpaReportFactoryImpl;
 import com.hexi.Cerberus.adapter.persistence.report.repository.JpaReportRepository;
-import com.hexi.Cerberus.adapter.persistence.report.repository.ReportSpecificationBuilder;
+import com.hexi.Cerberus.adapter.persistence.report.repository.ReportSpecificationFactory;
 import com.hexi.Cerberus.adapter.persistence.user.factory.JpaUserFactoryImpl;
 import com.hexi.Cerberus.adapter.persistence.user.repository.JpaUserRepository;
 import com.hexi.Cerberus.adapter.persistence.warehouse.factory.JpaWareHouseFactoryImpl;
@@ -21,7 +21,6 @@ import com.hexi.Cerberus.adapter.persistence.warehouse.repository.JpaWareHouseRe
 import com.hexi.Cerberus.domain.department.DepartmentFactory;
 import com.hexi.Cerberus.domain.department.DepartmentID;
 import com.hexi.Cerberus.domain.department.repository.DepartmentRepository;
-import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteFactory;
 import com.hexi.Cerberus.domain.factorysite.repository.FactorySiteRepository;
 import com.hexi.Cerberus.domain.group.GroupFactory;
@@ -34,7 +33,6 @@ import com.hexi.Cerberus.domain.report.ReportFactory;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.user.UserFactory;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
-import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseFactory;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.zaxxer.hikari.HikariConfig;
@@ -43,13 +41,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -200,7 +196,7 @@ public class JpaPersistenceConfiguration {
 
     @Bean
     public ReportRepository reportRepository(JpaReportRepository rep, EntityManager entityManager) {
-        ReportSpecificationBuilder.setManager(entityManager);
+        ReportSpecificationFactory.setManager(entityManager);
         return rep;
     }
 

@@ -31,19 +31,18 @@ public class ReportController {
     //FetchOne and FetchAll Combined
     @GetMapping("/fetch")
     public ResponseEntity<List<ReportDetails>> fetch(
-            @PathVariable(required = false) ReportID id,
-            @PathVariable(required = false) ReportID key,
-            @PathVariable(required = false) Integer count,
-            @PathVariable(required = false) Boolean descending,
-            @PathVariable(required = false) String sortBy,
-            @PathVariable(required = false) String typeCriteria
+            @RequestParam(required = false) ReportID id,
+            @RequestParam(required = false) ReportID key,
+            @RequestParam(required = false) Integer count,
+            @RequestParam(required = false) boolean descending,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String typeCriteria
     ) {
 
 
         List<ReportDetails> reportDetails;
 
         if (id == null) {
-            log.debug(id.toString());
             // Fetch all reports with pagination and sorting
 
 

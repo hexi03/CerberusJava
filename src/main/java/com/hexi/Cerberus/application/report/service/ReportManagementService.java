@@ -22,5 +22,5 @@ public interface ReportManagementService {
 
     Optional<ReportDetails> fetchById(ReportID id);
 
-    List<ReportDetails> fetch(ReportID key, Integer count, Boolean descending, String sortBy, String typeCriteria);
+    List<ReportDetails> fetch(ReportID key, Integer count, boolean descending, String sortBy, String typeCriteria);
 }

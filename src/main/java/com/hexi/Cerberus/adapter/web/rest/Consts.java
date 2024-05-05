@@ -9,5 +9,8 @@ public class Consts {
     public static final String REPORT_FS_WORKSHIFT = "workshift";
     public static final String REPORT_FS_SUPPLY_REQUIREMENT = "supplyrequirement";
 
+    public static final String REPORT_WAREHOUSE = "warehouse_generic";
+    public static final String REPORT_FACTORYSITE = "factorysite_generic";
+
 
 }

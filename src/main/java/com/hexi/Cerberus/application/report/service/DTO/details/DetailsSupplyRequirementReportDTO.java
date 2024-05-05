@@ -15,6 +15,7 @@ import java.util.Map;
 @SuperBuilder
 @JsonTypeName(Consts.REPORT_FS_SUPPLY_REQUIREMENT)
 public class DetailsSupplyRequirementReportDTO extends ReportDetailsDTO {
+    public final String type = Consts.REPORT_FS_SUPPLY_REQUIREMENT;
     FactorySiteID factorySiteID;
     WareHouseID targetWareHouseId;
     Map<ItemID, Integer> items;

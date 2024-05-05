@@ -15,6 +15,7 @@ import java.util.Map;
 @SuperBuilder
 @JsonTypeName(Consts.REPORT_FS_WORKSHIFT)
 public class DetailsWorkShiftReportDTO extends ReportDetailsDTO {
+    public final String type = Consts.REPORT_FS_WORKSHIFT;
     FactorySiteID factorySiteId;
     WareHouseID targetWareHouseId;
     Map<ItemID, Integer> produced;

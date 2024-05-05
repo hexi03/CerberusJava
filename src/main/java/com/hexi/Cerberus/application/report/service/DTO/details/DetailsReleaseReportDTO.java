@@ -15,6 +15,7 @@ import java.util.Map;
 @SuperBuilder
 @JsonTypeName(Consts.REPORT_WH_RELEASE)
 public class DetailsReleaseReportDTO extends ReportDetailsDTO {
+    public final String type = Consts.REPORT_WH_RELEASE;
     WareHouseID wareHouseId;
     ReportID supplyReqReportId;
     Map<ItemID, Integer> items;

@@ -16,6 +16,7 @@ import java.util.Map;
 @SuperBuilder
 @JsonTypeName(Consts.REPORT_WH_WORKSHIFT_REPLENISHMENT)
 public class DetailsWorkShiftReplenishmentReportDTO extends ReportDetailsDTO {
+    public final String type = Consts.REPORT_WH_WORKSHIFT_REPLENISHMENT;
     WareHouseID wareHouseId;
     ReportID workShiftReportId;
     Map<ItemID, Integer> items;

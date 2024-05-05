@@ -21,11 +21,11 @@ public class WorkShiftReplenishmentReportModel extends WareHouseReportModel impl
     @ManyToOne(cascade = CascadeType.ALL)
     WorkShiftReportModel workShiftReport;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "work_shift_replenishment_report_items_product_entry_assoc")
+    @JoinTable(name = "work_shift_repl_report_items_product_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();
     //Невостребованные остатки на возврат
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "work_shift_replenishment_report_unclaimed_remains_item_entry_assoc")
+    @JoinTable(name = "work_shift_repl_report_unclaimed_remains_item_entry_assoc")
     Collection<ItemEntry> unclaimedRemains = new ArrayList<>();
 
     public WorkShiftReplenishmentReportModel(
