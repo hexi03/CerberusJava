@@ -80,14 +80,14 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         String.format("Invalid target warehouse id: %s", cmd.getTargetWareHouseId().toString())
         ));
         Map<ProductModel, Integer> produced_map;
-        if (cmd.getRemains() == null)
+        if (cmd.getProduced() == null)
             produced_map = new HashMap<>();
         else
             produced_map = cmd
                 .getProduced()
                 .keySet()
                 .stream()
-                .map(productRepository::findByItemId)
+                .map(productRepository::findById)
                 .filter(Optional::isPresent)
                 .map(optional -> (ProductModel)optional.get())
                 .collect(Collectors.toMap(
@@ -95,6 +95,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         item -> cmd.getProduced().get(item.getId()),
                         Integer::sum
                 ));
+
 
         Map<ItemModel, Integer> losses_map;
         if (cmd.getLosses() == null)
@@ -125,7 +126,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 .map(optional -> (ItemModel) optional.get())
                     .collect(Collectors.toMap(
                             Function.identity(),
-                            item -> cmd.getLosses().get(item.getId()),
+                            item -> cmd.getRemains().get(item.getId()),
                             Integer::sum
                     ));
 

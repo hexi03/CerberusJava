@@ -174,19 +174,18 @@ public class ReportModifier {
     public void updateBy(WorkShiftReport workShiftReport, UpdateWorkShiftReportCmd cmd) {
         Optional<WareHouse> targetWareHouse = wareHouseRepository.findById(cmd.getTargetWareHouseId());
 
-        List<Product> produced = cmd
+        Map<Product, Integer> producedMap= cmd
                 .getProduced()
                 .keySet()
                 .stream()
                 .map(productRepository::findById)
                 .filter(Optional::isPresent)
                 .map(item -> (Product) item.get())
-                .toList();
-        Map<Product, Integer> producedMap = produced.stream().collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getProduced().get(item.getId()),
-                Integer::sum
-        ));
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        item -> cmd.getProduced().get(item.getId()),
+                        Integer::sum
+                ));
 
 
         List<Item> losses = cmd

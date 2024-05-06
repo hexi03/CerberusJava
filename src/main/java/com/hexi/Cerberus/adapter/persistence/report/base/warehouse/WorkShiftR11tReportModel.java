@@ -95,4 +95,9 @@ public class WorkShiftR11tReportModel extends WareHouseReportModel implements It
                         )
                 );
     }
+
+    @Override
+    public WorkShiftReport getWorkShiftReport() {
+        return (WorkShiftReport) workShiftReport;
+    }
 }

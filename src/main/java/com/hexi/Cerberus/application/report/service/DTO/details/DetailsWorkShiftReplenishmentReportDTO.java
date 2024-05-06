@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
-
+@Data
 @SuperBuilder
 @JsonTypeName(Consts.REPORT_WH_WORKSHIFT_REPLENISHMENT)
 public class DetailsWorkShiftReplenishmentReportDTO extends ReportDetailsDTO {

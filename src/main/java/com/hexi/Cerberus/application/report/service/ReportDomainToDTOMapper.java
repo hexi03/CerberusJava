@@ -4,6 +4,7 @@ import com.hexi.Cerberus.application.report.service.DTO.details.*;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.product.Product;
+import com.hexi.Cerberus.domain.product.ProductID;
 import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
@@ -31,15 +32,15 @@ public interface ReportDomainToDTOMapper {
                 ).collect(Collectors.toMap(o -> (ItemID) o.getKey(), o -> (Integer) o.getValue()));
     }
 
-    default Map<ItemID, Integer> toProductItemIdMap(Map<Product, Integer> items) {
+    default Map<ProductID, Integer> toProductItemIdMap(Map<Product, Integer> items) {
         return items.entrySet()
                 .stream()
                 .map(itemIntegerEntry ->
                         new AbstractMap.SimpleEntry(
-                                itemIntegerEntry.getKey().getProduction().getId(),
+                                itemIntegerEntry.getKey().getId(), //getProduction() deleted
                                 itemIntegerEntry.getValue()
                         )
-                ).collect(Collectors.toMap(o -> (ItemID) o.getKey(), o -> (Integer) o.getValue()));
+                ).collect(Collectors.toMap(o -> (ProductID) o.getKey(), o -> (Integer) o.getValue()));
     }
 
     default ReportDetails toReportDetails(Report report) {
@@ -57,6 +58,7 @@ public interface ReportDomainToDTOMapper {
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
                     .wareHouseId(report1.getWareHouse().getId())
+                    .supplyReqReportId(report1.getSupplyReqReport().getId())
                     .items(toItemIdMap(report1.getItems()))
                     .build();
         } else if (report instanceof ReplenishmentReport report1 ) {
@@ -73,6 +75,7 @@ public interface ReportDomainToDTOMapper {
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
                     .wareHouseId(report1.getWareHouse().getId())
+                    .workShiftReportId(report1.getWorkShiftReport().getId())
                     .items(toItemIdMap(report1.getItems()))
                     .unclaimedRemains(toItemIdMap(report1.getUnclaimedRemains()))
                     .build();
@@ -100,7 +103,7 @@ public interface ReportDomainToDTOMapper {
                     .id(report1.getId())
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
-                    .factorySiteID(report1.getFactorySite().getId())
+                    .factorySiteId(report1.getFactorySite().getId())
                     .targetWareHouseId(report1.getTargetWareHouse().getId())
                     .items(toItemIdMap(report1.getRequirements()))
                     .build();

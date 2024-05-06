@@ -76,4 +76,9 @@ public class ReleaseReportModel extends WareHouseReportModel implements ItemStor
     public void setItems(Map<Item, Integer> reqMap) {
         this.items = reqMap.entrySet().stream().map(entry -> new ItemEntry((ItemModel)entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
+
+    @Override
+    public SupplyRequirementReport getSupplyReqReport() {
+        return (SupplyRequirementReport) supplyReqReport;
+    }
 }

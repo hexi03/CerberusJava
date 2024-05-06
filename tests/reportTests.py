@@ -150,8 +150,9 @@ class TestReportAPI(unittest.TestCase):
             "type":"workshift",
             "factorySiteId": self.fs1["id"],
             "targetWareHouseId" : self.wh1["id"],
-            "produced": {self.item1["id"]["id"] : 1},
-            "losses": {self.item2["id"]["id"]: 2}
+            "produced": {self.product1["id"]["id"] : 1},
+            "losses": {self.item2["id"]["id"]: 2},
+            'remains': {}
         }
         print(report_work_shift)
         create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report_work_shift, headers=self.headers)
@@ -165,7 +166,8 @@ class TestReportAPI(unittest.TestCase):
             "type":"workshiftreplenishment",
             "workShiftReportId" : report_work_shift["id"],
             "wareHouseId": self.wh1["id"],
-            "items": {self.item2["id"]["id"]: 2}
+            "items": {self.item2["id"]["id"]: 2},
+            'unclaimedRemains': {}
         }
         print(report_wsreplenish)
         create_report1 = requests.post(consts.API_REPORT_PREFIX + "append", json = report_wsreplenish, headers=self.headers)

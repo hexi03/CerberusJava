@@ -22,4 +22,5 @@ public interface JpaProductRepository<T extends ProductModel,ID extends ProductI
     }
     @org.springframework.data.jpa.repository.Query("SELECT p FROM ProductModel p WHERE p.producedItem.id = :itemId")
     Optional<ProductModel> findByItemId(@Param("itemId") ItemID itemID);
+    Optional<ProductModel> findByProducedItem(ItemID itemID);
 }
