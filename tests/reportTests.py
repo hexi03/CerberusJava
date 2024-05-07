@@ -2,6 +2,7 @@ import unittest
 import consts
 import auth
 import requests
+import functools as ft
 class TestReportAPI(unittest.TestCase):
     dep1 = {}
     dep2 = {}
@@ -213,6 +214,14 @@ class TestReportAPI(unittest.TestCase):
         self.assertEqual(fetch_r.status_code, 200)
         self.assertEqual(sorted(fetch_r.json(), key=comp), sorted(fetch_1_json, key=comp))
 
+        fetch_1_json = [report_supply_req, report_work_shift]
+        print("fetch_factorysite_generic: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "factorysite_generic"}, headers=self.headers)
+        print("     " , fetch_r.json())
+        print("excepted:" , fetch_1_json)
+        self.assertEqual(fetch_r.status_code, 200)
+        self.assertEqual(sorted(fetch_r.json(), key=comp), sorted(fetch_1_json, key=comp))
+
         fetch_1_json=[report_inventarisation]
         print("fetch_inventarisation: ")
         fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "inventarisation"}, headers=self.headers)
@@ -229,6 +238,32 @@ class TestReportAPI(unittest.TestCase):
         self.assertEqual(fetch_r.status_code, 200)
         self.assertEqual(sorted(fetch_r.json(), key=comp), sorted(fetch_1_json, key=comp))
 
+        fetch_1_json = [report_inventarisation, report_release, report_replenish, report_shipment, report_supply_req, report_work_shift, report_wsreplenish]
+        print("fetch_generics_limit 5: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 5}, headers=self.headers)
+        print("     " , sorted(fetch_r.json(), key=comp))
+
+        self.assertEqual(len(fetch_r.json()), 5)
+        self.assertEqual(fetch_r.status_code, 200)
+        #self.assertEqual(reduce(True, fetch_r.json(), key=comp), sorted(fetch_1_json, key=comp))
+
+
+        fetch_1_json = [report_inventarisation, report_release, report_replenish, report_shipment, report_wsreplenish]
+        print("fetch_warehouse_generic_limit 3: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 3, "typeCriteria": "warehouse_generic"}, headers=self.headers)
+        print("     " , fetch_r.json())
+        self.assertEqual(fetch_r.status_code, 200)
+        self.assertEqual(len(fetch_r.json()), 3)
+        self.assertEqual(ft.reduce(lambda a,rep: a and (rep in fetch_1_json), fetch_r.json(), True), True)
+
+        key1 = fetch_r.json()[-1]["id"]["id"]
+        fetch_1_json = [report_inventarisation, report_release, report_replenish, report_shipment, report_wsreplenish]
+        print("fetch_warehouse_generic_limit_3_key: " + key1)
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 3, "typeCriteria": "warehouse_generic", "key": key1}, headers=self.headers)
+        print("     " , fetch_r.json())
+        self.assertEqual(fetch_r.status_code, 200)
+        self.assertEqual(len(fetch_r.json()), 2)
+        self.assertEqual(ft.reduce(lambda a,rep: a and (rep in fetch_1_json), fetch_r.json(), True), True)
 
         
 if __name__ == '__main__':

@@ -5,8 +5,8 @@ import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.FactorySite
 import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.SupplyRequirementReportModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.WorkShiftReportModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.warehouse.*;
-import com.hexi.Cerberus.domain.department.DepartmentID;
 import com.hexi.Cerberus.domain.report.Report;
+import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.FactorySiteReport;
 import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
@@ -63,7 +63,7 @@ public class ReportSpecificationFactory {
         if (query.getPagingCriteria() != null && query.getPagingCriteria().getKey() != null) {
             //пейджинг
             PagingCriteria pagingCriteria = query.getPagingCriteria();
-            DepartmentID lastKey = (DepartmentID) pagingCriteria.getKey();
+            ReportID lastKey = (ReportID) pagingCriteria.getKey();
             ScrollPosition.Direction direction = pagingCriteria.getDirection() == PagingCriteria.Direction.FORWARD ? ScrollPosition.Direction.FORWARD : ScrollPosition.Direction.BACKWARD;
 
             // Создание KeysetScrollSpecification с указанием последнего ключевого набора и направления пагинации

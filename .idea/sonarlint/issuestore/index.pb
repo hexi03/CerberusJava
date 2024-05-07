@@ -609,3 +609,7 @@ dsrc/main/java/com/hexi/Cerberus/application/report/service/DTO/details/DetailsS
 msrc/main/java/com/hexi/Cerberus/application/report/service/DTO/details/DetailsSupplyRequirementReportDTO.java,c/4/c4e8ac02a0258091462c90be007d548539c4e0ba
 ‰
 Ysrc/main/java/com/hexi/Cerberus/application/report/service/DTO/details/ReportDetails.java,1/7/172adf2fe993b2ef099f0d2add633927200eaf34
+“
+csrc/main/java/com/hexi/Cerberus/application/report/service/DTO/update/UpdateWorkShiftReportDTO.java,c/9/c9c359f84e7a8ae784f87c6e1c5c06644d507634
+u
+Esrc/main/java/com/hexi/Cerberus/adapter/web/config/JacksonConfig.java,9/a/9a78654eee01e919809ea586fb653b107fdaa664
