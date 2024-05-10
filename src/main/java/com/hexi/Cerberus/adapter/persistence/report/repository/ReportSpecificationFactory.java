@@ -18,8 +18,10 @@ import com.hexi.Cerberus.infrastructure.query.PagingCriteria;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonContainer;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.ScrollPosition;
@@ -60,19 +62,7 @@ public class ReportSpecificationFactory {
     public static Specification<ReportModel> genericReport(Query query) {
 
         Specification<ReportModel> spec = instanceFilter(query.getTargetEntity());
-        if (query.getPagingCriteria() != null && query.getPagingCriteria().getKey() != null) {
-            //пейджинг
-            PagingCriteria pagingCriteria = query.getPagingCriteria();
-            ReportID lastKey = (ReportID) pagingCriteria.getKey();
-            ScrollPosition.Direction direction = pagingCriteria.getDirection() == PagingCriteria.Direction.FORWARD ? ScrollPosition.Direction.FORWARD : ScrollPosition.Direction.BACKWARD;
 
-            // Создание KeysetScrollSpecification с указанием последнего ключевого набора и направления пагинации
-            spec = new KeysetScrollSpecification(
-                    ScrollPosition.of(Map.of("id", lastKey), direction),
-                    Sort.unsorted(),
-                    JpaEntityInformationSupport.getEntityInformation(getModelClass(query.getTargetEntity().asSubclass(Report.class)), manager)
-            );
-        }
 
 
         // Применяем фильтр
@@ -85,6 +75,46 @@ public class ReportSpecificationFactory {
             spec = spec.and(reportSort((ReportSortCriteria)query.getSortCriteria()));
         }
         return spec;
+    }
+
+    private static Specification<ReportModel> getPagingSpecification(Query query) {
+        if (query.getPagingCriteria() != null && query.getPagingCriteria().getKey() != null) {
+            //пейджинг
+            PagingCriteria pagingCriteria = query.getPagingCriteria();
+            ReportID lastKey = (ReportID) pagingCriteria.getKey();
+            PagingCriteria.Direction dir = pagingCriteria.getDirection();
+            return getPgsqlTidPointingSpecification(lastKey, dir);
+
+//            ScrollPosition.Direction direction = pagingCriteria.getDirection() == PagingCriteria.Direction.FORWARD ? ScrollPosition.Direction.FORWARD : ScrollPosition.Direction.BACKWARD;
+//
+//            // Создание KeysetScrollSpecification с указанием последнего ключевого набора и направления пагинации
+//            return new KeysetScrollSpecification(
+//                    ScrollPosition.of(Map.of("id", lastKey), direction),
+//                    Sort.unsorted(),
+//                    JpaEntityInformationSupport.getEntityInformation(getModelClass(query.getTargetEntity().asSubclass(Report.class)), manager)
+//            );
+        }
+        return Specification.where(null);
+    }
+
+
+    public static Specification<ReportModel> getPgsqlTidPointingSpecification(ReportID key, PagingCriteria.Direction dir) {
+        return (root, query, criteriaBuilder) -> {
+                // Создаем подзапрос для получения tid записи с указанным key
+
+            Subquery<Long> subquery = query.subquery(Long.class);
+            // Определяем Root для Subquery
+            Root<ReportModel> subqueryRoot = subquery.from(ReportModel.class);
+            subquery.select(criteriaBuilder.function("get_ctid", Long.class)).where(criteriaBuilder.equal(subqueryRoot.get("id"), key));
+
+            // Возвращаем условие для выбора записей с tid больше полученного tid из подзапроса
+
+            if (dir == PagingCriteria.Direction.FORWARD)
+                return criteriaBuilder.greaterThan(criteriaBuilder.function("get_ctid", Long.class), subquery);
+            else
+                return criteriaBuilder.lessThan(criteriaBuilder.function("get_ctid", Long.class), subquery);
+
+        };
     }
 
     private static Specification<ReportModel> instanceFilter(Class<? extends Entity> targetEntity) {
@@ -457,17 +487,21 @@ public class ReportSpecificationFactory {
 
     @SneakyThrows
     public static Specification<ReportModel> getSpec(Query domainQuery) {
-        if (domainQuery.getTargetEntity() == SupplyRequirementReport.class) return ( ReportSpecificationFactory.genericSupplyRequirementReport(domainQuery));
-        if (domainQuery.getTargetEntity() == WorkShiftReport.class) return ( ReportSpecificationFactory.genericSupplyRequirementReport(domainQuery));
-        if (domainQuery.getTargetEntity() == FactorySiteReport.class) return ( ReportSpecificationFactory.genericFactorySiteReport(domainQuery));
-        if (domainQuery.getTargetEntity() == InventarisationReport.class) return ( ReportSpecificationFactory.genericInventarisationReport(domainQuery));
-        if (domainQuery.getTargetEntity() == ShipmentReport.class) return ( ReportSpecificationFactory.genericShipmentReport(domainQuery));
-        if (domainQuery.getTargetEntity() == ReplenishmentReport.class) return ( ReportSpecificationFactory.genericReplenishmentReport(domainQuery));
-        if (domainQuery.getTargetEntity() == WorkShiftReplenishmentReport.class) return ( ReportSpecificationFactory.genericWorkShiftReplenishmentReport(domainQuery));
-        if (domainQuery.getTargetEntity() == ReleaseReport.class) return  ( ReportSpecificationFactory.genericReleaseReport(domainQuery));
-        if (domainQuery.getTargetEntity() == WareHouseReport.class) return ( ReportSpecificationFactory.genericWareHouseReport(domainQuery));
-        if (domainQuery.getTargetEntity() == Report.class) return ( ReportSpecificationFactory.genericReport(domainQuery));
+        Specification res = Specification.where(null);
+        if (domainQuery.getTargetEntity() == SupplyRequirementReport.class) res =  ( ReportSpecificationFactory.genericSupplyRequirementReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == WorkShiftReport.class) res =  ( ReportSpecificationFactory.genericSupplyRequirementReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == FactorySiteReport.class) res =  ( ReportSpecificationFactory.genericFactorySiteReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == InventarisationReport.class) res =  ( ReportSpecificationFactory.genericInventarisationReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == ShipmentReport.class) res =  ( ReportSpecificationFactory.genericShipmentReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == ReplenishmentReport.class) res =  ( ReportSpecificationFactory.genericReplenishmentReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == WorkShiftReplenishmentReport.class) res =  ( ReportSpecificationFactory.genericWorkShiftReplenishmentReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == ReleaseReport.class) res =   ( ReportSpecificationFactory.genericReleaseReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == WareHouseReport.class) res =  ( ReportSpecificationFactory.genericWareHouseReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == Report.class) res =  ( ReportSpecificationFactory.genericReport(domainQuery)); else
         throw new ExecutionControl.NotImplementedException("");
+
+        res = res.and(getPagingSpecification(domainQuery));
+        return res;
     }
 
 //    private Specification<ReportModel> supplyRequirementReportSort(SupplyRequirementReportSortCriteria sortCriteria) {

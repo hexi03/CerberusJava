@@ -39,6 +39,9 @@ import com.zaxxer.hikari.HikariConfig;
 //import liquibase.integration.spring.SpringLiquibase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.PostgreSQLDialect;
+import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -49,6 +52,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * Spring configuration class for spring data jpa adapter.
@@ -67,13 +71,7 @@ public class JpaPersistenceConfiguration {
 
     private static final HikariConfig config = new HikariConfig();
 
-//    @Bean
-//    public LocalSessionFactoryBean sessionFactory(DataSource ds) {
-//        LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-//        factoryBean.setDataSource(ds);
-//        factoryBean.setPackagesToScan("com.hexi.Cerberus.adapter.persistence");
-//        return factoryBean;
-//    }
+
 //
 //    @Bean
 //    public TransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
@@ -85,15 +83,24 @@ public class JpaPersistenceConfiguration {
 
 
 
+
+
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource ds) {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
         LocalContainerEntityManagerFactoryBean factory = new
                 LocalContainerEntityManagerFactoryBean();
+        Properties props = new Properties();
+        props.put("hibernate.dialect", "com.hexi.Cerberus.adapter.persistence.config.ExtendedPGSQLDialect");
+        factory.setJpaProperties(props);
+
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("com.hexi.Cerberus.adapter.persistence");
         factory.setDataSource(ds);
+
+
+
         return factory;
     }
     @Bean
