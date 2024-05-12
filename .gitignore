@@ -8,3 +8,6 @@ build
 .idea
 
 .idea/*
+
+front/cerberus-front/node_modules/*
+front/cerberus-front/node_modules
