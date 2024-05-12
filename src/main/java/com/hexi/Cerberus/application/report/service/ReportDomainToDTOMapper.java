@@ -93,7 +93,7 @@ public interface ReportDomainToDTOMapper {
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
                     .factorySiteId(report1.getFactorySite().getId())
-                    .targetWareHouseId(report1.getTargetWareHouse().getId())
+                    .targetWareHouseIds(report1.getTargetWareHouses().stream().map(wareHouse -> wareHouse.getId()).collect(Collectors.toList()))
                     .produced(toProductItemIdMap(report1.getProduced()))
                     .remains(toItemIdMap(report1.getRemains()))
                     .losses(toItemIdMap(report1.getLosses()))
@@ -104,7 +104,7 @@ public interface ReportDomainToDTOMapper {
                     .createdAt(report1.getCreatedAt())
                     .deletedAt(report1.getDeletedAt())
                     .factorySiteId(report1.getFactorySite().getId())
-                    .targetWareHouseId(report1.getTargetWareHouse().getId())
+                    .targetWareHouseIds(report1.getTargetWareHouses().stream().map(wareHouse -> wareHouse.getId()).collect(Collectors.toList()))
                     .items(toItemIdMap(report1.getRequirements()))
                     .build();
         } else {

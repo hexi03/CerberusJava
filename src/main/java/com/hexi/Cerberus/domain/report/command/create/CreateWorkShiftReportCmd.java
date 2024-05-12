@@ -16,18 +16,20 @@ import java.util.Map;
 @SuperBuilder
 public class CreateWorkShiftReportCmd extends CreateReportCmd {
     FactorySiteID factorySiteId;
-    WareHouseID targetWareHouseId;
+    List<WareHouseID> targetWareHouseIds;
     Map<ProductID, Integer> produced;
     Map<ItemID, Integer> losses;
     Map<ItemID, Integer> remains;
+
+    Map<ItemID, Integer> unclaimedRemains;
 
 
     @Override
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
-//        if(id == null) problems.add("Command id is null");
-//        if(itemId == null) problems.add("Item id is null");
-//        if(requirements != null || requirements.stream().filter(userID -> userID == null).count() != 0) problems.add("Requireement id(s) is null");
+        if(id == null) problems.add("Command id is null");
+        if(factorySiteId == null) problems.add("FactorySite id is null");
+        if (targetWareHouseIds.isEmpty() || targetWareHouseIds.stream().anyMatch(wareHouseID -> wareHouseID == null)) problems.add("Target warehouses id is null or includes null");
 
         return new ValidationResult(problems);
     }

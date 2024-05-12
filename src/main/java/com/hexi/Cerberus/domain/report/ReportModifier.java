@@ -1,5 +1,8 @@
 package com.hexi.Cerberus.domain.report;
 
+import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
+import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
+import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.product.Product;
@@ -30,7 +33,23 @@ public class ReportModifier {
     public final ReportRepository reportRepository;
 
     public void updateBy(SupplyRequirementReport supplyRequirementReport, UpdateSupplyRequirementReportCmd cmd) {
-        Optional<WareHouse> targetWareHouse = wareHouseRepository.findById(cmd.getTargetWareHouseId());
+        FactorySite factorySite;
+        List<WareHouse> targetWareHouses;
+
+        factorySite = supplyRequirementReport.getFactorySite();
+
+
+        targetWareHouses = wareHouseRepository.findAllById(cmd.getTargetWareHouseIds());
+        if (targetWareHouses.isEmpty()) throw new RuntimeException(
+                "Error while creating report: " +
+                        "There are no warehouses found:"
+        );
+        List<WareHouse> unregisteredAsSuppliers = factorySite.getSuppliers().stream().filter(sup -> !(targetWareHouses.stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
+        if (!unregisteredAsSuppliers.isEmpty())
+            throw new RuntimeException(
+                    "Error while creating report: " +
+                            String.format("Warehouse %s is not supplier of factory site %s", unregisteredAsSuppliers.get(0).getName().toString(), factorySite.getName().toString()));
+
 
         List<Item> reqs =
                 cmd
@@ -48,7 +67,7 @@ public class ReportModifier {
         ));
 
         supplyRequirementReport.setCreatedAt(new Date());
-        supplyRequirementReport.setTargetWareHouse(targetWareHouse.get());
+        supplyRequirementReport.setTargetWareHouses(targetWareHouses);
         supplyRequirementReport.setRequirements(reqMap);
 
     }
@@ -172,7 +191,24 @@ public class ReportModifier {
     }
 
     public void updateBy(WorkShiftReport workShiftReport, UpdateWorkShiftReportCmd cmd) {
-        Optional<WareHouse> targetWareHouse = wareHouseRepository.findById(cmd.getTargetWareHouseId());
+        FactorySite factorySite;
+        List<WareHouse> targetWareHouses;
+
+        factorySite = workShiftReport.getFactorySite();
+
+
+        targetWareHouses = wareHouseRepository.findAllById(cmd.getTargetWareHouseIds());
+        if (targetWareHouses.isEmpty()) throw new RuntimeException(
+                "Error while creating report: " +
+                        "There are no warehouses found:"
+        );
+        List<WareHouse> unregisteredAsSuppliers = factorySite.getSuppliers().stream().filter(sup -> !(targetWareHouses.stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
+        if (!unregisteredAsSuppliers.isEmpty())
+            throw new RuntimeException(
+                    "Error while creating report: " +
+                            String.format("Warehouse %s is not supplier of factory site %s", unregisteredAsSuppliers.get(0).getName().toString(), factorySite.getName().toString()));
+
+
 
         Map<Product, Integer> producedMap= cmd
                 .getProduced()
@@ -216,11 +252,27 @@ public class ReportModifier {
                 Integer::sum
         ));
 
+
+
+        Map<Item, Integer> unclaimed_remains = cmd
+                .getUnclaimedRemains()
+                .keySet()
+                .stream()
+                .map(itemRepository::findById)
+                .filter(Optional::isPresent)
+                .map(item -> (Item) item.get())
+                .collect(Collectors.toMap(
+                Function.identity(),
+                item -> cmd.getUnclaimedRemains().get(item.getId()),
+                Integer::sum
+        ));
+
         workShiftReport.setCreatedAt(new Date());
         workShiftReport.setProduced(producedMap);
         workShiftReport.setLosses(lossesMap);
         workShiftReport.setRemains(remainsMap);
-        workShiftReport.setTargetWareHouse(targetWareHouse.get());
+        workShiftReport.setTargetWareHouses(targetWareHouses);
+        workShiftReport.setUnclaimedRemains(unclaimed_remains);
 
     }
 }

@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -18,7 +19,7 @@ import java.util.Map;
 public class DetailsWorkShiftReportDTO extends ReportDetailsDTO {
     public final String type = Consts.REPORT_FS_WORKSHIFT;
     FactorySiteID factorySiteId;
-    WareHouseID targetWareHouseId;
+    List<WareHouseID> targetWareHouseIds;
     Map<ProductID, Integer> produced;
     Map<ItemID, Integer> losses;
     Map<ItemID, Integer> remains;

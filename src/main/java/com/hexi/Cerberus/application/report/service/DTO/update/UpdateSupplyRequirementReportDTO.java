@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -17,6 +18,6 @@ import java.util.Map;
 @JsonTypeName(Consts.REPORT_FS_SUPPLY_REQUIREMENT)
 public class UpdateSupplyRequirementReportDTO extends UpdateReportDTO {
     FactorySiteID factorySiteId;
-    WareHouseID targetWareHouseId;
+    List<WareHouseID> targetWareHouseIds;
     Map<ItemID, Integer> items;
 }

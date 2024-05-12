@@ -4,11 +4,13 @@ import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.infrastructure.StateProblem;
 import com.hexi.Cerberus.infrastructure.StateWarning;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Singular;
 
 import java.util.List;
 
 @Builder
+@Getter
 public class FactorySiteState {
     @Singular
     List<StateProblem> problems;

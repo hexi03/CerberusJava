@@ -8,6 +8,7 @@ import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -16,6 +17,6 @@ import java.util.Map;
 public class DetailsSupplyRequirementReportDTO extends ReportDetailsDTO {
     public final String type = Consts.REPORT_FS_SUPPLY_REQUIREMENT;
     FactorySiteID factorySiteId;
-    WareHouseID targetWareHouseId;
+    List<WareHouseID> targetWareHouseIds;
     Map<ItemID, Integer> items;
 }

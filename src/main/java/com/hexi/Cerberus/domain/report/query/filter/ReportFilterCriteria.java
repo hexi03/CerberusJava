@@ -13,7 +13,7 @@ import java.util.Date;
 public class ReportFilterCriteria extends FilterCriteria {
     ComparisonContainer<Date> createdDate;
     ComparisonContainer<Date> deletedDate;
-    ReportStatus status;
-    DepartmentID department;
+//    ReportStatus status;
+    DepartmentID departmentId;
 
 }

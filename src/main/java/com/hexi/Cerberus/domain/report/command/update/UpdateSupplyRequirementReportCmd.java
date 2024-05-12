@@ -15,7 +15,7 @@ import java.util.Map;
 @SuperBuilder
 public class UpdateSupplyRequirementReportCmd extends UpdateReportCmd {
     FactorySiteID factorySiteID;
-    WareHouseID targetWareHouseId;
+    List<WareHouseID> targetWareHouseIds;
     Map<ItemID, Integer> items;
 
 

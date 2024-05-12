@@ -90,7 +90,7 @@ public class ReportController {
                         .builder()
                         .id(CommandId.generate())
                         .factorySiteID(dto.getFactorySiteId())
-                        .targetWareHouseId(dto.getTargetWareHouseId())
+                        .targetWareHouseIds(dto.getTargetWareHouseIds())
                         .items(dto.getItems()).build()
         ).getId();
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -160,8 +160,9 @@ public class ReportController {
                         .builder()
                         .id(CommandId.generate())
                         .factorySiteId(dto.getFactorySiteId())
-                        .targetWareHouseId(dto.getTargetWareHouseId())
+                        .targetWareHouseIds(dto.getTargetWareHouseIds())
                         .remains(dto.getRemains())
+                        .unclaimedRemains(dto.getUnclaimedRemains())
                         .produced(dto.getProduced())
                         .losses(dto.getLosses())
                         .build()
@@ -202,7 +203,7 @@ public class ReportController {
                         .id(CommandId.generate())
                         .reportID(dto.getReportId())
                         .factorySiteID(dto.getFactorySiteId())
-                        .targetWareHouseId(dto.getTargetWareHouseId())
+                        .targetWareHouseIds(dto.getTargetWareHouseIds())
                         .items(dto.getItems()).build()
         );
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -278,8 +279,9 @@ public class ReportController {
                         .id(CommandId.generate())
                         .reportID(dto.getReportId())
                         .factorySiteId(dto.getFactorySiteId())
-                        .targetWareHouseId(dto.getTargetWareHouseId())
+                        .targetWareHouseIds(dto.getTargetWareHouseIds())
                         .remains(dto.getRemains())
+                        .unclaimedRemains(dto.getUnclaimedRemains())
                         .produced(dto.getProduced())
                         .losses(dto.getLosses())
                         .build()

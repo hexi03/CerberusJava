@@ -16,10 +16,11 @@ import java.util.Map;
 @SuperBuilder
 public class UpdateWorkShiftReportCmd extends UpdateReportCmd {
     FactorySiteID factorySiteId;
-    WareHouseID targetWareHouseId;
+    List<WareHouseID> targetWareHouseIds;
     Map<ProductID, Integer> produced; //используем именно ProductID, потому-что нам нужна информация о конкретном производственном процессе
     Map<ItemID, Integer> losses;
     Map<ItemID, Integer> remains;
+    Map<ItemID, Integer> unclaimedRemains;
 
     @Override
     public ValidationResult validate() {

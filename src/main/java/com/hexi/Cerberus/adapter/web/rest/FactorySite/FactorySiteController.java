@@ -1,9 +1,7 @@
 package com.hexi.Cerberus.adapter.web.rest.FactorySite;
 
-import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteCreateDTO;
-import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteDetailsDTO;
-import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteUpdateDetailsDTO;
-import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteUpdateSupplyDTO;
+import com.hexi.Cerberus.application.factorysite.service.AplFactorySiteStateService;
+import com.hexi.Cerberus.application.factorysite.service.DTO.*;
 import com.hexi.Cerberus.application.factorysite.service.FactorySiteDomainToDtoMapper;
 import com.hexi.Cerberus.application.factorysite.service.FactorySiteManagementService;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
@@ -11,6 +9,7 @@ import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.factorysite.command.CreateFactorySiteCmd;
 import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteDetailsCmd;
 import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteSupplyCmd;
+import com.hexi.Cerberus.domain.service.FactorySiteStateService;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.AllArgsConstructor;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
 public class FactorySiteController {
 
     public final FactorySiteManagementService factorySiteService;
-
+    public final AplFactorySiteStateService factorySiteStateService;
 
 
     @GetMapping("/fetch")
@@ -107,6 +106,14 @@ public class FactorySiteController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/getState")
+    public ResponseEntity<FactorySiteStateDTO> getState(@RequestParam(required = false) FactorySiteID id) {
+
+
+            return ResponseEntity.ok(factorySiteStateService.getFactorySiteState(id));
+
     }
 
 

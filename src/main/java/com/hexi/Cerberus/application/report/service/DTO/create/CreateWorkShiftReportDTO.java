@@ -9,6 +9,7 @@ import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -16,10 +17,11 @@ import java.util.Map;
 @JsonTypeName(Consts.REPORT_FS_WORKSHIFT)
 public class CreateWorkShiftReportDTO extends CreateReportDTO {
     FactorySiteID factorySiteId;
-    WareHouseID targetWareHouseId;
+    List<WareHouseID> targetWareHouseIds;
     Map<ProductID, Integer> produced;
     Map<ItemID, Integer> losses;
     Map<ItemID, Integer> remains;
+    Map<ItemID, Integer> unclaimedRemains;
 
 
 }

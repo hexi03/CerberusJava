@@ -2,14 +2,23 @@ package com.hexi.Cerberus.domain.service.impl;
 
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteState;
+import com.hexi.Cerberus.domain.helpers.ItemMapHelper;
+import com.hexi.Cerberus.domain.item.Item;
+import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
+import com.hexi.Cerberus.domain.item.service.ItemRegistriesQueryService;
 import com.hexi.Cerberus.domain.report.factorysite.FactorySiteReport;
+import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.query.filter.FactorySiteReportFilterCriteria;
-import com.hexi.Cerberus.domain.report.query.filter.ReportStatus;
 import com.hexi.Cerberus.domain.report.query.filter.WareHouseReportFilterCriteria;
+import com.hexi.Cerberus.domain.report.query.filter.WorkShiftReportFilterCriteria;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.report.warehouse.WareHouseReport;
 import com.hexi.Cerberus.domain.service.FactorySiteStateService;
+import com.hexi.Cerberus.domain.service.problems.WorkShiftConsumablesLossProblem;
+import com.hexi.Cerberus.domain.service.problems.WorkShiftConsumablesTooMuchProblem;
+import com.hexi.Cerberus.domain.service.warnings.WorkShiftLossesWarning;
+import com.hexi.Cerberus.domain.service.warnings.WorkShiftRemainsWarning;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.infrastructure.StateProblem;
 import com.hexi.Cerberus.infrastructure.StateWarning;
@@ -17,6 +26,7 @@ import com.hexi.Cerberus.infrastructure.query.Query;
 import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonContainer;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,31 +36,63 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class FactorySiteStateServiceImpl implements FactorySiteStateService {
     public final ReportRepository reportRepository;
     public final ItemRepository itemRepository;
+    public final ItemRegistriesQueryService itemRegistriesQueryService;
 
     public List<FactorySiteReport> getReports(FactorySite factorySite, Date treshold) {
         FactorySiteReportFilterCriteria filter = FactorySiteReportFilterCriteria
                 .builder()
                 .createdDate(new ComparisonContainer<>(treshold, ComparisonContainer.Sign.GREATEREQUAL))
-                .status(ReportStatus.ACTIVE)
-                .department(factorySite.getParentDepartment().getId())
+                //.status(ReportStatus.ACTIVE)
+                .departmentId(factorySite.getParentDepartment().getId())
                 .factorySiteId(factorySite.getId())
                 .build();
-        return (List<FactorySiteReport>) reportRepository.findAllWithQuery(new Query(FactorySite.class, filter, null, null)).stream().map(report -> report).collect(Collectors.toList());
+        return (List<FactorySiteReport>) reportRepository.findAllWithQuery(new Query(FactorySiteReport.class, filter, null, null)).stream().map(report -> report).collect(Collectors.toList());
     }
 
     public List<WareHouseReport> getReports(WareHouse wareHouse) {
         WareHouseReportFilterCriteria filter = WareHouseReportFilterCriteria
                 .builder()
-                .status(ReportStatus.ACTIVE)
-                .department(wareHouse.getParentDepartment().getId())
+                //.status(ReportStatus.ACTIVE)
+                .departmentId(wareHouse.getParentDepartment().getId())
                 .warehouseId(wareHouse.getId())
                 .build();
-        return (List<WareHouseReport>) reportRepository.findAllWithQuery(new Query(WareHouse.class, filter, null, null)).stream().map(report -> report).collect(Collectors.toList());
+        return (List<WareHouseReport>) reportRepository.findAllWithQuery(new Query(FactorySiteReport.class, filter, null, null)).stream().map(report -> report).collect(Collectors.toList());
     }
 
+    private List<WorkShiftReport> getWorkShiftReportsWithLosses(FactorySite factorySite) {
+        WorkShiftReportFilterCriteria filter = WorkShiftReportFilterCriteria
+                .builder()
+                .hasLosses(true)
+                //.createdDate(new ComparisonContainer<>(treshold, ComparisonContainer.Sign.GREATEREQUAL))
+                //.status(ReportStatus.ACTIVE)
+                .departmentId(factorySite.getParentDepartment().getId())
+                .factorySiteId(factorySite.getId())
+                .build();
+        return (List<WorkShiftReport>) reportRepository.findAllWithQuery(new Query(WorkShiftReport.class, filter, null, null)).stream().map(report -> report).collect(Collectors.toList());
+
+    }
+
+    private List<WorkShiftReport> getWorkShiftReportsWithRemains(FactorySite factorySite) {
+        WorkShiftReportFilterCriteria filter = WorkShiftReportFilterCriteria
+                .builder()
+                .hasRemains(true)
+                //.createdDate(new ComparisonContainer<>(treshold, ComparisonContainer.Sign.GREATEREQUAL))
+                //.status(ReportStatus.ACTIVE)
+                .departmentId(factorySite.getParentDepartment().getId())
+                .factorySiteId(factorySite.getId())
+                .build();
+        return (List<WorkShiftReport>) reportRepository.findAllWithQuery(new Query(WorkShiftReport.class, filter, null, null)).stream().map(report -> report).collect(Collectors.toList());
+
+    }
+
+    private Map<ItemID, Integer> getFactorySiteLostedOnSiteConsumables(FactorySite factorySite) {
+        return itemRegistriesQueryService.getFactorySiteLostedOnSiteConsumables(factorySite);
+
+    }
     @Override
     public FactorySiteState getFactorySiteState(FactorySite factorySite) {
 
@@ -69,20 +111,43 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
     private List<StateWarning> getWarnings(FactorySite factorySite) {
         List<StateWarning> warnings = new ArrayList<>();
         //Есть потери РМ
-        //Есть остатки на территории FS
 
-        //TODO
+        List<WorkShiftReport> reportsWithLosses = getWorkShiftReportsWithLosses(factorySite);
+        if(!reportsWithLosses.isEmpty())
+            for (WorkShiftReport rep : reportsWithLosses)
+                warnings.add(new WorkShiftLossesWarning(rep.getLosses()));
+
+        //Есть остатки на территории FS
+        List<WorkShiftReport> reportsWithRemains = getWorkShiftReportsWithRemains(factorySite);
+
+
+            for (WorkShiftReport rep : reportsWithRemains) {
+                warnings.add(new WorkShiftRemainsWarning(rep.getRemains()));
+            }
 
         return warnings;
     }
 
+
+
     private List<StateProblem> getProblems(FactorySite factorySite) {
         List<StateProblem> problems = new ArrayList<>();
         //Выявлена незадекларированная потеря РМ
-        //TODO
+        Map<ItemID, Integer> lostedOnSiteConsumables = getFactorySiteLostedOnSiteConsumables(factorySite);
+        Map<ItemID, Integer> lostedOnSiteConsumablesPos = ItemMapHelper.filterPos(lostedOnSiteConsumables);
+        Map<ItemID, Integer> lostedOnSiteConsumablesNeg = ItemMapHelper.filterNeg(lostedOnSiteConsumables);
+
+        if(!lostedOnSiteConsumablesPos.isEmpty())
+                problems.add(new WorkShiftConsumablesLossProblem(lostedOnSiteConsumablesPos));
+
+        if(!lostedOnSiteConsumablesNeg.isEmpty())
+            problems.add(new WorkShiftConsumablesTooMuchProblem(lostedOnSiteConsumablesNeg));
+
 
         return problems;
     }
+
+
 
 
 }

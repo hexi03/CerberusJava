@@ -93,6 +93,11 @@ public class JpaPersistenceConfiguration {
                 LocalContainerEntityManagerFactoryBean();
         Properties props = new Properties();
         props.put("hibernate.dialect", "com.hexi.Cerberus.adapter.persistence.config.ExtendedPGSQLDialect");
+        props.put("hibernate.cache.use_second_level_cache", "false");
+        props.put("hibernate.cache.use.query_cache", "false");
+//        props.put("org.hibernate.orm.query.sqm.ast", "debug");
+
+
         factory.setJpaProperties(props);
 
         factory.setJpaVendorAdapter(vendorAdapter);

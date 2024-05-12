@@ -137,7 +137,7 @@ class TestReportAPI(unittest.TestCase):
         report_supply_req = {
             "type":"supplyrequirement",
             "factorySiteId": self.fs1["id"],
-            "targetWareHouseId" : self.wh1["id"],
+            "targetWareHouseIds" : [self.wh1["id"]],
             "items": {self.item2["id"]["id"]: 2}
         }
         print(report_supply_req)
@@ -150,7 +150,7 @@ class TestReportAPI(unittest.TestCase):
         report_work_shift = {
             "type":"workshift",
             "factorySiteId": self.fs1["id"],
-            "targetWareHouseId" : self.wh1["id"],
+            "targetWareHouseIds" : [self.wh1["id"]],
             "produced": {self.product1["id"]["id"] : 1},
             "losses": {self.item2["id"]["id"]: 2},
             'remains': {}
@@ -225,6 +225,14 @@ class TestReportAPI(unittest.TestCase):
         fetch_1_json=[report_inventarisation]
         print("fetch_inventarisation: ")
         fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "inventarisation"}, headers=self.headers)
+        print("     " , fetch_r.json())
+        print("excepted:" , fetch_1_json)
+        self.assertEqual(fetch_r.status_code, 200)
+        self.assertEqual(sorted(fetch_r.json(), key=comp), sorted(fetch_1_json, key=comp))
+
+        fetch_1_json=[report_work_shift]
+        print("fetch_report_work_shift: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 10, "typeCriteria": "workshift"}, headers=self.headers)
         print("     " , fetch_r.json())
         print("excepted:" , fetch_1_json)
         self.assertEqual(fetch_r.status_code, 200)

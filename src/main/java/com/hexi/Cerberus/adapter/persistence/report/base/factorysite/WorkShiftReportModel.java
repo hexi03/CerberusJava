@@ -6,7 +6,6 @@ import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.product.base.ProductEntry;
 import com.hexi.Cerberus.adapter.persistence.product.base.ProductModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
-import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.report.ReportID;
@@ -18,9 +17,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 @Entity
 @Access(AccessType.FIELD)
+
 public class WorkShiftReportModel extends FactorySiteReportModel implements WorkShiftReport {
-    @ManyToOne(cascade = CascadeType.ALL)
-    WareHouseModel targetWareHouseId;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "work_shift_report_target_warehouse_assoc")
+    List<WareHouseModel> targetWareHouses;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "work_shift_report_produced_product_entry_assoc")
     Collection<ProductEntry> produced = new ArrayList<>();
@@ -30,6 +31,9 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
     @JoinTable(name = "work_shift_report_remains_item_entry_assoc")
     @OneToMany(cascade = CascadeType.ALL)
     Collection<ItemEntry> remains = new ArrayList<>();
+    @JoinTable(name = "work_shift_report_unclaimed_remains_item_entry_assoc")
+    @OneToMany(cascade = CascadeType.ALL)
+    Collection<ItemEntry> unclaimedRemains = new ArrayList<>();
 
     public WorkShiftReportModel(
             ReportID id,
@@ -37,15 +41,17 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
             Date createdAt,
             Date expirationDate,
             Optional<Date> deletedAt,
-            WareHouseModel targetWareHouseId,
+            List<WareHouseModel> targetWareHouses,
             Map<ProductModel, Integer> produced,
             Map<ItemModel, Integer> losses,
-            Map<ItemModel, Integer> remains) {
+            Map<ItemModel, Integer> remains,
+            Map<ItemModel, Integer> unclaimedRemains) {
         super(id, factorySite, createdAt, expirationDate, deletedAt);
-        this.targetWareHouseId = targetWareHouseId;
+        this.targetWareHouses = targetWareHouses;
         this.produced = produced.entrySet().stream().map(entry -> new ProductEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.losses = losses.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.remains = remains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+        this.unclaimedRemains = unclaimedRemains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
 
     public WorkShiftReportModel(
@@ -53,15 +59,17 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
             FactorySiteModel factorySite,
             Date createdAt,
             Date expirationDate,
-            WareHouseModel targetWareHouseId,
+            List<WareHouseModel> targetWareHouses,
             Map<ProductModel, Integer> produced,
             Map<ItemModel, Integer> losses,
-            Map<ItemModel, Integer> remains) {
+            Map<ItemModel, Integer> remains,
+            Map<ItemModel, Integer> unclaimedRemains) {
         super(id, factorySite, createdAt, expirationDate);
-        this.targetWareHouseId = targetWareHouseId;
+        this.targetWareHouses = targetWareHouses;
         this.produced = produced.entrySet().stream().map(entry -> new ProductEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.losses = losses.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.remains = remains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
+        this.unclaimedRemains = unclaimedRemains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
 
     }
 
@@ -70,8 +78,8 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
     }
 
     @Override
-    public void setTargetWareHouse(WareHouse wareHouse) {
-        this.targetWareHouseId = (WareHouseModel) wareHouse;
+    public void setTargetWareHouses(List<WareHouse> wareHouses) {
+        this.targetWareHouses =  wareHouses.stream().map(wareHouse -> (WareHouseModel) wareHouse).collect(Collectors.toList());
     }
 
     @Override
@@ -112,6 +120,26 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
                 .stream().map(entry -> new ItemEntry((ItemModel) entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
 
+
+    @Override
+    public Map<Item, Integer> getUnclaimedRemains() {
+        return unclaimedRemains
+                .stream()
+                .collect(
+                        Collectors.toMap(
+                                entry -> entry.getItem(),
+                                entry -> entry.getAmount()
+                        )
+                );
+    }
+
+    @Override
+    public void setUnclaimedRemains(Map<Item, Integer> remainsMap) {
+        this.unclaimedRemains = remainsMap
+                .entrySet()
+                .stream().map(entry -> new ItemEntry((ItemModel) entry.getKey(),entry.getValue())).collect(Collectors.toList());
+    }
+
     @Override
     public Map<Item, Integer> getLosses() {
         return losses
@@ -132,7 +160,7 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
     }
 
     @Override
-    public WareHouse getTargetWareHouse() {
-        return (WareHouse) targetWareHouseId;
+    public List<WareHouse> getTargetWareHouses() {
+        return targetWareHouses.stream().map(wareHouseModel -> (WareHouse) wareHouseModel).collect(Collectors.toList());
     }
 }

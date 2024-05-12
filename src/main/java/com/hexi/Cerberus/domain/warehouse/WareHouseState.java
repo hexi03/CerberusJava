@@ -4,12 +4,14 @@ import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.infrastructure.StateProblem;
 import com.hexi.Cerberus.infrastructure.StateWarning;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Singular;
 
 import java.util.List;
 import java.util.Map;
 
 @Builder
+@Getter
 public class WareHouseState {
     @Singular
     List<StateProblem> problems;

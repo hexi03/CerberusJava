@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class ReportID implements EntityId<UUID>, Comparable<ReportID> {
+public class ReportID implements EntityId<UUID> {
     public final UUID id;
 
     public ReportID() {
@@ -23,10 +23,5 @@ public class ReportID implements EntityId<UUID>, Comparable<ReportID> {
     public ReportID(String id) { this.id = UUID.fromString(id); }
     public String toString() {
         return this.getId().toString();
-    }
-
-    @Override
-    public int compareTo(ReportID o) {
-        return this.id.compareTo(o.id);
     }
 }

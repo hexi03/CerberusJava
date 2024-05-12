@@ -18,22 +18,14 @@ import com.hexi.Cerberus.infrastructure.query.PagingCriteria;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonContainer;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
+import jakarta.persistence.criteria.*;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
-import org.springframework.data.domain.ScrollPosition;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.query.KeysetScrollSpecification;
-import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class ReportSpecificationFactory {
 
@@ -58,6 +50,9 @@ public class ReportSpecificationFactory {
 
         throw new ExecutionControl.NotImplementedException("");
     }
+
+
+
 
     public static Specification<ReportModel> genericReport(Query query) {
 
@@ -268,12 +263,13 @@ public class ReportSpecificationFactory {
 
 
     public static Specification<ReportModel> genericWorkShiftReport(Query query) {
+        System.out.println("at genericWorkShiftReport: " + query);
         Specification<ReportModel> spec = instanceFilter(query.getTargetEntity()).and(genericFactorySiteReport(query));
 
-//        // Применяем фильтр
-//        if (query.getFilterCriteria() != null) {
-//            spec = spec.and(workShiftReportFilter((WorkShiftReportFilterCriteria) query.getFilterCriteria()));
-//        }
+        // Применяем фильтр
+        if (query.getFilterCriteria() != null) {
+            spec = spec.and(workShiftReportFilter((WorkShiftReportFilterCriteria) query.getFilterCriteria()));
+        }
 
 //        // Применяем сортировку
 //        if (query.getSortCriteria() != null) {
@@ -315,7 +311,7 @@ public class ReportSpecificationFactory {
                 predicates.add(datePredicate);
             }
 
-            if (filterCriteria.getCreatedDate() != null) {
+            if (filterCriteria.getDeletedDate() != null) {
                 ComparisonContainer<Date> date = filterCriteria.getDeletedDate();
                 Predicate datePredicate;
                 switch (date.getSign()) {
@@ -342,13 +338,13 @@ public class ReportSpecificationFactory {
 
 
 
-            if (filterCriteria.getStatus() != null) {
-                Predicate statusPredicate = criteriaBuilder.equal(root.get("status"), filterCriteria.getStatus());
-                predicates.add(statusPredicate);
-            }
+//            if (filterCriteria.getStatus() != null) {
+//                Predicate statusPredicate = criteriaBuilder.equal(root.get("status"), filterCriteria.getStatus());
+//                predicates.add(statusPredicate);
+//            }
 
-            if (filterCriteria.getDepartment() != null) {
-                Predicate departmentPredicate = criteriaBuilder.equal(root.get("department"), filterCriteria.getDepartment());
+            if (filterCriteria.getDepartmentId() != null) {
+                Predicate departmentPredicate = criteriaBuilder.equal(root.get("department").get("id"), filterCriteria.getDepartmentId());
                 predicates.add(departmentPredicate);
             }
 
@@ -394,7 +390,7 @@ public class ReportSpecificationFactory {
             List<Predicate> predicates = new ArrayList<>();
 
             if (filterCriteria.getWarehouseId() != null) {
-                Predicate warehousePredicate = criteriaBuilder.equal(root1.get("warehouse").get("id"), filterCriteria.getWarehouseId());
+                Predicate warehousePredicate = criteriaBuilder.equal(root1.get("wareHouse").get("id"), filterCriteria.getWarehouseId());
                 predicates.add(warehousePredicate);
             }
 
@@ -477,7 +473,7 @@ public class ReportSpecificationFactory {
             List<Predicate> predicates = new ArrayList<>();
 
             if (filterCriteria.getFactorySiteId() != null) {
-                Predicate factorySitePredicate = criteriaBuilder.equal(root1.get("factorysite").get("id"), filterCriteria.getFactorySiteId());
+                Predicate factorySitePredicate = criteriaBuilder.equal(root1.get("factorySite").get("id"), filterCriteria.getFactorySiteId());
                 predicates.add(factorySitePredicate);
             }
 
@@ -487,9 +483,9 @@ public class ReportSpecificationFactory {
 
     @SneakyThrows
     public static Specification<ReportModel> getSpec(Query domainQuery) {
-        Specification res = Specification.where(null);
+        Specification res;
         if (domainQuery.getTargetEntity() == SupplyRequirementReport.class) res =  ( ReportSpecificationFactory.genericSupplyRequirementReport(domainQuery)); else
-        if (domainQuery.getTargetEntity() == WorkShiftReport.class) res =  ( ReportSpecificationFactory.genericSupplyRequirementReport(domainQuery)); else
+        if (domainQuery.getTargetEntity() == WorkShiftReport.class) res =  ( ReportSpecificationFactory.genericWorkShiftReport(domainQuery)); else
         if (domainQuery.getTargetEntity() == FactorySiteReport.class) res =  ( ReportSpecificationFactory.genericFactorySiteReport(domainQuery)); else
         if (domainQuery.getTargetEntity() == InventarisationReport.class) res =  ( ReportSpecificationFactory.genericInventarisationReport(domainQuery)); else
         if (domainQuery.getTargetEntity() == ShipmentReport.class) res =  ( ReportSpecificationFactory.genericShipmentReport(domainQuery)); else
@@ -514,6 +510,36 @@ public class ReportSpecificationFactory {
 //    private Specification<ReportModel> workShiftReportSort(WorkShiftReportSortCriteria sortCriteria) {
 //    }
 
-//    private Specification<ReportModel> workShiftReportFilter(WorkShiftReportFilterCriteria filterCriteria) {
-//    }
+    private static Specification<ReportModel> workShiftReportFilter(WorkShiftReportFilterCriteria filterCriteria) {
+        System.out.println("adding workShiftReportFilter: " + filterCriteria.toString());
+        return (root, query, criteriaBuilder) -> {
+            Root<WorkShiftReportModel> root1 = criteriaBuilder.treat(root, WorkShiftReportModel.class);
+
+
+            if (filterCriteria.getHasLosses() != null) {
+                if (filterCriteria.getHasLosses()){
+                    Predicate predicate = criteriaBuilder.isNotNull(root1.get("losses").get("id"));
+                    query.where(predicate);
+                }else{
+                    Predicate predicate = criteriaBuilder.isNull(root1.get("losses").get("id"));
+                    query.where(predicate);
+                }
+            }
+
+            if (filterCriteria.getHasRemains() != null) {
+                if (filterCriteria.getHasRemains()) {
+                    Predicate predicate = criteriaBuilder.isNotNull(root1.get("remains").get("id"));
+                    query.where(predicate);
+                }else {
+                    Predicate predicate = criteriaBuilder.isNull(root1.get("remains").get("id"));
+                    query.where(predicate);
+                }
+            }
+
+
+            return query.getRestriction();
+        };
+    }
+
+
 }

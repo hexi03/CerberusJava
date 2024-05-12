@@ -17,6 +17,7 @@ import com.hexi.Cerberus.domain.report.ReportFactory;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.command.create.*;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
+import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -65,20 +66,27 @@ public class JpaReportFactoryImpl implements ReportFactory {
 
     private Report createWorkShiftReport(CreateWorkShiftReportCmd cmd) {
         Optional<FactorySiteModel> factorySite;
-        Optional<WareHouseModel> wareHouse;
+        List<WareHouseModel> wareHouses;
 
         factorySite = factorySiteRepository.findById(cmd.getFactorySiteId());
         factorySite.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +
-                        String.format("Invalid target warehouse id: %s", cmd.getTargetWareHouseId().toString())
+                        String.format("Invalid factory site id: %s", cmd.getFactorySiteId().toString())
         ));
 
 
-        wareHouse = wareHouseRepository.findById(cmd.getTargetWareHouseId());
-        wareHouse.orElseThrow(() -> new RuntimeException(
+        wareHouses = wareHouseRepository.findAllById(cmd.getTargetWareHouseIds());
+        if (wareHouses.isEmpty()) throw new RuntimeException(
                 "Error while creating report: " +
-                        String.format("Invalid target warehouse id: %s", cmd.getTargetWareHouseId().toString())
-        ));
+                        "There are no warehouses found:"
+        );
+        List<WareHouse> unregisteredAsSuppliers = factorySite.get().getSuppliers().stream().filter(sup -> !(wareHouses.stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
+        if (!unregisteredAsSuppliers.isEmpty())
+            throw new RuntimeException(
+                    "Error while creating report: " +
+                            String.format("Warehouse %s is not supplier of factory site %s", unregisteredAsSuppliers.get(0).getName().toString(), factorySite.get().getName().toString()));
+
+
         Map<ProductModel, Integer> produced_map;
         if (cmd.getProduced() == null)
             produced_map = new HashMap<>();
@@ -130,15 +138,34 @@ public class JpaReportFactoryImpl implements ReportFactory {
                             Integer::sum
                     ));
 
+
+        Map<ItemModel, Integer>  unclaimed_remains_map;
+        if (cmd.getUnclaimedRemains() == null)
+            unclaimed_remains_map = new HashMap<>();
+        else
+            unclaimed_remains_map = cmd
+                    .getUnclaimedRemains()
+                    .keySet()
+                    .stream()
+                    .map(itemID -> itemRepository.findById(itemID))
+                    .filter(Optional::isPresent)
+                    .map(optional -> (ItemModel) optional.get())
+                    .collect(Collectors.toMap(
+                            Function.identity(),
+                            item -> cmd.getUnclaimedRemains().get(item.getId()),
+                            Integer::sum
+                    ));
+
         return new WorkShiftReportModel(
                 new ReportID(),
                 factorySite.get(),
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
-                wareHouse.get(),
+                wareHouses,
                 produced_map,
                 losses_map,
-                remains_map
+                remains_map,
+                unclaimed_remains_map
         );
 
     }
@@ -151,7 +178,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
         Optional<ReportModel> whReport = reportRepository.findById(cmd.getWorkShiftReportId());
         whReport.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +
-                        String.format("Invalid factory site id: %s", cmd.getWorkShiftReportId().toString())
+                        String.format("Invalid workshift report id: %s", cmd.getWorkShiftReportId().toString())
         ));
         FactorySiteModel whReportFactorySite = (FactorySiteModel) ((WorkShiftReportModel) whReport.get()).getFactorySite();
         factorySite = factorySiteRepository.findById(whReportFactorySite.getId());
@@ -163,7 +190,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
         wareHouse = wareHouseRepository.findById(cmd.getWareHouseId());
         wareHouse.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +
-                        String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
+                        String.format("Invalid warehouse id: %s", cmd.getWareHouseId().toString())
         ));
 
         items_map = cmd
@@ -349,7 +376,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
 
     private Report createSupplyRequirementReport(CreateSupplyRequirementReportCmd cmd) {
         Optional<FactorySiteModel> factorySite;
-        Optional<WareHouseModel> wareHouse;
+        List<WareHouseModel> wareHouses;
         Map<ItemModel, Integer> items_map;
 
         factorySite = factorySiteRepository.findById(cmd.getFactorySiteID());
@@ -358,11 +385,17 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         String.format("Invalid factory site id: %s", cmd.getFactorySiteID().toString())
         ));
 
-        wareHouse = wareHouseRepository.findById(cmd.getTargetWareHouseId());
-        wareHouse.orElseThrow(() -> new RuntimeException(
+        wareHouses = wareHouseRepository.findAllById(cmd.getTargetWareHouseIds());
+        if (wareHouses.isEmpty()) throw new RuntimeException(
                 "Error while creating report: " +
-                        String.format("Invalid target warehouse id: %s", cmd.getTargetWareHouseId().toString())
-        ));
+                        "There are no warehouses found:"
+        );
+        List<WareHouse> unregisteredAsSuppliers = factorySite.get().getSuppliers().stream().filter(sup -> !(wareHouses.stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
+        if (!unregisteredAsSuppliers.isEmpty())
+            throw new RuntimeException(
+                    "Error while creating report: " +
+                            String.format("Warehouse %s is not supplier of factory site %s", unregisteredAsSuppliers.get(0).getName().toString(), factorySite.get().getName().toString()));
+
 
         items_map = cmd
                 .getItems()
@@ -382,7 +415,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 factorySite.get(),
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
-                wareHouse.get(),
+                wareHouses,
                 items_map
         );
 

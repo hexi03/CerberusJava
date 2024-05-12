@@ -16,8 +16,9 @@ import java.util.stream.Collectors;
 @Entity
 @Access(AccessType.FIELD)
 public class SupplyRequirementReportModel extends FactorySiteReportModel implements SupplyRequirementReport {
-    @ManyToOne(cascade = CascadeType.ALL)
-    WareHouseModel targetWareHouse;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "supply_requirement_report_target_warehouse_assoc")
+    List<WareHouseModel> targetWareHouses;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "supply_requirement_report_requirements_item_entry_assoc")
     Collection<ItemEntry> requirements = new ArrayList<>();
@@ -28,11 +29,11 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
             Date createdAt,
             Date expirationDate,
             Optional<Date> deletedAt,
-            WareHouseModel targetWareHouse,
+            List<WareHouseModel> targetWareHouses,
             Map<ItemModel, Integer> requirements) {
         super(id, factorySite, createdAt, expirationDate, deletedAt);
         this.requirements = requirements.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
-        this.targetWareHouse = targetWareHouse;
+        this.targetWareHouses = targetWareHouses;
     }
 
     public SupplyRequirementReportModel(
@@ -40,11 +41,11 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
             FactorySiteModel factorySite,
             Date createdAt,
             Date expirationDate,
-            WareHouseModel targetWareHouse,
+            List<WareHouseModel> targetWareHouses,
             Map<ItemModel, Integer> requirements) {
         super(id, factorySite, createdAt, expirationDate);
         this.requirements = requirements.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
-        this.targetWareHouse = targetWareHouse;
+        this.targetWareHouses = targetWareHouses;
     }
 
 
@@ -64,8 +65,8 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
     }
 
     @Override
-    public void setTargetWareHouse(WareHouse wareHouse) {
-        this.targetWareHouse = (WareHouseModel) wareHouse;
+    public void setTargetWareHouses(List<WareHouse> wareHouses) {
+        this.targetWareHouses = wareHouses.stream().map(wareHouseModel -> (WareHouseModel) wareHouseModel).collect(Collectors.toList());
     }
     @Override
     public Map<Item,Integer> getRequirements(){
@@ -79,8 +80,8 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
     }
 
     @Override
-    public WareHouse getTargetWareHouse() {
-        return (WareHouse) targetWareHouse;
+    public List<WareHouse> getTargetWareHouses() {
+        return targetWareHouses.stream().map(wareHouseModel -> (WareHouse) wareHouseModel).collect(Collectors.toList());
     }
 
 }

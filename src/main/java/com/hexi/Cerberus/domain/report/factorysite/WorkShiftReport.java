@@ -5,10 +5,11 @@ import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 
+import java.util.List;
 import java.util.Map;
 
 public interface WorkShiftReport extends FactorySiteReport {
-    void setTargetWareHouse(WareHouse wareHouse);
+    void setTargetWareHouses(List<WareHouse> wareHouse);
 
     Map<Product, Integer> getProduced();
 
@@ -18,9 +19,13 @@ public interface WorkShiftReport extends FactorySiteReport {
 
     void setRemains(Map<Item, Integer> remainsMap);
 
+    Map<Item, Integer> getUnclaimedRemains();
+
+    void setUnclaimedRemains(Map<Item, Integer> remainsMap);
+
     Map<Item, Integer> getLosses();
 
     void setLosses(Map<Item, Integer> lossesMap);
 
-    WareHouse getTargetWareHouse();
+    List<WareHouse> getTargetWareHouses();
 }

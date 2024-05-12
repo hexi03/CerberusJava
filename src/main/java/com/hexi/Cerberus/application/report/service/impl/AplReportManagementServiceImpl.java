@@ -156,7 +156,8 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
             filterCriteria = ReportFilterCriteria.builder().build();
             entityType = Report.class;
         }
-
+        System.out.println("fetchReportEntityType: " + entityType.getName());
+        System.out.println("typeCriteriaFromParameters: " + typeCriteria);
         return new Query(entityType, filterCriteria, sortCriteria, pagingCriteria);
     }
 

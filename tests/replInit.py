@@ -127,7 +127,7 @@ report_replenish.update({"id": create_report1.json()})
 report_supply_req = {
     "type":"supplyrequirement",
     "factorySiteId": fs1["id"],
-    "targetWareHouseId" : wh1["id"],
+    "targetWareHouseIds" : [wh1["id"]],
     "items": {item2["id"]["id"]: 2}
 }
 print(report_supply_req)
@@ -140,7 +140,7 @@ report_supply_req.update({"id": create_report1.json()})
 report_work_shift = {
     "type":"workshift",
     "factorySiteId": fs1["id"],
-    "targetWareHouseId" : wh1["id"],
+    "targetWareHouseIds" : [wh1["id"]],
     "produced": {product1["id"]["id"] : 1},
     "losses": {item2["id"]["id"]: 2},
     'remains': {}

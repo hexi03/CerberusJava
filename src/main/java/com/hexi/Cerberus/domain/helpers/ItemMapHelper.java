@@ -4,12 +4,13 @@ import com.hexi.Cerberus.domain.item.ItemID;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ItemMapHelper {
     public static Map<ItemID, Integer> MergeDictionariesWithSum(Map<ItemID, Integer> a, Map<ItemID, Integer> b) {
-        HashSet<Map.Entry<ItemID, Integer>> generic = (new HashSet<>(a.entrySet()));
+        List<Map.Entry<ItemID, Integer>> generic = a.entrySet().stream().collect(Collectors.toList());
         generic.addAll(b.entrySet());
 
         return generic.stream().collect(Collectors.toMap(
@@ -26,4 +27,21 @@ public class ItemMapHelper {
         }
         return MergeDictionariesWithSum(a, b);
     }
+
+
+    public static Map<ItemID, Integer> filterPos(Map<ItemID, Integer> map) {
+        return map.entrySet().stream().filter(entry -> entry.getValue() > 0).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+    }
+
+    public static Map<ItemID, Integer> filterNeg(Map<ItemID, Integer> map) {
+        return map.entrySet().stream().filter(entry -> entry.getValue() < 0).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+    }
+
+    public static Map<ItemID, Integer> filterZero(Map<ItemID, Integer> map) {
+        return map.entrySet().stream().filter(entry -> entry.getValue() == 0).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+    }
+    public static Map<ItemID, Integer> filterNonZero(Map<ItemID, Integer> map) {
+        return map.entrySet().stream().filter(entry -> entry.getValue() != 0).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+    }
+
 }

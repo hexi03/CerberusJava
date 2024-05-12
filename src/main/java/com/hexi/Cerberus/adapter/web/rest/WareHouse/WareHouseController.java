@@ -1,10 +1,14 @@
 package com.hexi.Cerberus.adapter.web.rest.WareHouse;
 
+import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteStateDTO;
+import com.hexi.Cerberus.application.warehouse.service.AplWareHouseStateService;
 import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseCreateDTO;
 import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseDetailsDTO;
+import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseStateDTO;
 import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseUpdateDetailsDTO;
 import com.hexi.Cerberus.application.warehouse.service.WareHouseDomainToDtoMapper;
 import com.hexi.Cerberus.application.warehouse.service.WareHouseManagementService;
+import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.domain.warehouse.command.CreateWareHouseCmd;
@@ -32,6 +36,7 @@ public class WareHouseController {
 
     public final WareHouseManagementService wareHouseService;
     public final WareHouseDomainToDtoMapper wareHouseDomainToDtoMapper;
+    public final AplWareHouseStateService wareHouseStateService;
 
     @GetMapping("/fetch")
     public ResponseEntity<List<WareHouseDetailsDTO>> fetch(@RequestParam(required = false) WareHouseID id) {
@@ -87,6 +92,11 @@ public class WareHouseController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/getState")
+    public ResponseEntity<WareHouseStateDTO> getState(@RequestParam(required = false) WareHouseID id) {
+        return ResponseEntity.ok(wareHouseStateService.getWareHouseState(id));
+
+    }
 
 //    @ExceptionHandler(WareHouseNotFoundException.class)
 //    @ResponseStatus(HttpStatus.NOT_FOUND)
