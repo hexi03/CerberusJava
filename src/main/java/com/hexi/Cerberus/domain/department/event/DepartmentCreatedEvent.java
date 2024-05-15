@@ -1,7 +1,6 @@
 package com.hexi.Cerberus.domain.department.event;
 
 import com.hexi.Cerberus.domain.department.DepartmentID;
-import com.hexi.Cerberus.infrastructure.entity.EntityId;
 import com.hexi.Cerberus.infrastructure.event.EventId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

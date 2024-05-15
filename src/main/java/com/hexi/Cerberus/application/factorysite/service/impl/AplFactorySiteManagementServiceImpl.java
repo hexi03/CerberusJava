@@ -16,6 +16,7 @@ import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AplFactorySiteManagementServiceImpl implements FactorySiteManagementService {
     public final FactorySiteRepository factorySiteRepository;
     public final MessagePublisher messagePublisher;
@@ -83,8 +85,10 @@ public class AplFactorySiteManagementServiceImpl implements FactorySiteManagemen
     public void updateSupply(UpdateFactorySiteSupplyCmd cmd) throws RuntimeException {
         cmd.validate().onFailedThrow();
         FactorySite factorySite = (FactorySite) factorySiteRepository.findById(cmd.getFactorySiteId()).orElseThrow();
-        //cmd.getSuppliers().stream().map(wareHouseID -> (WareHouse)wareHouseRepository.findById(wareHouseID).orElse(null)).filter(o -> o != null).forEach(factorySite::addSupplier);
-        Collection<WareHouse> suppliers = cmd.getSuppliers().stream().map(wareHouseID -> (WareHouse)wareHouseRepository.findById(wareHouseID).orElse(null)).filter(o -> o != null).collect(Collectors.toList());
+        Collection<WareHouse> suppliers = cmd.getSuppliers().stream().map(wareHouseID -> factorySite.getParentDepartment().getWareHouses().stream().filter(wareHouse -> wareHouse.getId().equals(wareHouseID)).findAny().orElse(null)).filter(o -> o != null).collect(Collectors.toList());
+        log.info("Founded factorysite: " + factorySite);
+        log.info("Founded suppliers: " + suppliers);
+
         factorySite.setSuppliers(suppliers);
         messagePublisher.publish(factorySite.edjectEvents());
 

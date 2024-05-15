@@ -14,7 +14,7 @@ import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
-import com.hexi.Cerberus.infrastructure.entity.EntityId;
+import com.hexi.Cerberus.infrastructure.entity.EntityID;
 import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -40,7 +40,7 @@ public class AplEntityPermissionManagementServiceImpl implements EntityPermissio
 
     @SneakyThrows
     @Override
-    public List<Permission> displayPermissions(EntityId resourceId, GroupID groupId) {
+    public List<Permission> displayPermissions(EntityID resourceId, GroupID groupId) {
         switch (resourceId) {
             case DepartmentID depId:
                 Optional<Department> department = departmentRepository.findById(depId);
@@ -68,7 +68,7 @@ public class AplEntityPermissionManagementServiceImpl implements EntityPermissio
     }
 
     @Override
-    public List<AccessUnit> getAccessInfo(EntityId resourceId) throws Exception {
+    public List<AccessUnit> getAccessInfo(EntityID resourceId) throws Exception {
         switch (resourceId) {
             case DepartmentID depId:
                 Optional<Department> department = departmentRepository.findById(depId);

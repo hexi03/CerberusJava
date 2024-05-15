@@ -1,18 +1,13 @@
 package com.hexi.Cerberus.infrastructure.repository;
 
-import com.hexi.Cerberus.domain.department.Department;
-import com.hexi.Cerberus.domain.department.DepartmentID;
-import com.hexi.Cerberus.domain.item.Item;
-import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.infrastructure.entity.Entity;
-import com.hexi.Cerberus.infrastructure.entity.EntityId;
+import com.hexi.Cerberus.infrastructure.entity.EntityID;
 import com.hexi.Cerberus.infrastructure.query.Query;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface Repository<T extends Entity, ID extends EntityId> {
+public interface Repository<T extends Entity, ID extends EntityID> {
     Optional<T> findById(ID id);
 
     List<T> findAllById(Iterable<ID> ids);

@@ -44,7 +44,7 @@ public class ReportModifier {
                 "Error while creating report: " +
                         "There are no warehouses found:"
         );
-        List<WareHouse> unregisteredAsSuppliers = factorySite.getSuppliers().stream().filter(sup -> !(targetWareHouses.stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
+        List<WareHouse> unregisteredAsSuppliers = targetWareHouses.stream().filter(sup -> !(factorySite.getSuppliers().stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
         if (!unregisteredAsSuppliers.isEmpty())
             throw new RuntimeException(
                     "Error while creating report: " +
@@ -202,7 +202,7 @@ public class ReportModifier {
                 "Error while creating report: " +
                         "There are no warehouses found:"
         );
-        List<WareHouse> unregisteredAsSuppliers = factorySite.getSuppliers().stream().filter(sup -> !(targetWareHouses.stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
+        List<WareHouse> unregisteredAsSuppliers = targetWareHouses.stream().filter(sup -> !(factorySite.getSuppliers().stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
         if (!unregisteredAsSuppliers.isEmpty())
             throw new RuntimeException(
                     "Error while creating report: " +

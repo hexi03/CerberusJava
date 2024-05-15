@@ -4,6 +4,8 @@ import com.hexi.Cerberus.adapter.web.rest.Consts;
 import com.hexi.Cerberus.application.report.service.DTO.details.ReportDetails;
 import com.hexi.Cerberus.application.report.service.ReportDomainToDTOMapper;
 import com.hexi.Cerberus.application.report.service.ReportManagementService;
+import com.hexi.Cerberus.domain.department.DepartmentID;
+import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportFactory;
 import com.hexi.Cerberus.domain.report.ReportID;
@@ -17,7 +19,9 @@ import com.hexi.Cerberus.domain.report.query.filter.*;
 import com.hexi.Cerberus.domain.report.query.sort.*;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.report.warehouse.*;
-import com.hexi.Cerberus.infrastructure.entity.EntityId;
+import com.hexi.Cerberus.domain.warehouse.WareHouseID;
+import com.hexi.Cerberus.infrastructure.entity.EntityID;
+import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.PagingCriteria;
 import com.hexi.Cerberus.infrastructure.query.Query;
@@ -45,11 +49,13 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
     public final ReportDomainToDTOMapper reportDomainToDTOMapper;
 
     static Query toQuery(
-            @PathVariable(required = false) EntityId key,
-            @PathVariable(required = false) Integer count,
-            @PathVariable(required = false) boolean descending,
-            @PathVariable(required = false) String sortBy,
-            @PathVariable(required = false) String typeCriteria
+            EntityID key,
+            Integer count,
+            boolean descending,
+            String sortBy,
+            String typeCriteria,
+            EntityID locationSpecificId
+
     ) {
         log.info(key != null ? key.toString() : null);log.info(count != null ?count.toString() : null);log.info(descending ? "descending": "ascending");log.info(sortBy);log.info(typeCriteria);
         // Определение PagingCriteria
@@ -69,7 +75,11 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .sortBy(List.of(InventarisationReportSortCriteria.SortBy.valueOf(sortBy)))
                         .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
                         .build();
-                filterCriteria = InventarisationReportFilterCriteria.builder().build();
+
+                filterCriteria = InventarisationReportFilterCriteria
+                        .builder()
+                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId) )
+                        .build();
                 entityType = InventarisationReport.class;
                 break;
             case Consts.REPORT_WH_RELEASE:
@@ -78,7 +88,10 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .sortBy(List.of(ReleaseReportSortCriteria.SortBy.valueOf(sortBy)))
                         .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
                         .build();
-                filterCriteria = ReleaseReportFilterCriteria.builder().build();
+                filterCriteria = ReleaseReportFilterCriteria
+                        .builder()
+                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId))
+                        .build();
                 entityType = ReleaseReport.class;
                 break;
             case Consts.REPORT_WH_REPLENISHMENT:
@@ -87,7 +100,10 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .sortBy(List.of(ReplenishmentReportSortCriteria.SortBy.valueOf(sortBy)))
                         .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
                         .build();
-                filterCriteria = ReplenishmentReportFilterCriteria.builder().build();
+                filterCriteria = ReplenishmentReportFilterCriteria
+                        .builder()
+                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId))
+                        .build();
                 entityType = ReplenishmentReport.class;
                 break;
             case Consts.REPORT_WH_SHIPMENT:
@@ -96,7 +112,10 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .sortBy(List.of(ShipmentReportSortCriteria.SortBy.valueOf(sortBy)))
                         .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
                         .build();
-                filterCriteria = ShipmentReportFilterCriteria.builder().build();
+                filterCriteria = ShipmentReportFilterCriteria
+                        .builder()
+                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId))
+                        .build();
                 entityType = ShipmentReport.class;
                 break;
             case Consts.REPORT_WH_WORKSHIFT_REPLENISHMENT:
@@ -105,7 +124,10 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .sortBy(List.of(WorkShiftReplenishmentReportSortCriteria.SortBy.valueOf(sortBy)))
                         .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
                         .build();
-                filterCriteria = WorkShiftReplenishmentReportFilterCriteria.builder().build();
+                filterCriteria = WorkShiftReplenishmentReportFilterCriteria
+                        .builder()
+                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId))
+                        .build();
                 entityType = WorkShiftReplenishmentReport.class;
                 break;
             case Consts.REPORT_FS_SUPPLY_REQUIREMENT:
@@ -114,7 +136,10 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .sortBy(List.of(SupplyRequirementReportSortCriteria.SortBy.valueOf(sortBy)))
                         .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
                         .build();
-                filterCriteria = SupplyRequirementReportFilterCriteria.builder().build();
+                filterCriteria = SupplyRequirementReportFilterCriteria
+                        .builder()
+                        .factorySiteId(new FactorySiteID((UUIDBasedEntityID) locationSpecificId))
+                        .build();
                 entityType = SupplyRequirementReport.class;
                 break;
             case Consts.REPORT_FS_WORKSHIFT:
@@ -123,7 +148,10 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .sortBy(List.of(WorkShiftReportSortCriteria.SortBy.valueOf(sortBy)))
                         .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
                         .build();
-                filterCriteria = WorkShiftReportFilterCriteria.builder().build();
+                filterCriteria = WorkShiftReportFilterCriteria
+                        .builder()
+                        .factorySiteId(new FactorySiteID((UUIDBasedEntityID) locationSpecificId))
+                        .build();
                 entityType = WorkShiftReport.class;
                 break;
             case Consts.REPORT_WAREHOUSE:
@@ -132,7 +160,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
 //                            .sortBy(List.of(WorkShiftReportSortCriteria.SortBy.valueOf(sortBy)))
 //                            .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
 //                            .build();
-                filterCriteria = WareHouseReportFilterCriteria.builder().build();
+                filterCriteria = WareHouseReportFilterCriteria.builder().warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId)).build();
                 entityType = WareHouseReport.class;
                 break;
             case Consts.REPORT_FACTORYSITE:
@@ -141,7 +169,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
 //                            .sortBy(List.of(WorkShiftReportSortCriteria.SortBy.valueOf(sortBy)))
 //                            .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
 //                            .build();
-                filterCriteria = FactorySiteReportFilterCriteria.builder().build();
+                filterCriteria = FactorySiteReportFilterCriteria.builder().factorySiteId(new FactorySiteID((UUIDBasedEntityID) locationSpecificId)).build();
                 entityType = FactorySiteReport.class;
                 break;
             default:
@@ -153,7 +181,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                     .sortBy(List.of(ReportSortCriteria.SortBy.valueOf(sortBy)))
                     .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
                     .build();
-            filterCriteria = ReportFilterCriteria.builder().build();
+            filterCriteria = ReportFilterCriteria.builder().departmentId(new DepartmentID((UUIDBasedEntityID) locationSpecificId)).build();
             entityType = Report.class;
         }
         System.out.println("fetchReportEntityType: " + entityType.getName());
@@ -210,9 +238,9 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
         messagePublisher.publish(report.get().edjectEvents());
     }
     @Override
-    public List<ReportDetails> fetch(ReportID key, Integer count, boolean descending, String sortBy, String typeCriteria) {
+    public List<ReportDetails> fetch(ReportID key, Integer count, boolean descending, String sortBy, String typeCriteria, EntityID locationSpecificId) {
         Query query = toQuery(
-                key, count, descending, sortBy, typeCriteria
+                key, count, descending, sortBy, typeCriteria, locationSpecificId
         );
         return reportDomainToDTOMapper.toReportDetails(reportRepository.findAllWithQuery(query));
     }

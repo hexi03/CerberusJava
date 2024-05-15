@@ -97,17 +97,17 @@ public class ReportSpecificationFactory {
         return (root, query, criteriaBuilder) -> {
                 // Создаем подзапрос для получения tid записи с указанным key
 
-            Subquery<Long> subquery = query.subquery(Long.class);
+            Subquery<String> subquery = query.subquery(String.class);
             // Определяем Root для Subquery
             Root<ReportModel> subqueryRoot = subquery.from(ReportModel.class);
-            subquery.select(criteriaBuilder.function("get_ctid", Long.class)).where(criteriaBuilder.equal(subqueryRoot.get("id"), key));
+            subquery.select(criteriaBuilder.function("get_ctid", String.class, subqueryRoot.get("id"))).where(criteriaBuilder.equal(subqueryRoot.get("id"), key));
 
             // Возвращаем условие для выбора записей с tid больше полученного tid из подзапроса
 
             if (dir == PagingCriteria.Direction.FORWARD)
-                return criteriaBuilder.greaterThan(criteriaBuilder.function("get_ctid", Long.class), subquery);
+                return criteriaBuilder.greaterThan(criteriaBuilder.function("get_ctid", String.class, root.get("id")), subquery);
             else
-                return criteriaBuilder.lessThan(criteriaBuilder.function("get_ctid", Long.class), subquery);
+                return criteriaBuilder.lessThan(criteriaBuilder.function("get_ctid", String.class, root.get("id")), subquery);
 
         };
     }

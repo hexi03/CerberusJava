@@ -21,12 +21,14 @@ import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 public class JpaReportFactoryImpl implements ReportFactory {
     public final ItemRepository itemRepository;
     public final ProductRepository productRepository;
@@ -80,7 +82,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 "Error while creating report: " +
                         "There are no warehouses found:"
         );
-        List<WareHouse> unregisteredAsSuppliers = factorySite.get().getSuppliers().stream().filter(sup -> !(wareHouses.stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
+        List<WareHouse> unregisteredAsSuppliers = wareHouses.stream().filter(sup -> !(factorySite.get().getSuppliers().stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
         if (!unregisteredAsSuppliers.isEmpty())
             throw new RuntimeException(
                     "Error while creating report: " +
@@ -390,7 +392,11 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 "Error while creating report: " +
                         "There are no warehouses found:"
         );
-        List<WareHouse> unregisteredAsSuppliers = factorySite.get().getSuppliers().stream().filter(sup -> !(wareHouses.stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
+        log.info("Founded warehouses: " + wareHouses.toString());
+        log.info("FactorySite suppliers: " + factorySite.get().getSuppliers().toString());
+        List<WareHouse> unregisteredAsSuppliers = wareHouses.stream().filter(sup -> !(factorySite.get().getSuppliers().stream().anyMatch(wareHouseModel -> wareHouseModel.getId().equals(sup.getId())))).collect(Collectors.toList());
+        log.info("Unregistered suppliers: " + unregisteredAsSuppliers.toString());
+
         if (!unregisteredAsSuppliers.isEmpty())
             throw new RuntimeException(
                     "Error while creating report: " +

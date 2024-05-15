@@ -9,7 +9,7 @@ import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
-import com.hexi.Cerberus.infrastructure.entity.EntityId;
+import com.hexi.Cerberus.infrastructure.entity.EntityID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +33,7 @@ public class AccessController {
     @PostMapping("/modifyAccess")
     public ResponseEntity<Void> modifyAccess(@RequestBody ModifyAccessRequest dto) {
 
-        EntityId resourceId;
+        EntityID resourceId;
         switch (dto.getResourceId()) {
             case "department":
                 resourceId = new DepartmentID(UUID.fromString(dto.getResourceId()));

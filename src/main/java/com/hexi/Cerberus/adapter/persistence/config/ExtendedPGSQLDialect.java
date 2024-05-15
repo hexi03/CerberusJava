@@ -9,6 +9,7 @@ import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo;
 import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.query.ReturnableType;
+import org.hibernate.query.hql.HqlInterpretationException;
 import org.hibernate.query.spi.QueryEngine;
 import org.hibernate.query.sqm.function.AbstractSqmSelfRenderingFunctionDescriptor;
 import org.hibernate.query.sqm.function.FunctionKind;
@@ -19,6 +20,9 @@ import org.hibernate.query.sqm.tree.from.SqmRoot;
 import org.hibernate.sql.ast.SqlAstTranslator;
 import org.hibernate.sql.ast.spi.SqlAppender;
 import org.hibernate.sql.ast.tree.SqlAstNode;
+import org.hibernate.sql.ast.tree.expression.ColumnReference;
+import org.hibernate.sql.ast.tree.expression.Expression;
+import org.hibernate.sql.ast.tree.update.Assignable;
 import org.hibernate.type.BasicTypeRegistry;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.spi.TypeConfiguration;
@@ -41,10 +45,34 @@ public class ExtendedPGSQLDialect extends PostgreSQLDialect {
         super.initializeFunctionRegistry(functionContributions);
         BasicTypeRegistry basicTypeRegistry = functionContributions.getTypeConfiguration().getBasicTypeRegistry();
         SqmFunctionRegistry functionRegistry = functionContributions.getFunctionRegistry();
-        functionRegistry.registerPattern(
+        functionRegistry.register(
                 "get_ctid",
-                "(((ctid::text::point)[0]::bigint << 32) | (ctid::text::point)[1]::bigint)",
-                basicTypeRegistry.resolve( StandardBasicTypes.LONG ));
+                new AbstractSqmSelfRenderingFunctionDescriptor( "get_ctid", StandardArgumentsValidators.exactly( 1 ), StandardFunctionReturnTypeResolvers.invariant( basicTypeRegistry.resolve( StandardBasicTypes.STRING ) ), null ) {
+
+                    @Override
+                    public void render(
+                            SqlAppender sqlAppender,
+                            List<? extends SqlAstNode> arguments,
+                            ReturnableType<?> returnType,
+                            SqlAstTranslator<?> walker) {
+                        final SqlAstNode sqlAstNode = arguments.get(0);
+                        final ColumnReference reference;
+                        if ( sqlAstNode instanceof Assignable) {
+                            final Assignable assignable = (Assignable) sqlAstNode;
+                            reference = assignable.getColumnReferences().get(0);
+                        }
+                        else if ( sqlAstNode instanceof Expression) {
+                            final Expression expression = (Expression) sqlAstNode;
+                            reference = expression.getColumnReference();
+                        }
+                        else {
+                            throw new HqlInterpretationException( "path did not map to a column" );
+                        }
+                        sqlAppender.appendSql( reference.getQualifier() );
+                        sqlAppender.appendSql( ".ctid" );
+                    }
+                }
+        );
 
 //        functionRegistry.register(
 //                "get_ctid",

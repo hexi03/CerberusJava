@@ -2,14 +2,13 @@ package com.hexi.Cerberus.infrastructure.entity;
 
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.*;
-import org.springframework.security.core.userdetails.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public interface SecuredEntity extends Entity {
 
-    static ObjectIdentity getObjectIdentity(Class<Entity> cls, EntityId id) {
+    static ObjectIdentity getObjectIdentity(Class<Entity> cls, EntityID id) {
         return new ObjectIdentityImpl(cls, id.toString());
     }
 

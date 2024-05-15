@@ -9,6 +9,8 @@ import com.hexi.Cerberus.domain.report.command.create.*;
 import com.hexi.Cerberus.domain.report.command.update.*;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
+import com.hexi.Cerberus.infrastructure.entity.EntityID;
+import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @DrivingAdapter
 @RequestMapping("/api/report")
@@ -32,6 +35,7 @@ public class ReportController {
     @GetMapping("/fetch")
     public ResponseEntity<List<ReportDetails>> fetch(
             @RequestParam(required = false) ReportID id,
+            @RequestParam(required = false) UUIDBasedEntityID locationSpecificId,
             @RequestParam(required = false) ReportID key,
             @RequestParam(required = false) Integer count,
             @RequestParam(required = false) boolean descending,
@@ -46,7 +50,7 @@ public class ReportController {
             // Fetch all reports with pagination and sorting
 
 
-            List<ReportDetails> reports = reportManagementService.fetch(key, count, descending, sortBy, typeCriteria);
+            List<ReportDetails> reports = reportManagementService.fetch(key, count, descending, sortBy, typeCriteria, locationSpecificId);
             reportDetails = reports;
         } else {
             // Fetch a single report by ID

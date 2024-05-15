@@ -1,8 +1,9 @@
 package com.hexi.Cerberus.infrastructure.entity;
 
-import java.util.Optional;
+import java.util.UUID;
 
-public interface EntityId<T> {
+public interface EntityID<T> {
     T getId();
 
 }
+

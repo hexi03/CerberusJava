@@ -5,6 +5,7 @@ import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.command.create.CreateReportCmd;
 import com.hexi.Cerberus.domain.report.command.update.UpdateReportCmd;
+import com.hexi.Cerberus.infrastructure.entity.EntityID;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 
@@ -22,5 +23,5 @@ public interface ReportManagementService {
 
     Optional<ReportDetails> fetchById(ReportID id);
 
-    List<ReportDetails> fetch(ReportID key, Integer count, boolean descending, String sortBy, String typeCriteria);
+    List<ReportDetails> fetch(ReportID key, Integer count, boolean descending, String sortBy, String typeCriteria, EntityID locationSpecificId);
 }
