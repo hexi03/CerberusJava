@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface UserManagementService {
     Optional<UserDetailsDTO> displayBy(UserID id);
 
+    Optional<UserDetailsDTO> displayByEmail(String email);
+
     List<UserDetailsDTO> displayAllBy(Query query);
 
     List<UserDetailsDTO> displayAll();

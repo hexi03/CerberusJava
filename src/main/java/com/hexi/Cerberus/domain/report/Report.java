@@ -1,6 +1,7 @@
 package com.hexi.Cerberus.domain.report;
 
 import com.hexi.Cerberus.domain.report.query.filter.ReportStatus;
+import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.infrastructure.aggregate.AggregateRoot;
 import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 
@@ -41,6 +42,10 @@ public interface Report extends SecuredEntity, AggregateRoot {
     Date getCreatedAt();
 
     void setCreatedAt(Date date);
+
+    User getCreator();
+
+    void setCreator(User creator);
 
 //    @Override
 //    public void clearEvents() {

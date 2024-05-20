@@ -5,6 +5,7 @@ import com.hexi.Cerberus.adapter.web.rest.Consts;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.product.ProductID;
+import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,7 @@ import java.util.Map;
 @JsonTypeName(Consts.REPORT_FS_WORKSHIFT)
 public class UpdateWorkShiftReportDTO extends UpdateReportDTO {
     FactorySiteID factorySiteId;
+    UserID creatorId;
     List<WareHouseID> targetWareHouseIds;
     Map<ProductID, Integer> produced;
     Map<ItemID, Integer> losses;

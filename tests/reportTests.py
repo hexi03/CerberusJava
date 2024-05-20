@@ -23,6 +23,7 @@ class TestReportAPI(unittest.TestCase):
             "name": "EzikVTYMoney"
         }
         create_r_1 = requests.post(consts.API_DEPARTMENT_PREFIX + "create", json = self.dep1, headers=self.headers)
+        print(create_r_1.content)
         self.dep1.update({"id": create_r_1.json(),'wareHouses': [], 'factorySites': []})
         self.assertEqual(create_r_1.status_code, 201)
         create_r_2 = requests.post(consts.API_DEPARTMENT_PREFIX + "create", json = self.dep2, headers=self.headers)

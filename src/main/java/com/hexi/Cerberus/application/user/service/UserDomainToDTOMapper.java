@@ -13,7 +13,7 @@ public interface UserDomainToDTOMapper {
         return UserDetailsDTO
                 .builder()
                 .id(user.getId())
-                .groups(
+                .groupIds(
                         user
                                 .getGroups()
                                 .stream()

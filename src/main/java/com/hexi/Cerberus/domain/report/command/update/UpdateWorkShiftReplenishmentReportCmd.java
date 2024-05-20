@@ -22,10 +22,11 @@ public class UpdateWorkShiftReplenishmentReportCmd extends UpdateReportCmd {
     @Override
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
-//        if(id == null) problems.add("Command id is null");
-//        if(itemId == null) problems.add("Item id is null");
-//        if(requirements != null || requirements.stream().filter(userID -> userID == null).count() != 0) problems.add("Requireement id(s) is null");
-
+        super.validate(problems);
+        if(wareHouseId == null) problems.add("Warehouse id is null");
+        if(workShiftReportId == null) problems.add("Work shift report id is null");
+        if(items != null && items.entrySet().stream().filter(entry -> entry.getKey() == null).count() != 0) problems.add("Item id(s) is null");
+        if(unclaimedRemains != null && unclaimedRemains.entrySet().stream().filter(entry -> entry.getKey() == null).count() != 0) problems.add("Unclaimed remain id(s) is null");
         return new ValidationResult(problems);
     }
 

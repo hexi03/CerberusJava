@@ -3,10 +3,12 @@ package com.hexi.Cerberus.adapter.persistence.report.base.factorysite;
 import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemEntry;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
+import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
+import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.*;
 
@@ -30,8 +32,8 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
             Date expirationDate,
             Optional<Date> deletedAt,
             List<WareHouseModel> targetWareHouses,
-            Map<ItemModel, Integer> requirements) {
-        super(id, factorySite, createdAt, expirationDate, deletedAt);
+            Map<ItemModel, Integer> requirements, UserModel creator) {
+        super(id, factorySite, createdAt, expirationDate, deletedAt, creator);
         this.requirements = requirements.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.targetWareHouses = targetWareHouses;
     }
@@ -42,8 +44,8 @@ public class SupplyRequirementReportModel extends FactorySiteReportModel impleme
             Date createdAt,
             Date expirationDate,
             List<WareHouseModel> targetWareHouses,
-            Map<ItemModel, Integer> requirements) {
-        super(id, factorySite, createdAt, expirationDate);
+            Map<ItemModel, Integer> requirements, UserModel creator) {
+        super(id, factorySite, createdAt, expirationDate, creator);
         this.requirements = requirements.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.targetWareHouses = targetWareHouses;
     }

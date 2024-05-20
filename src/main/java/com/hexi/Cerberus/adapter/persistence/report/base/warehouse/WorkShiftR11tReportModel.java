@@ -3,11 +3,13 @@ package com.hexi.Cerberus.adapter.persistence.report.base.warehouse;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemEntry;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.WorkShiftReportModel;
+import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.warehouse.WorkShiftReplenishmentReport;
+import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -33,8 +35,9 @@ public class WorkShiftR11tReportModel extends WareHouseReportModel implements It
             Optional<Date> deletedAt,
             WorkShiftReportModel workShiftReport,
             Map<ItemModel, Integer> items,
-            Map<ItemModel, Integer> unclaimedRemains) {
-        super(id, wareHouse, createdAt, expirationDate, deletedAt);
+            Map<ItemModel, Integer> unclaimedRemains,
+            UserModel creator) {
+        super(id, wareHouse, createdAt, expirationDate, deletedAt, creator);
         this.items = items.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.unclaimedRemains = unclaimedRemains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.workShiftReport = workShiftReport;
@@ -47,8 +50,9 @@ public class WorkShiftR11tReportModel extends WareHouseReportModel implements It
             Date expirationDate,
             WorkShiftReportModel workShiftReport,
             Map<ItemModel, Integer> items,
-            Map<ItemModel, Integer> unclaimedRemains) {
-        super(id, wareHouse, createdAt, expirationDate);
+            Map<ItemModel, Integer> unclaimedRemains,
+            UserModel creator) {
+        super(id, wareHouse, createdAt, expirationDate, creator);
         this.items = items.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.unclaimedRemains = unclaimedRemains.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
 

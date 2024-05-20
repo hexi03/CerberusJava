@@ -12,6 +12,8 @@ import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.report.warehouse.*;
+import com.hexi.Cerberus.domain.user.User;
+import com.hexi.Cerberus.domain.user.repository.UserRepository;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class ReportModifier {
     public final ItemRepository itemRepository;
     public final ProductRepository productRepository;
     public final ReportRepository reportRepository;
+    public final UserRepository userRepository;
 
     public void updateBy(SupplyRequirementReport supplyRequirementReport, UpdateSupplyRequirementReportCmd cmd) {
         FactorySite factorySite;
@@ -50,6 +53,11 @@ public class ReportModifier {
                     "Error while creating report: " +
                             String.format("Warehouse %s is not supplier of factory site %s", unregisteredAsSuppliers.get(0).getName().toString(), factorySite.getName().toString()));
 
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
+        ));
 
         List<Item> reqs =
                 cmd
@@ -67,12 +75,19 @@ public class ReportModifier {
         ));
 
         supplyRequirementReport.setCreatedAt(new Date());
+        supplyRequirementReport.setCreator(creator.get());
         supplyRequirementReport.setTargetWareHouses(targetWareHouses);
         supplyRequirementReport.setRequirements(reqMap);
 
     }
 
     public void updateBy(InventarisationReport inventarisationReport, UpdateInventarisationReportCmd cmd) {
+
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
+        ));
 
         List<Item> items =
                 cmd
@@ -94,11 +109,18 @@ public class ReportModifier {
                         );
 
         inventarisationReport.setCreatedAt(new Date());
-
+        inventarisationReport.setCreator(creator.get());
         inventarisationReport.setItems(itMap);
     }
 
     public void updateBy(ShipmentReport shipmentReport, UpdateShipmentReportCmd cmd) {
+
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
+        ));
+
         List<Item> items =
                 cmd
                         .getItems()
@@ -115,7 +137,7 @@ public class ReportModifier {
         ));
 
         shipmentReport.setCreatedAt(new Date());
-
+        shipmentReport.setCreator(creator.get());
         shipmentReport.setItems(itMap);
     }
 
@@ -124,6 +146,12 @@ public class ReportModifier {
         Optional<Report> SRQReport = reportRepository.findById(cmd.getSupplyReqReportId());
         if (!(SRQReport.get() instanceof SupplyRequirementReport))
             throw new RuntimeException("Report id associated with incorrect report type");
+
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
+        ));
 
         List<Item> reqs =
                 cmd
@@ -141,12 +169,18 @@ public class ReportModifier {
         ));
 
         releaseReport.setCreatedAt(new Date());
+        releaseReport.setCreator(creator.get());
         releaseReport.setSupplyReqReportId(SRQReport.get());
         releaseReport.setItems(reqMap);
     }
 
     public void updateBy(ReplenishmentReport replenishmentReport, UpdateReplenishmentReportCmd cmd) {
 
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
+        ));
         List<Item> items = cmd
                 .getItems()
                 .keySet()
@@ -161,6 +195,7 @@ public class ReportModifier {
                 Integer::sum
         ));
         replenishmentReport.setCreatedAt(new Date());
+        replenishmentReport.setCreator(creator.get());
         replenishmentReport.setItems(itemMap);
     }
 
@@ -170,6 +205,11 @@ public class ReportModifier {
         if (!(WHReport.get() instanceof WorkShiftReport))
             throw new RuntimeException("Report id associated with incorrect report type");
 
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
+        ));
         List<Item> reqs = cmd
                 .getItems()
                 .keySet()
@@ -185,6 +225,7 @@ public class ReportModifier {
         ));
 
         workShiftReplenishmentReport.setCreatedAt(new Date());
+        workShiftReplenishmentReport.setCreator(creator.get());
         workShiftReplenishmentReport.setWorkShiftReport(WHReport.get());
         workShiftReplenishmentReport.setItems(reqMap);
 
@@ -209,6 +250,11 @@ public class ReportModifier {
                             String.format("Warehouse %s is not supplier of factory site %s", unregisteredAsSuppliers.get(0).getName().toString(), factorySite.getName().toString()));
 
 
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
+        ));
 
         Map<Product, Integer> producedMap= cmd
                 .getProduced()
@@ -268,6 +314,7 @@ public class ReportModifier {
         ));
 
         workShiftReport.setCreatedAt(new Date());
+        workShiftReport.setCreator(creator.get());
         workShiftReport.setProduced(producedMap);
         workShiftReport.setLosses(lossesMap);
         workShiftReport.setRemains(remainsMap);

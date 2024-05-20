@@ -165,9 +165,10 @@ public class JpaPersistenceConfiguration {
             ProductRepository productRepository,
             FactorySiteRepository factorySiteRepository,
             WareHouseRepository wareHouseRepository,
-            ReportRepository reportRepository
+            ReportRepository reportRepository,
+            UserRepository userRepository
     ) {
-        return new JpaReportFactoryImpl(itemRepository, productRepository, factorySiteRepository, wareHouseRepository, reportRepository);
+        return new JpaReportFactoryImpl(itemRepository, productRepository, factorySiteRepository, wareHouseRepository, reportRepository, userRepository);
     }
 
 

@@ -5,11 +5,13 @@ import com.hexi.Cerberus.adapter.persistence.item.base.ItemEntry;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.adapter.persistence.product.base.ProductEntry;
 import com.hexi.Cerberus.adapter.persistence.product.base.ProductModel;
+import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
+import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.*;
 
@@ -45,8 +47,9 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
             Map<ProductModel, Integer> produced,
             Map<ItemModel, Integer> losses,
             Map<ItemModel, Integer> remains,
-            Map<ItemModel, Integer> unclaimedRemains) {
-        super(id, factorySite, createdAt, expirationDate, deletedAt);
+            Map<ItemModel, Integer> unclaimedRemains,
+            UserModel creator) {
+        super(id, factorySite, createdAt, expirationDate, deletedAt, creator);
         this.targetWareHouses = targetWareHouses;
         this.produced = produced.entrySet().stream().map(entry -> new ProductEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.losses = losses.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
@@ -63,8 +66,9 @@ public class WorkShiftReportModel extends FactorySiteReportModel implements Work
             Map<ProductModel, Integer> produced,
             Map<ItemModel, Integer> losses,
             Map<ItemModel, Integer> remains,
-            Map<ItemModel, Integer> unclaimedRemains) {
-        super(id, factorySite, createdAt, expirationDate);
+            Map<ItemModel, Integer> unclaimedRemains,
+            UserModel creator) {
+        super(id, factorySite, createdAt, expirationDate, creator);
         this.targetWareHouses = targetWareHouses;
         this.produced = produced.entrySet().stream().map(entry -> new ProductEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
         this.losses = losses.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());

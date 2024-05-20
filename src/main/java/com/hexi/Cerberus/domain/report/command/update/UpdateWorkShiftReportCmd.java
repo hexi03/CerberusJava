@@ -25,10 +25,14 @@ public class UpdateWorkShiftReportCmd extends UpdateReportCmd {
     @Override
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
-//        if(id == null) problems.add("Command id is null");
-//        if(itemId == null) problems.add("Item id is null");
-//        if(requirements != null || requirements.stream().filter(userID -> userID == null).count() != 0) problems.add("Requireement id(s) is null");
 
+        super.validate(problems);
+        if(factorySiteId == null) problems.add("FactorySite id is null");
+        if(produced != null && produced.entrySet().stream().filter(entry -> entry.getKey() == null).count() != 0) problems.add("Produced item id(s) is null");
+        if(losses != null && losses.entrySet().stream().filter(entry -> entry.getKey() == null).count() != 0) problems.add("Lossed item id(s) is null");
+        if(remains != null && remains.entrySet().stream().filter(entry -> entry.getKey() == null).count() != 0) problems.add("Remains item id(s) is null");
+        if(unclaimedRemains != null && unclaimedRemains != null && unclaimedRemains.entrySet().stream().filter(entry -> entry.getKey() == null).count() != 0) problems.add("Unclaimed remains item id(s) is null");
+        if (targetWareHouseIds == null || targetWareHouseIds.isEmpty() || targetWareHouseIds.stream().anyMatch(wareHouseID -> wareHouseID == null)) problems.add("Target warehouses id is null or includes null");
         return new ValidationResult(problems);
     }
 

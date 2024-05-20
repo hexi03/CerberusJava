@@ -41,6 +41,12 @@ public class AuthService {
         return jwtTokenUtils.generateToken(userDetails);
     }
 
+    public String generateToken(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if(user.isEmpty()) return null;
+        return generateToken(user.get());
+    }
+
 
     public String getUsernameFromToken(String token) {
         return jwtTokenUtils.getUsername(token);

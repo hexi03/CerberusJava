@@ -14,17 +14,17 @@ import java.util.Map;
 @Getter
 @SuperBuilder
 public class CreateSupplyRequirementReportCmd extends CreateReportCmd {
-    FactorySiteID factorySiteID;
+    FactorySiteID factorySiteId;
     List<WareHouseID> targetWareHouseIds;
     Map<ItemID, Integer> items;
 
     @Override
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
-        if(id == null) problems.add("Command id is null");
-        if (targetWareHouseIds.isEmpty() || targetWareHouseIds.stream().anyMatch(wareHouseID -> wareHouseID == null)) problems.add("Target warehouses id is null or includes null");
-        if (items == null || items.entrySet().stream().filter(userID -> userID == null).count() != 0) problems.add("Item id(s) is null");
-
+        super.validate(problems);
+        if(factorySiteId == null) problems.add("Factory site id is null");
+        if(items != null && items.entrySet().stream().filter(entry -> entry.getKey() == null).count() != 0) problems.add("Requirement id(s) is null");
+        if (targetWareHouseIds == null || targetWareHouseIds.isEmpty() || targetWareHouseIds.stream().anyMatch(wareHouseID -> wareHouseID == null)) problems.add("Target warehouses id is null or includes null");
         return new ValidationResult(problems);
     }
 

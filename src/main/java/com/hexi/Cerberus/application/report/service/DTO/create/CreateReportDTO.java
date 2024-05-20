@@ -3,8 +3,11 @@ package com.hexi.Cerberus.application.report.service.DTO.create;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.hexi.Cerberus.adapter.web.rest.Consts;
+import com.hexi.Cerberus.domain.user.UserID;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = CreateReportDTO.DISCRIMINATOR)
 @JsonSubTypes({
@@ -17,8 +20,11 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = CreateReleaseReportDTO.class, name = Consts.REPORT_WH_RELEASE)
 
 })
+@Getter
 public abstract class CreateReportDTO {
     public static final String DISCRIMINATOR = "type";
+    @Setter
+    UserID creatorId;
 
 
 }

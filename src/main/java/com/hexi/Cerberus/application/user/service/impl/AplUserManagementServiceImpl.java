@@ -39,11 +39,18 @@ public class AplUserManagementServiceImpl implements UserManagementService {
     }
 
     @Override
+    public Optional<UserDetailsDTO> displayByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.map(userDomainToDtoMapper::userToDetailsDTO);
+    }
+
+    @Override
     public List<UserDetailsDTO> displayAllBy(Query query) {
         return ((List<User>)userRepository.findAllWithQuery(query)).stream()
                 .map(userDomainToDtoMapper::userToDetailsDTO)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<UserDetailsDTO> displayAll() {

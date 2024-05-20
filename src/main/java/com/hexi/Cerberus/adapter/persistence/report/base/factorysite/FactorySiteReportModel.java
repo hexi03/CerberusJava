@@ -3,10 +3,11 @@ package com.hexi.Cerberus.adapter.persistence.report.base.factorysite;
 import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
 import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.ReportModel;
+import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
-import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.FactorySiteReport;
+import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,8 +32,8 @@ public class FactorySiteReportModel extends ReportModel implements FactorySiteRe
             FactorySiteModel factorySite,
             Date createdAt,
             Date expirationDate,
-            Optional<Date> deletedAt) {
-        super(id, (DepartmentModel) factorySite.getParentDepartment(), createdAt, expirationDate, deletedAt);
+            Optional<Date> deletedAt, UserModel creator) {
+        super(id, (DepartmentModel) factorySite.getParentDepartment(), createdAt, expirationDate, deletedAt, creator);
         this.factorySite = factorySite;
     }
 
@@ -40,9 +41,9 @@ public class FactorySiteReportModel extends ReportModel implements FactorySiteRe
             ReportID id,
             FactorySiteModel factorySite,
             Date createdAt,
-            Date expirationDate
-    ) {
-        super(id, (DepartmentModel) factorySite.getParentDepartment(), createdAt, expirationDate);
+            Date expirationDate,
+            UserModel creator) {
+        super(id, (DepartmentModel) factorySite.getParentDepartment(), createdAt, expirationDate, creator);
         this.factorySite = factorySite;
     }
 

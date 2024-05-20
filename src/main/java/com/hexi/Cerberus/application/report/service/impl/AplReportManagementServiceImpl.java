@@ -31,7 +31,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -78,7 +77,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
 
                 filterCriteria = InventarisationReportFilterCriteria
                         .builder()
-                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId) )
+                        .warehouseId(locationSpecificId != null ? new WareHouseID((UUIDBasedEntityID) locationSpecificId) : null)
                         .build();
                 entityType = InventarisationReport.class;
                 break;
@@ -90,7 +89,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .build();
                 filterCriteria = ReleaseReportFilterCriteria
                         .builder()
-                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId))
+                        .warehouseId(locationSpecificId != null ? new WareHouseID((UUIDBasedEntityID) locationSpecificId) : null)
                         .build();
                 entityType = ReleaseReport.class;
                 break;
@@ -102,7 +101,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .build();
                 filterCriteria = ReplenishmentReportFilterCriteria
                         .builder()
-                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId))
+                        .warehouseId(locationSpecificId != null ? new WareHouseID((UUIDBasedEntityID) locationSpecificId) : null)
                         .build();
                 entityType = ReplenishmentReport.class;
                 break;
@@ -114,7 +113,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .build();
                 filterCriteria = ShipmentReportFilterCriteria
                         .builder()
-                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId))
+                        .warehouseId(locationSpecificId != null ? new WareHouseID((UUIDBasedEntityID) locationSpecificId) : null)
                         .build();
                 entityType = ShipmentReport.class;
                 break;
@@ -126,7 +125,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .build();
                 filterCriteria = WorkShiftReplenishmentReportFilterCriteria
                         .builder()
-                        .warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId))
+                        .warehouseId(locationSpecificId != null ? new WareHouseID((UUIDBasedEntityID) locationSpecificId) : null)
                         .build();
                 entityType = WorkShiftReplenishmentReport.class;
                 break;
@@ -138,7 +137,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .build();
                 filterCriteria = SupplyRequirementReportFilterCriteria
                         .builder()
-                        .factorySiteId(new FactorySiteID((UUIDBasedEntityID) locationSpecificId))
+                        .factorySiteId(locationSpecificId != null ? new FactorySiteID((UUIDBasedEntityID) locationSpecificId) : null)
                         .build();
                 entityType = SupplyRequirementReport.class;
                 break;
@@ -150,7 +149,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                         .build();
                 filterCriteria = WorkShiftReportFilterCriteria
                         .builder()
-                        .factorySiteId(new FactorySiteID((UUIDBasedEntityID) locationSpecificId))
+                        .factorySiteId(locationSpecificId != null ? new FactorySiteID((UUIDBasedEntityID) locationSpecificId) : null)
                         .build();
                 entityType = WorkShiftReport.class;
                 break;
@@ -160,7 +159,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
 //                            .sortBy(List.of(WorkShiftReportSortCriteria.SortBy.valueOf(sortBy)))
 //                            .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
 //                            .build();
-                filterCriteria = WareHouseReportFilterCriteria.builder().warehouseId(new WareHouseID((UUIDBasedEntityID) locationSpecificId)).build();
+                filterCriteria = WareHouseReportFilterCriteria.builder().warehouseId(locationSpecificId != null ? new WareHouseID((UUIDBasedEntityID) locationSpecificId) : null).build();
                 entityType = WareHouseReport.class;
                 break;
             case Consts.REPORT_FACTORYSITE:
@@ -169,7 +168,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
 //                            .sortBy(List.of(WorkShiftReportSortCriteria.SortBy.valueOf(sortBy)))
 //                            .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
 //                            .build();
-                filterCriteria = FactorySiteReportFilterCriteria.builder().factorySiteId(new FactorySiteID((UUIDBasedEntityID) locationSpecificId)).build();
+                filterCriteria = FactorySiteReportFilterCriteria.builder().factorySiteId(locationSpecificId != null ? new FactorySiteID((UUIDBasedEntityID) locationSpecificId) : null).build();
                 entityType = FactorySiteReport.class;
                 break;
             default:
@@ -181,7 +180,7 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
                     .sortBy(List.of(ReportSortCriteria.SortBy.valueOf(sortBy)))
                     .sortType(List.of( descending ? ReportSortCriteria.SortType.DESCENDING : ReportSortCriteria.SortType.ASCENDING))
                     .build();
-            filterCriteria = ReportFilterCriteria.builder().departmentId(new DepartmentID((UUIDBasedEntityID) locationSpecificId)).build();
+            filterCriteria = ReportFilterCriteria.builder().departmentId(locationSpecificId != null ? new DepartmentID((UUIDBasedEntityID) locationSpecificId) : null).build();
             entityType = Report.class;
         }
         System.out.println("fetchReportEntityType: " + entityType.getName());
@@ -206,8 +205,8 @@ public class AplReportManagementServiceImpl implements ReportManagementService {
     @Override
     public void updateReport(UpdateReportCmd build) {
         build.validate().onFailedThrow();
-        Optional<Report> report = reportRepository.findById(build.getReportID());
-        report.orElseThrow(() -> new RuntimeException(String.format("There are no user with id %s", build.getReportID().toString())));
+        Optional<Report> report = reportRepository.findById(build.getReportId());
+        report.orElseThrow(() -> new RuntimeException(String.format("There are no user with id %s", build.getReportId().toString())));
 
         switch (build) {
             case UpdateSupplyRequirementReportCmd cmd:

@@ -3,6 +3,7 @@ package com.hexi.Cerberus.application.report.service.DTO.update;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.hexi.Cerberus.adapter.web.rest.Consts;
 import com.hexi.Cerberus.domain.item.ItemID;
+import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.util.Map;
 @JsonTypeName(Consts.REPORT_WH_SHIPMENT)
 public class UpdateShipmentReportDTO extends UpdateReportDTO {
     WareHouseID wareHouseId;
+    UserID creatorId;
     Map<ItemID, Integer> items;
 
 }

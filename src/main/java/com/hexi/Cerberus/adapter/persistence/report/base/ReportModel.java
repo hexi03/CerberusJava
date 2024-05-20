@@ -1,10 +1,11 @@
 package com.hexi.Cerberus.adapter.persistence.report.base;
 
 import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
-import com.hexi.Cerberus.domain.department.Department;
+import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.query.filter.ReportStatus;
+import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
 import jakarta.persistence.*;
 
@@ -25,28 +26,32 @@ public class ReportModel implements Report {
     @Transient
     ReportStatus status;
     @Temporal(TemporalType.TIMESTAMP)
-
     Date deletedAt;
+
+    @ManyToOne
+    UserModel creator;
 
     @Transient
     transient List<DomainEvent> events = new ArrayList<>();
 
 
-    public ReportModel(ReportID id, DepartmentModel department, Date createdAt, Date expirationDate, Optional<Date> deletedAt) {
+    public ReportModel(ReportID id, DepartmentModel department, Date createdAt, Date expirationDate, Optional<Date> deletedAt, UserModel creator) {
         this.id = new ReportID(id);
         this.department = department;
         this.createdAt = createdAt;
         this.deletedAt = deletedAt.orElse(null);
         this.expirationDate = expirationDate;
+        this.creator = creator;
         updateStatus();
     }
 
-    public ReportModel(ReportID id, DepartmentModel department, Date createdAt, Date expirationDate) {
+    public ReportModel(ReportID id, DepartmentModel department, Date createdAt, Date expirationDate, UserModel creator) {
         this.id = new ReportID(id);
         this.department = department;
         this.createdAt = createdAt;
         this.deletedAt = null;
         this.expirationDate = expirationDate;
+        this.creator = creator;
         updateStatus();
     }
 
@@ -100,6 +105,17 @@ public class ReportModel implements Report {
     @Override
     public void clearEvents() {
         events.clear();
+    }
+
+
+    @Override
+    public User getCreator() {
+        return  (User)creator;
+    }
+
+    @Override
+    public void setCreator(User creator) {
+        this.creator = (UserModel) creator;
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.hexi.Cerberus.adapter.persistence.report.base.ReportModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.SupplyRequirementReportModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.WorkShiftReportModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.warehouse.*;
+import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.config.CerberusParameters;
 import com.hexi.Cerberus.domain.factorysite.repository.FactorySiteRepository;
@@ -17,6 +18,8 @@ import com.hexi.Cerberus.domain.report.ReportFactory;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.command.create.*;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
+import com.hexi.Cerberus.domain.user.User;
+import com.hexi.Cerberus.domain.user.repository.UserRepository;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
     public final FactorySiteRepository factorySiteRepository;
     public final WareHouseRepository wareHouseRepository;
     public final ReportRepository reportRepository;
+    public final UserRepository userRepository;
 
 
     @SneakyThrows
@@ -88,6 +92,13 @@ public class JpaReportFactoryImpl implements ReportFactory {
                     "Error while creating report: " +
                             String.format("Warehouse %s is not supplier of factory site %s", unregisteredAsSuppliers.get(0).getName().toString(), factorySite.get().getName().toString()));
 
+
+
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
+        ));
 
         Map<ProductModel, Integer> produced_map;
         if (cmd.getProduced() == null)
@@ -167,7 +178,8 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 produced_map,
                 losses_map,
                 remains_map,
-                unclaimed_remains_map
+                unclaimed_remains_map,
+                ((UserModel)creator.get())
         );
 
     }
@@ -193,6 +205,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
         wareHouse.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +
                         String.format("Invalid warehouse id: %s", cmd.getWareHouseId().toString())
+        ));
+
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
         items_map = cmd
@@ -232,8 +250,8 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
                 (WorkShiftReportModel)whReport.get(),
                 items_map,
-                unclaimedRemainsMap
-        );
+                unclaimedRemainsMap,
+                ((UserModel)creator.get()));
 
     }
 
@@ -245,6 +263,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
         wareHouse.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +
                         String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
+        ));
+
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
         items_map = cmd
@@ -265,8 +289,8 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 wareHouse.get(),
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
-                items_map
-        );
+                items_map,
+                ((UserModel)creator.get()));
 
     }
 
@@ -285,6 +309,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
         wareHouse.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +
                         String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
+        ));
+
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
         items_map = cmd
@@ -306,8 +336,8 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
                 (SupplyRequirementReportModel) sqReport.get(),
-                items_map
-        );
+                items_map,
+                ((UserModel)creator.get()));
 
     }
 
@@ -319,6 +349,11 @@ public class JpaReportFactoryImpl implements ReportFactory {
         wareHouse.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +
                         String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
+        ));
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
         items_map = cmd
@@ -339,8 +374,8 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 wareHouse.get(),
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
-                items_map
-        );
+                items_map,
+                ((UserModel)creator.get()));
 
     }
 
@@ -352,6 +387,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
         wareHouse.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +
                         String.format("Invalid target warehouse id: %s", cmd.getWareHouseId().toString())
+        ));
+
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
         items_map = cmd
@@ -372,8 +413,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 wareHouse.get(),
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
-                items_map)
-                ;
+                items_map, ((UserModel)creator.get()));
     }
 
     private Report createSupplyRequirementReport(CreateSupplyRequirementReportCmd cmd) {
@@ -381,10 +421,10 @@ public class JpaReportFactoryImpl implements ReportFactory {
         List<WareHouseModel> wareHouses;
         Map<ItemModel, Integer> items_map;
 
-        factorySite = factorySiteRepository.findById(cmd.getFactorySiteID());
+        factorySite = factorySiteRepository.findById(cmd.getFactorySiteId());
         factorySite.orElseThrow(() -> new RuntimeException(
                 "Error while creating report: " +
-                        String.format("Invalid factory site id: %s", cmd.getFactorySiteID().toString())
+                        String.format("Invalid factory site id: %s", cmd.getFactorySiteId().toString())
         ));
 
         wareHouses = wareHouseRepository.findAllById(cmd.getTargetWareHouseIds());
@@ -402,6 +442,11 @@ public class JpaReportFactoryImpl implements ReportFactory {
                     "Error while creating report: " +
                             String.format("Warehouse %s is not supplier of factory site %s", unregisteredAsSuppliers.get(0).getName().toString(), factorySite.get().getName().toString()));
 
+        Optional<User> creator = userRepository.findById(cmd.getCreatorId());
+        creator.orElseThrow(() -> new RuntimeException(
+                "Error while creating report: " +
+                        String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
+        ));
 
         items_map = cmd
                 .getItems()
@@ -422,8 +467,8 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 new Date(),
                 new Date(new Date().getTime() + CerberusParameters.expirationDuration),
                 wareHouses,
-                items_map
-        );
+                items_map,
+                ((UserModel)creator.get()));
 
     }
 

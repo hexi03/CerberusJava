@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +33,17 @@ public class AuthController {
         Optional<String> user_token = authService.authUser(new UserCredentials(userCreds.getEmail(), userCreds.getPassword()));
         if (user_token.isPresent()) {
             return ResponseEntity.ok(new AuthResponse(user_token.get()));
+        } else
+            return ResponseEntity.status(401).build();
+    }
+
+    @PostMapping("/updateToken")
+    public ResponseEntity<AuthResponse> update() {
+        log.info("Try to update!!!");
+        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        String jwtToken = authService.generateToken((String)token.getPrincipal());
+        if (jwtToken != null) {
+            return ResponseEntity.ok(new AuthResponse(jwtToken));
         } else
             return ResponseEntity.status(401).build();
     }

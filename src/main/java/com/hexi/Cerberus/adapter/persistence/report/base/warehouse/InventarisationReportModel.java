@@ -2,11 +2,12 @@ package com.hexi.Cerberus.adapter.persistence.report.base.warehouse;
 
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemEntry;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
+import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.warehouse.InventarisationReport;
-import com.hexi.Cerberus.domain.warehouse.WareHouse;
+import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -25,8 +26,8 @@ public class InventarisationReportModel extends WareHouseReportModel implements 
             Date createdAt,
             Date expirationDate,
             Optional<Date> deletedAt,
-            Map<ItemModel, Integer> items) {
-        super(id, wareHouse, createdAt, expirationDate, deletedAt);
+            Map<ItemModel, Integer> items, UserModel creator) {
+        super(id, wareHouse, createdAt, expirationDate, deletedAt, creator);
         this.items = items.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
 
@@ -35,8 +36,8 @@ public class InventarisationReportModel extends WareHouseReportModel implements 
             WareHouseModel wareHouse,
             Date createdAt,
             Date expirationDate,
-            Map<ItemModel, Integer> items) {
-        super(id, wareHouse, createdAt, expirationDate);
+            Map<ItemModel, Integer> items, UserModel creator) {
+        super(id, wareHouse, createdAt, expirationDate, creator);
         this.items = items.entrySet().stream().map(entry -> new ItemEntry(entry.getKey(),entry.getValue())).collect(Collectors.toList());
     }
 

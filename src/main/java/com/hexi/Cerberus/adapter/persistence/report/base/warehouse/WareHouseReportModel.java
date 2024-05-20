@@ -2,9 +2,11 @@ package com.hexi.Cerberus.adapter.persistence.report.base.warehouse;
 
 import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
 import com.hexi.Cerberus.adapter.persistence.report.base.ReportModel;
+import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.warehouse.WareHouseReport;
+import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.*;
 
@@ -26,8 +28,9 @@ public abstract class WareHouseReportModel extends ReportModel implements WareHo
             WareHouseModel wareHouse,
             Date createdAt,
             Date expirationDate,
-            Optional<Date> deletedAt) {
-        super(id, (DepartmentModel) wareHouse.getParentDepartment(), createdAt, expirationDate, deletedAt);
+            Optional<Date> deletedAt,
+            UserModel creator) {
+        super(id, (DepartmentModel) wareHouse.getParentDepartment(), createdAt, expirationDate, deletedAt, creator);
         this.wareHouse = wareHouse;
     }
 
@@ -35,9 +38,9 @@ public abstract class WareHouseReportModel extends ReportModel implements WareHo
             ReportID id,
             WareHouseModel wareHouse,
             Date createdAt,
-            Date expirationDate
-    ) {
-        super(id, (DepartmentModel) wareHouse.getParentDepartment(), createdAt, expirationDate);
+            Date expirationDate,
+            UserModel creator) {
+        super(id, (DepartmentModel) wareHouse.getParentDepartment(), createdAt, expirationDate, creator);
         this.wareHouse = wareHouse;
     }
 
