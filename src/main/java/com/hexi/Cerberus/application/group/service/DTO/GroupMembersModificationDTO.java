@@ -13,5 +13,4 @@ import java.util.List;
 public class GroupMembersModificationDTO {
     GroupID id;
     List<UserID> users;
-    boolean exclude;
 }

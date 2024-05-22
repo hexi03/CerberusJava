@@ -11,10 +11,7 @@ import com.hexi.Cerberus.application.user.service.DTO.UserUpdateDetailsDTO;
 import com.hexi.Cerberus.application.user.service.UserDomainToDTOMapper;
 import com.hexi.Cerberus.application.user.service.UserManagementService;
 import com.hexi.Cerberus.domain.group.GroupID;
-import com.hexi.Cerberus.domain.group.command.CreateGroupCmd;
-import com.hexi.Cerberus.domain.group.command.GroupExcludeUsersCmd;
-import com.hexi.Cerberus.domain.group.command.GroupIncludeUsersCmd;
-import com.hexi.Cerberus.domain.group.command.UpdateGroupDetailsCmd;
+import com.hexi.Cerberus.domain.group.command.*;
 import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.domain.user.command.CreateUserCmd;
 import com.hexi.Cerberus.domain.user.command.UpdateUserDetailsCmd;
@@ -143,27 +140,18 @@ public class UserGroupController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/includeUsers")
+    @PutMapping("/setUsers")
     public ResponseEntity<Void> updateGroup(@RequestBody GroupMembersModificationDTO dto) {
-        if (dto.isExclude()) {
-            groupManagementService.excludeUsers(
-                    GroupExcludeUsersCmd
+
+            groupManagementService.setUsers(
+                    GroupSetUsersCmd
                             .builder()
                             .id(CommandId.generate())
                             .groupId(dto.getId())
                             .users(dto.getUsers())
                             .build()
             );
-        } else {
-            groupManagementService.includeUsers(
-                    GroupIncludeUsersCmd
-                            .builder()
-                            .id(CommandId.generate())
-                            .groupId(dto.getId())
-                            .users(dto.getUsers())
-                            .build()
-            );
-        }
+
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

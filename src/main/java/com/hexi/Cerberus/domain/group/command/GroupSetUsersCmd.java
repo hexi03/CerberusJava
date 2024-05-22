@@ -1,5 +1,6 @@
-package com.hexi.Cerberus.domain.user.command;
+package com.hexi.Cerberus.domain.group.command;
 
+import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.infrastructure.ValidationResult;
 import com.hexi.Cerberus.infrastructure.command.Command;
@@ -12,12 +13,10 @@ import java.util.List;
 
 @Getter
 @Builder
-public class UpdateUserDetailsCmd implements Command {
+public class GroupSetUsersCmd implements Command {
     CommandId id;
-    UserID userId;
-    String name;
-    String password;
-    String email;
+    GroupID groupId;
+    List<UserID> users;
 
     @Override
     public CommandId getId() {
@@ -28,11 +27,9 @@ public class UpdateUserDetailsCmd implements Command {
     public ValidationResult validate() {
         List<String> problems = new ArrayList<>();
         if (id == null) problems.add("Command id is null");
-        if (userId == null) problems.add("User id is null");
-        if (name == null) problems.add("Name is null");
-        if (email == null) problems.add("Email is null");
-        if (password == null) problems.add("Password is null");
-
+        if (groupId == null) problems.add("Group id is null");
+        if (users != null || users.stream().filter(userID -> userID == null).count() != 0)
+            problems.add("User id(s) is null");
 
         return new ValidationResult(problems);
     }

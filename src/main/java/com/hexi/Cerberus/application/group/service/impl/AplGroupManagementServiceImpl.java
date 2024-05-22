@@ -7,10 +7,7 @@ import com.hexi.Cerberus.domain.group.Group;
 import com.hexi.Cerberus.domain.group.GroupFactory;
 import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.domain.group.GroupUpdater;
-import com.hexi.Cerberus.domain.group.command.CreateGroupCmd;
-import com.hexi.Cerberus.domain.group.command.GroupExcludeUsersCmd;
-import com.hexi.Cerberus.domain.group.command.GroupIncludeUsersCmd;
-import com.hexi.Cerberus.domain.group.command.UpdateGroupDetailsCmd;
+import com.hexi.Cerberus.domain.group.command.*;
 import com.hexi.Cerberus.domain.group.event.GroupDeletedEvent;
 import com.hexi.Cerberus.domain.group.repository.GroupRepository;
 import com.hexi.Cerberus.domain.user.User;
@@ -117,6 +114,27 @@ public class AplGroupManagementServiceImpl implements GroupManagementService {
         groupRepository.update(group.get());
         users.stream().forEach(userRepository::update);
 
+    }
+
+    @Override
+    public void setUsers(GroupSetUsersCmd cmd) {
+        Optional<Group> group = groupRepository.findById(cmd.getGroupId());
+        group.orElseThrow(() -> new RuntimeException(String.format("There are no group with id %s", cmd.getGroupId().toString())));
+
+        List<User> users =
+                cmd
+                        .getUsers()
+                        .stream()
+                        .map(userRepository::findById)
+                        .filter(Optional::isPresent)
+                        .map(user1 -> (User) user1.get())
+                        .toList();
+
+        group.get().setUsers(users);
+
+        messagePublisher.publish(group.get().edjectEvents());
+        groupRepository.update(group.get());
+        users.stream().forEach(userRepository::update);
     }
 
     @Override

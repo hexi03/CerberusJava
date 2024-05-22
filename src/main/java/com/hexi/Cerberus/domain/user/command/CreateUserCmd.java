@@ -27,6 +27,8 @@ public class CreateUserCmd implements Command {
         List<String> problems = new ArrayList<>();
         if (id == null) problems.add("Command id is null");
         if (name == null) problems.add("Name is null");
+        if (email == null) problems.add("Email is null");
+        if (password == null) problems.add("Password is null");
 
         return new ValidationResult(problems);
     }

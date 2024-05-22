@@ -105,6 +105,7 @@ public class ItemRegistriesQueryServiceImpl implements ItemRegistriesQueryServic
         wsrpQuery.multiselect(ieJoin.get("item").get("id").alias("item_id"),
                 cb.sum(cb.prod(ieJoin.get("amount"), peJoin.get("amount"))).alias("amount"));
         wsrpQuery.groupBy(ieJoin.get("item").get("id"));
+        wsrpQuery.where(cb.equal(wsrpRoot.get("factorySite").get("id"), factorySite.getId()));
 
 // Criteria query for wsrlieReq
         CriteriaQuery<Tuple> wsrlieQuery = cb.createTupleQuery();
@@ -113,6 +114,7 @@ public class ItemRegistriesQueryServiceImpl implements ItemRegistriesQueryServic
         wsrlieQuery.multiselect(ieJoin1.get("item").get("id").alias("item_id"),
                 cb.sum(ieJoin1.get("amount")).alias("amount"));
         wsrlieQuery.groupBy(ieJoin1.get("item").get("id"));
+        wsrlieQuery.where(cb.equal(wsrlieRoot.get("factorySite").get("id"), factorySite.getId()));
 
 // Criteria query for wsrrieReq
         CriteriaQuery<Tuple> wsrrieQuery = cb.createTupleQuery();
@@ -121,6 +123,7 @@ public class ItemRegistriesQueryServiceImpl implements ItemRegistriesQueryServic
         wsrrieQuery.multiselect(ieJoin2.get("item").get("id").alias("item_id"),
                 cb.sum(ieJoin2.get("amount")).alias("amount"));
         wsrrieQuery.groupBy(ieJoin2.get("item").get("id"));
+        wsrrieQuery.where(cb.equal(wsrrieRoot.get("factorySite").get("id"), factorySite.getId()));
 
         CriteriaQuery<Tuple> wsrurieQuery = cb.createTupleQuery();
         Root<WorkShiftReportModel> wsrurieRoot = wsrurieQuery.from(WorkShiftReportModel.class);
@@ -128,6 +131,7 @@ public class ItemRegistriesQueryServiceImpl implements ItemRegistriesQueryServic
         wsrurieQuery.multiselect(ieJoin2_1.get("item").get("id").alias("item_id"),
                 cb.sum(ieJoin2_1.get("amount")).alias("amount"));
         wsrurieQuery.groupBy(ieJoin2_1.get("item").get("id"));
+        wsrurieQuery.where(cb.equal(wsrurieRoot.get("factorySite").get("id"), factorySite.getId()));
 // Criteria query for rrieReq
         CriteriaQuery<Tuple> rrieQuery = cb.createTupleQuery();
         Root<ReleaseReportModel> rrieRoot = rrieQuery.from(ReleaseReportModel.class);
@@ -135,6 +139,7 @@ public class ItemRegistriesQueryServiceImpl implements ItemRegistriesQueryServic
         rrieQuery.multiselect(ieJoin3.get("item").get("id").alias("item_id"),
                 cb.sum(ieJoin3.get("amount")).alias("amount"));
         rrieQuery.groupBy(ieJoin3.get("item").get("id"));
+        rrieQuery.where(cb.equal(rrieRoot.get("supplyReqReport").get("factorySite").get("id"), factorySite.getId()));
 
 // Execute queries and collect results
         Map<ItemID, Integer> wsrpie = entityManager.createQuery(wsrpQuery).getResultStream()

@@ -29,7 +29,7 @@ public class UpdateProductCmd implements Command {
         List<String> problems = new ArrayList<>();
         if (id == null) problems.add("Command id is null");
         if (productId == null) problems.add("Item id is null");
-        if (requirements == null || requirements.entrySet().stream().filter(userID -> userID == null).count() != 0)
+        if (requirements == null)
             problems.add("Requirement id(s) is null");
 
         return new ValidationResult(problems);

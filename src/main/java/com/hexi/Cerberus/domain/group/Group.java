@@ -75,6 +75,8 @@ public abstract class Group implements SecuredEntity, AggregateRoot {
 
     public abstract Collection<User> getUsers();
 
+    public abstract void setUsers(List<User> users);
+
     public abstract String getName();
 
     public abstract void setName(String name);
@@ -113,4 +115,6 @@ public abstract class Group implements SecuredEntity, AggregateRoot {
     public String toString() {
         return "Group(id=" + this.getId() + ", users=" + this.getUsers().stream().map(group -> group.getId()).toList() + ", name=" + this.getName() + ")";
     }
+
+
 }

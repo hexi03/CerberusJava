@@ -1,4 +1,4 @@
-package com.hexi.Cerberus.domain.service.impl;
+package com.hexi.Cerberus.domain.service.warnings;
 
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.service.warnings.UnsatisfiedWorkShiftReportWarning;

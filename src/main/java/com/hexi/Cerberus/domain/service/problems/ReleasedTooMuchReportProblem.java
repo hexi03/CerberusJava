@@ -1,4 +1,4 @@
-package com.hexi.Cerberus.domain.service.impl;
+package com.hexi.Cerberus.domain.service.problems;
 
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.infrastructure.StateProblem;

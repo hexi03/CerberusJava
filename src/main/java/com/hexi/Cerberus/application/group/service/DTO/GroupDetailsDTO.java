@@ -12,5 +12,5 @@ import java.util.List;
 public class GroupDetailsDTO {
     GroupID id;
     String name;
-//    List<UserID> users;
+    List<UserID> userIds;
 }

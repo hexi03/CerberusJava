@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,11 @@ public class GroupModel extends Group {
     public Collection<User> getUsers() {
 
         return users.stream().map(userModel -> (User) userModel).collect(Collectors.toList());
+    }
+
+    @Override
+    public void setUsers(List<User> users) {
+        this.users = users.stream().map(userModel -> (UserModel) userModel).collect(Collectors.toList());
     }
 
     @Override

@@ -2,10 +2,7 @@ package com.hexi.Cerberus.application.group.service;
 
 import com.hexi.Cerberus.application.group.service.DTO.GroupDetailsDTO;
 import com.hexi.Cerberus.domain.group.GroupID;
-import com.hexi.Cerberus.domain.group.command.CreateGroupCmd;
-import com.hexi.Cerberus.domain.group.command.GroupExcludeUsersCmd;
-import com.hexi.Cerberus.domain.group.command.GroupIncludeUsersCmd;
-import com.hexi.Cerberus.domain.group.command.UpdateGroupDetailsCmd;
+import com.hexi.Cerberus.domain.group.command.*;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 
@@ -29,6 +26,8 @@ public interface GroupManagementService {
     void excludeUsers(GroupExcludeUsersCmd build);
 
     void includeUsers(GroupIncludeUsersCmd build);
+
+    void setUsers(GroupSetUsersCmd build);
 }
 
 
