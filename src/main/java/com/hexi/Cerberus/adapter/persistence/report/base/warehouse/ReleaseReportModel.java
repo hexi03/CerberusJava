@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ReleaseReportModel extends WareHouseReportModel implements ItemStorageOperationReport, ReleaseReport {
     @ManyToOne(cascade = CascadeType.ALL)
     SupplyRequirementReportModel supplyReqReport;
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "release_report_items_item_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();
 

@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 @Entity
 @Access(AccessType.FIELD)
 public class SupplyRequirementReportModel extends FactorySiteReportModel implements SupplyRequirementReport {
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "supply_requirement_report_target_warehouse_assoc")
     List<WareHouseModel> targetWareHouses;
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "supply_requirement_report_requirements_item_entry_assoc")
     Collection<ItemEntry> requirements = new ArrayList<>();
 

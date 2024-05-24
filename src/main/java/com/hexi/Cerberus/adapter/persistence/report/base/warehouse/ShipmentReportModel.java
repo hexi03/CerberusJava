@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Entity
 @Access(AccessType.FIELD)
 public class ShipmentReportModel extends WareHouseReportModel implements ItemStorageOperationReport, ShipmentReport {
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "shipment_report_items_item_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();
 

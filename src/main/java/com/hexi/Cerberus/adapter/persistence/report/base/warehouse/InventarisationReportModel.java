@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Entity
 @Access(AccessType.FIELD)
 public class InventarisationReportModel extends WareHouseReportModel implements InventarisationReport {
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "inventarisation_report_items_item_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();
 

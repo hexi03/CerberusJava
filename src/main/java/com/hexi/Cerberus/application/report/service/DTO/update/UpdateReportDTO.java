@@ -2,13 +2,14 @@ package com.hexi.Cerberus.application.report.service.DTO.update;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.hexi.Cerberus.adapter.web.rest.Consts;
+import com.hexi.Cerberus.application.report.service.DTO.create.CreateReportDTO;
 import com.hexi.Cerberus.domain.report.ReportID;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.hexi.Cerberus.domain.user.UserID;
+import lombok.Getter;
+import lombok.Setter;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = CreateReportDTO.DISCRIMINATOR)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = UpdateInventarisationReportDTO.class, name = Consts.REPORT_WH_INVENTARISATION),
         @JsonSubTypes.Type(value = UpdateWorkShiftReportDTO.class, name = Consts.REPORT_FS_WORKSHIFT),
@@ -19,8 +20,11 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = UpdateReleaseReportDTO.class, name = Consts.REPORT_WH_RELEASE)
 
 })
-@NoArgsConstructor
-@Data
+@Getter
 public abstract class UpdateReportDTO {
-    ReportID reportId;
+    public static final String DISCRIMINATOR = "type";
+
+    ReportID id;
+    @Setter
+    UserID creatorId;
 }

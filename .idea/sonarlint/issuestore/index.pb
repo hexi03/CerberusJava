@@ -619,3 +619,9 @@ Rsrc/main/java/com/hexi/Cerberus/application/group/service/DTO/GroupDetailsDTO.j
 Ssrc/main/java/com/hexi/Cerberus/domain/item/service/ItemRegistriesQueryService.java,2/8/28eff7d80275d435f0b37f291672ce9ff7ca801e
 è
 _src/main/java/com/hexi/Cerberus/adapter/persistence/service/ItemRegistriesQueryServiceImpl.java,0/4/042becd42a11923663341ca9b2848ace6dcfc3c1
+ä
+Zsrc/main/java/com/hexi/Cerberus/application/report/service/DTO/update/UpdateReportDTO.java,0/3/03520cab0037ba1785a66e6cc3de93a73a94bdce
+ë
+asrc/main/java/com/hexi/Cerberus/application/report/service/DTO/update/UpdateReleaseReportDTO.java,f/3/f3c7b28f06d28fa3123b10e5b1b7c1aa29bcda3f
+ó
+gsrc/main/java/com/hexi/Cerberus/application/report/service/DTO/update/UpdateReplenishmentReportDTO.java,d/3/d3b23e5823cda488f622100409b037fb304201e7

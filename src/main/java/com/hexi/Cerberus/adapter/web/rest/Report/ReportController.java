@@ -6,7 +6,6 @@ import com.hexi.Cerberus.application.report.service.DTO.update.*;
 import com.hexi.Cerberus.application.report.service.ReportManagementService;
 import com.hexi.Cerberus.application.user.service.DTO.UserDetailsDTO;
 import com.hexi.Cerberus.application.user.service.UserManagementService;
-import com.hexi.Cerberus.application.user.service.impl.AplUserManagementServiceImpl;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.command.create.*;
 import com.hexi.Cerberus.domain.report.command.update.*;
@@ -17,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -195,8 +193,17 @@ public class ReportController {
     }
 
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<Void> updateReport(@RequestBody UpdateReportDTO dto) {
+
+        log.info(dto.toString());
+
+        if (dto.getCreatorId() == null){
+            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            Optional<UserDetailsDTO> userDetails = userManagementService.displayByEmail((String)token.getPrincipal());
+            dto.setCreatorId(userDetails.get().getId());
+        }
+
         if (dto instanceof UpdateSupplyRequirementReportDTO) {
             return update((UpdateSupplyRequirementReportDTO) dto);
         } else if (dto instanceof UpdateReleaseReportDTO) {
@@ -226,7 +233,7 @@ public class ReportController {
                         .builder()
                         .id(CommandId.generate())
                         .creatorId(dto.getCreatorId())
-                        .reportId(dto.getReportId())
+                        .reportId(dto.getId())
                         .factorySiteId(dto.getFactorySiteId())
                         .targetWareHouseIds(dto.getTargetWareHouseIds())
                         .items(dto.getItems()).build()
@@ -240,7 +247,7 @@ public class ReportController {
                         .builder()
                         .id(CommandId.generate())
                         .creatorId(dto.getCreatorId())
-                        .reportId(dto.getReportId())
+                        .reportId(dto.getId())
                         .supplyReqReportId(dto.getSupplyReqReportId())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
@@ -254,7 +261,7 @@ public class ReportController {
                         .builder()
                         .id(CommandId.generate())
                         .creatorId(dto.getCreatorId())
-                        .reportId(dto.getReportId())
+                        .reportId(dto.getId())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         );
@@ -267,7 +274,7 @@ public class ReportController {
                         .builder()
                         .id(CommandId.generate())
                         .creatorId(dto.getCreatorId())
-                        .reportId(dto.getReportId())
+                        .reportId(dto.getId())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         );
@@ -278,7 +285,7 @@ public class ReportController {
         reportManagementService.updateReport(
                 UpdateShipmentReportCmd
                         .builder()
-                        .reportId(dto.getReportId())
+                        .reportId(dto.getId())
                         .id(CommandId.generate())
                         .creatorId(dto.getCreatorId())
                         .wareHouseId(dto.getWareHouseId())
@@ -293,7 +300,7 @@ public class ReportController {
                         .builder()
                         .id(CommandId.generate())
                         .creatorId(dto.getCreatorId())
-                        .reportId(dto.getReportId())
+                        .reportId(dto.getId())
                         .wareHouseId(dto.getWareHouseId())
                         .workShiftReportId(dto.getWorkShiftReportId())
                         .unclaimedRemains(dto.getUnclaimedRemains())
@@ -308,7 +315,7 @@ public class ReportController {
                         .builder()
                         .id(CommandId.generate())
                         .creatorId(dto.getCreatorId())
-                        .reportId(dto.getReportId())
+                        .reportId(dto.getId())
                         .factorySiteId(dto.getFactorySiteId())
                         .targetWareHouseIds(dto.getTargetWareHouseIds())
                         .remains(dto.getRemains())
