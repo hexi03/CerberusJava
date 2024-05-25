@@ -56,7 +56,8 @@ public class AuthService {
         log.info(String.format("authUser(%s,%s)", userCredentials.getEmail(),userCredentials.getPassword()));
         Optional<User> user = userRepository.findByEmail(userCredentials.getEmail());
         if (user.isEmpty()) return Optional.empty();
-        if (user.get().getPasswordHash().equals(getPasswordHash(userCredentials.getPassword())))
+        log.info(String.format("DTO пароль пользователя %s: %s", userCredentials.getEmail(), userCredentials.getPassword()));
+        if (!passwordEncoder.matches(userCredentials.getPassword(), user.get().getPasswordHash()))
             return Optional.empty();
         return Optional.of(generateToken(user.get()));
     }

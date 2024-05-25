@@ -18,10 +18,15 @@ public class JpaUserFactoryImpl implements UserFactory {
     }
 
     public User from(CreateUserCmd cmd) {
-        return new UserModel(new UserID(), cmd.getName(), cmd.getEmail(), passwordEncoder.encode(cmd.getPassword()));
+        String passwordEncoded = passwordEncoder.encode(cmd.getPassword());
+        System.out.println(String.format("Создаем юзера: \nИмя: %s\nПочта: %s\nПароль: %s\nХеш пароля: %s\n", cmd.getName(), cmd.getEmail(), cmd.getPassword(), passwordEncoded));
+        return new UserModel(new UserID(), cmd.getName(), cmd.getEmail(), passwordEncoded);
     }
 
     public User from(String name, String email, String password) {
-        return new UserModel(new UserID(), name, email, passwordEncoder.encode(password));
+        String passwordEncoded = passwordEncoder.encode(password);
+        System.out.println(String.format("Создаем юзера: \nИмя: %s\nПочта: %s\nПароль: %s\nХеш пароля: %s\n", name, email, password, passwordEncoded));
+
+        return new UserModel(new UserID(), name, email, passwordEncoded);
     }
 }

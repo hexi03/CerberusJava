@@ -39,7 +39,7 @@ public class UserService implements UserDetailsService {
 
 
     public void createDefaultUser() {
-        User user = userFactory.from("user", "user@abc.ru", passwordEncoder.encode("password"));
+        User user = userFactory.from("user", "user@abc.ru", "password");
         userRepository.save(user);
         //user.setRoles(List.of(roleService.getUserRole()));
     }

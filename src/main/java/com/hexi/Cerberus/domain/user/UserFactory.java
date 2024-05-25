@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public interface UserFactory {
 
     User from(CreateUserCmd cmd);
-    User from(String name, String email, String passwordHash);
+    User from(String name, String email, String password);
 }
 
 
