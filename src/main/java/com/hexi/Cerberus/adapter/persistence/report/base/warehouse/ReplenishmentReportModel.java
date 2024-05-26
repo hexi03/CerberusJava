@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Access(AccessType.FIELD)
-public class ReplenishmentReportModel extends WareHouseReportModel implements ItemStorageOperationReport, ReplenishmentReport {
+public class ReplenishmentReportModel extends WareHouseReportModel implements ReplenishmentReport {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "replenishment_report_items_item_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();

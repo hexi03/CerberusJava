@@ -31,6 +31,7 @@ import com.hexi.Cerberus.infrastructure.StateWarning;
 import com.hexi.Cerberus.infrastructure.query.PagingCriteria;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonContainer;
+import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonSequence;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,24 +49,34 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
     public final WareHouseRepository wareHouseRepository;
     public final ReportQueryService reportQueryService;
 
-    public List<WareHouseReport> getReports(WareHouseID wareHouseId, Optional<Date> treshold) {
-        return getReports(wareHouseId, treshold, Optional.empty());
+    public List<WareHouseReport> getReports(WareHouseID wareHouseId, Date lowerTreshold) {
+        return getReports(wareHouseId, lowerTreshold, null);
     }
 
-    public List<WareHouseReport> getReports(WareHouseID wareHouseId, Optional<Date> treshold, Optional<ReportID> subsequentId) {
+    public List<WareHouseReport> getReports(WareHouseID wareHouseId, Date lowerTreshold, Date upperTreshold) {
+        ComparisonSequence<Date> createdDateSeq = null;
+        if (lowerTreshold != null || upperTreshold != null){
+            List<ComparisonContainer<Date>> createdDateContainers = new ArrayList<>();
+            if (upperTreshold != null) createdDateContainers.add(new ComparisonContainer<Date>(upperTreshold, ComparisonContainer.Sign.LESS));
+            if (lowerTreshold != null) createdDateContainers.add(new ComparisonContainer<Date>(lowerTreshold, ComparisonContainer.Sign.GREATER));
+            createdDateSeq = new ComparisonSequence<>(createdDateContainers);
+        }
+
         WareHouseReportFilterCriteria filter = WareHouseReportFilterCriteria
                 .builder()
-                .createdDate(treshold.isPresent() ? new ComparisonContainer<Date>(treshold.get(), ComparisonContainer.Sign.GREATEREQUAL) : null)
+                .isDeleted(false)
+                .createdDate(createdDateSeq)
                 //.status(ReportStatus.ACTIVE)
                 //.department(wareHouse.getParentDepartment().getId())
                 .warehouseId(wareHouseId)
                 .build();
-        return (List<WareHouseReport>) reportRepository.findAllWithQuery(new Query(WareHouseReport.class, filter, null, new PagingCriteria(subsequentId.orElse(null), null))).stream().collect(Collectors.toList());
+        return (List<WareHouseReport>) reportRepository.findAllWithQuery(new Query(WareHouseReport.class, filter, null, null)).stream().collect(Collectors.toList());
     }
 
     private List<InventarisationReport> getInventarisationReports(WareHouseID id, ReportSortCriteria.SortType sortType) {
         InventarisationReportFilterCriteria filter = InventarisationReportFilterCriteria
                 .builder()
+                .isDeleted(false)
                 //.createdDate(treshold.isPresent() ? new ComparisonContainer<Date>(treshold.get(), ComparisonContainer.Sign.GREATEREQUAL) : null)
                 //.status(ReportStatus.ACTIVE)
                 //.department(wareHouse.getParentDepartment().getId())
@@ -81,15 +92,15 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
     }
     public List<WareHouseReport> getReports(WareHouse wareHouse) {
 
-        return getReports(wareHouse.getId(), Optional.empty());
+        return getReports(wareHouse.getId(), null);
     }
 
     public List<WareHouseReport> getReports(WareHouseID wareHouseId) {
 
-        return getReports(wareHouseId, Optional.empty());
+        return getReports(wareHouseId, null);
     }
 
-    public List<WareHouseReport> getReports(WareHouse wareHouse, Optional<Date> treshold) {
+    public List<WareHouseReport> getReports(WareHouse wareHouse, Date treshold) {
 
         return getReports(wareHouse.getId(), treshold);
     }
@@ -105,25 +116,31 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
     }
 
     private Map<ItemID, Integer> getStorageState(WareHouseID wareHouse, Optional<InventarisationReport> inventarisationBase){
-        return getStorageState(wareHouse, inventarisationBase, Optional.empty());
+        return getStorageState(wareHouse, inventarisationBase, null);
     }
-    private Map<ItemID, Integer> getStorageState(WareHouseID wareHouse, Optional<InventarisationReport> inventarisationBase, Optional<ReportID> subsequentId) {
+    private Map<ItemID, Integer> getStorageState(WareHouseID wareHouse, Optional<InventarisationReport> inventarisationBase, Date upperTreshold) {
         Map<ItemID, Integer> baseStorageState;
         Date dateTreshold;
         List<WareHouseReport> wareHouseReports;
+        System.out.println("    Вычисление состояния: ");
 
         if (inventarisationBase.isPresent()) {
+            System.out.println(String.format("  Используется база инвентаризации от %s: ", inventarisationBase.get().getCreatedAt().toString()));
             baseStorageState =
                     getInventarisedItems((inventarisationBase
                             .get()));
+            System.out.println("    Перечень инвентаризованного по базе: ");
+            System.out.println(baseStorageState);
             dateTreshold = inventarisationBase.get().getCreatedAt();
-            wareHouseReports = getReports(wareHouse, Optional.of(dateTreshold), subsequentId);
+            wareHouseReports = getReports(wareHouse, dateTreshold, upperTreshold); // TODO time sort needs
         } else {
+            System.out.println("    База инвентаризации не используется");
             baseStorageState = new HashMap<>();
             //dateTreshold = null;
-            wareHouseReports = getReports(wareHouse);
+            wareHouseReports = getReports(wareHouse, null, upperTreshold);
         }
-
+        System.out.println("    Совокупность отчетов склада по запросу: ");
+        System.out.println(wareHouseReports.stream().map(wareHouseReport -> wareHouseReport.getId().getId().toString()).collect(Collectors.toList()));
 
         Map<ItemID, Integer> itemReplenishes =
                 getReplenishes(wareHouseReports); //fetch by marking interface
@@ -145,21 +162,23 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                 .collect(Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue, Integer::sum));
     }
 
-    private Optional<InventarisationReport> getLastInventarisationReport(WareHouse wareHouse){
-        return getLastInventarisationReport(wareHouse, Optional.empty());
+    private Optional<InventarisationReport> getLastInventarisationReport(WareHouse wareHouse) {
+        return getLastInventarisationReport(wareHouse, null);
     }
-    private Optional<InventarisationReport> getLastInventarisationReport(WareHouse wareHouse, Optional<ReportID> subsequentInvId) {
+    private Optional<InventarisationReport> getLastInventarisationReport(WareHouse wareHouse, Date beforeDate) {
         InventarisationReportFilterCriteria inventarisationReportFilter = InventarisationReportFilterCriteria
                 .builder()
+                .isDeleted(false)
+                .createdDate(beforeDate == null ? null : new ComparisonContainer<>(beforeDate, ComparisonContainer.Sign.LESS))
                 //.status(ReportStatus.ACTIVE)
-                .departmentId(wareHouse.getParentDepartment().getId())
+                //.departmentId(wareHouse.getParentDepartment().getId())
                 .warehouseId(wareHouse.getId())
                 .build();
 
         ReportSortCriteria inventarisationReportSort = ReportSortCriteria.builder().sortBy(List.of(ReportSortCriteria.SortBy.CREATED)).sortType(List.of(ReportSortCriteria.SortType.DESCENDING)).build();
 
 
-        Optional<InventarisationReport> inventarisationBase = reportRepository.findAllWithQuery(new Query(InventarisationReport.class,inventarisationReportFilter, inventarisationReportSort, new PagingCriteria(subsequentInvId.orElse(null), 1))).stream().findFirst();
+        Optional<InventarisationReport> inventarisationBase = reportRepository.findAllWithQuery(new Query(InventarisationReport.class,inventarisationReportFilter, inventarisationReportSort, null)).stream().findFirst();
         return inventarisationBase;
     }
 
@@ -172,7 +191,7 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                         (List<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>) (new ArrayList<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>()),
                         (arrayList, itemReplenish) -> (
                                 itemReplenish
-                                        .getItems()
+                                        .getSummaryReplenish()
                                         .entrySet()
                                         .stream()
                                         .map(
@@ -197,7 +216,7 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
                         (List<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>) (new ArrayList<AbstractMap.SimpleImmutableEntry<ItemID, Integer>>()),
                         (arrayList, itemReplenish) -> (
                                 itemReplenish
-                                        .getItems()
+                                        .getSummaryRelease()
                                         .entrySet()
                                         .stream()
                                         .map(
@@ -352,20 +371,27 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
             for (ReportID rep : unsatisfiedWorkShiftByUnclaimedRemainsReportsPos)
                 problems.add(new WorkShiftReplenishedTooMuchReportWarning(rep, WorkShiftReplenishedTooMuchReportWarning.By.UnclaimedRemains));
 
-        //TODO Проблема: Данные инвентаризации не совпали с ожидаемыми
+        //Проблема: Данные инвентаризации не совпали с ожидаемыми
+        System.out.println("Проверка отчетов об инвентаризации: ");
         List<InventarisationReport> inventarisationReports = getInventarisationReports(wareHouse.getId(), ReportSortCriteria.SortType.DESCENDING);
         Iterator invIter = inventarisationReports.iterator();
-        if (invIter.hasNext()) {
-            InventarisationReport currInvRep = (InventarisationReport) invIter.next();
-            while (invIter.hasNext()) {
-                Optional<InventarisationReport> prevInvRep = getLastInventarisationReport(wareHouse, Optional.of(currInvRep.getId()));
+        System.out.println(String.format("Вытащились %d отчетов: ", inventarisationReports.size()));
+        System.out.println(inventarisationReports);
+        for (InventarisationReport currInvRep : inventarisationReports){
+                System.out.println(String.format("Инвентаризация от %s: ", currInvRep.getCreatedAt().toString()));
+                Optional<InventarisationReport> prevInvRep = getLastInventarisationReport(wareHouse, currInvRep.getCreatedAt());
                 Map<ItemID, Integer> inventarisedStorageState = getInventarisedItems(currInvRep);
-                Map<ItemID, Integer> expectedStorageState = getStorageState(wareHouse.getId(), prevInvRep, Optional.of(currInvRep.getId()));
+                System.out.println("Перечень инвентаризованного: ");
+                System.out.println(inventarisedStorageState);
+                Map<ItemID, Integer> expectedStorageState = getStorageState(wareHouse.getId(), prevInvRep, currInvRep.getCreatedAt());
+                System.out.println("Ожидаемое состояние: ");
+                System.out.println(expectedStorageState);
                 Map<ItemID, Integer> differrence = ItemMapHelper.filterNonZero(ItemMapHelper.MergeDictionariesWithSub(expectedStorageState, inventarisedStorageState));
+                System.out.println("Разница: ");
+                System.out.println(differrence);
                 if (!differrence.isEmpty())
-                    problems.add(new InventarisationReportProblem(differrence));
-                currInvRep = (InventarisationReport) invIter.next();
-            }
+                    problems.add(new InventarisationReportProblem(currInvRep.getId(),differrence));
+
         }
         return problems;
     }

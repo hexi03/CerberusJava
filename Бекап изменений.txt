@@ -1,0 +1,506 @@
+
+package com.hexi.Cerberus.adapter.persistence.report.repository;
+
+import com.hexi.Cerberus.adapter.persistence.report.base.ReportModel;
+import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.FactorySiteReportModel;
+import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.SupplyRequirementReportModel;
+import com.hexi.Cerberus.adapter.persistence.report.base.factorysite.WorkShiftReportModel;
+import com.hexi.Cerberus.adapter.persistence.report.base.warehouse.*;
+import com.hexi.Cerberus.domain.report.Report;
+import com.hexi.Cerberus.domain.report.ReportID;
+import com.hexi.Cerberus.domain.report.factorysite.FactorySiteReport;
+import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
+import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
+import com.hexi.Cerberus.domain.report.query.filter.*;
+import com.hexi.Cerberus.domain.report.query.sort.*;
+import com.hexi.Cerberus.domain.report.warehouse.*;
+import com.hexi.Cerberus.infrastructure.entity.Entity;
+import com.hexi.Cerberus.infrastructure.query.PagingCriteria;
+import com.hexi.Cerberus.infrastructure.query.Query;
+import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonContainer;
+import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonSequence;
+import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonUnit;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.criteria.*;
+import jdk.jshell.spi.ExecutionControl;
+import lombok.SneakyThrows;
+import org.hibernate.query.sqm.tree.from.SqmRoot;
+import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
+import org.hibernate.query.sqm.tree.select.SqmSubQuery;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class ReportSpecificationFactory {
+
+    private static EntityManager manager;
+
+    public static void setManager(EntityManager entityManager){
+        manager = entityManager;
+    }
+
+    @SneakyThrows
+    private static Class<? extends ReportModel> getModelClass(Class<? extends Report> base) {
+        if (base == SupplyRequirementReport.class) return SupplyRequirementReportModel.class;
+        if (base == WorkShiftReport.class) return WorkShiftReportModel.class;
+        if (base == FactorySiteReport.class) return FactorySiteReportModel.class;
+        if (base == InventarisationReport.class) return InventarisationReportModel.class;
+        if (base == ShipmentReport.class) return ShipmentReportModel.class;
+        if (base == ReplenishmentReport.class) return ReplenishmentReportModel.class;
+        if (base == WorkShiftReplenishmentReport.class) return WorkShiftR11tReportModel.class;
+        if (base == ReleaseReport.class) return ReleaseReportModel.class;
+        if (base == WareHouseReport.class) return WareHouseReportModel.class;
+        if (base == Report.class) return ReportModel.class;
+
+        throw new ExecutionControl.NotImplementedException("");
+    }
+
+
+
+    private static void getPagingSpecification(Query query, CriteriaBuilder cb, SqmSelectStatement mainQuery, SqmRoot root, SqmSubQuery gen0Subquery) {
+        if (query.getPagingCriteria() != null && query.getPagingCriteria().getKey() != null) {
+            //пейджинг
+            PagingCriteria pagingCriteria = query.getPagingCriteria();
+            ReportID lastKey = (ReportID) pagingCriteria.getKey();
+            PagingCriteria.Direction dir = pagingCriteria.getDirection();
+            rowNumberKeyPointingSpecification(lastKey, dir, cb, mainQuery, root, gen0Subquery);
+
+        }else{
+
+
+            mainQuery.where(root.in(gen0Subquery));
+        }
+    }
+
+
+    public static void rowNumberKeyPointingSpecification(ReportID key, PagingCriteria.Direction dir, CriteriaBuilder cb, SqmSelectStatement mainQuery, SqmRoot root, SqmSubQuery gen0Subquery) {
+
+
+
+//            if (dir == PagingCriteria.Direction.FORWARD)
+//                return cb.greaterThan(cb.function("get_ctid", String.class, root.get("id")), subquery);
+//            else
+//                return cb.lessThan(cb.function("get_ctid", String.class, root.get("id")), subquery);
+
+            SqmSubQuery<Tuple> gen1subquery = mainQuery.subquery(Tuple.class);
+            SqmRoot<ReportModel> gen1Root = gen1subquery.from(gen0Subquery);
+            gen1subquery.multiselect(gen1Root.get("id"), cb.function("row_number", Integer.class));
+
+            SqmSubQuery<String> numTresholdSubQuery = mainQuery.subquery(String.class);
+            SqmRoot<Tuple> numTresholdRoot = numTresholdSubQuery.from(gen1subquery);
+            numTresholdSubQuery.where(cb.equal(numTresholdRoot.get("num"), key));
+
+            SqmSubQuery<ReportModel> gen2subQuery = mainQuery.subquery(ReportModel.class);
+            SqmRoot gen2Root = gen2subQuery.from(gen1subquery);
+            gen2subQuery.select(gen2Root.get("id"));
+            //gen2subQuery.where(cb.greaterThan(gen2Root.get("num"), cb.coalesce(numTresholdSubQuery, new Integer(-1))));
+
+            mainQuery.select(gen0Subquery);
+            mainQuery.where(root.get("id").in(gen2subQuery));
+
+
+
+    }
+
+    private static void instanceFilter(Class<? extends Entity> targetEntity, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+        Class targetEntityModel = getModelClass(targetEntity.asSubclass(Report.class));
+        sqmQuery.where(cb.equal(root.treatAs(targetEntityModel) , root));
+    }
+
+    public static void genericReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+
+        // Применяем фильтр
+        if (query.getFilterCriteria() != null) {
+            reportFilter((ReportFilterCriteria)query.getFilterCriteria(), cb, sqmQuery, root);
+        }
+
+        // Применяем сортировку
+        if (query.getSortCriteria() != null) {
+            reportSort((ReportSortCriteria)query.getSortCriteria(), cb, sqmQuery, root);
+        }
+    }
+
+
+
+
+
+
+    public static void genericWareHouseReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+
+
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+        genericReport(query, cb, sqmQuery, root);
+
+        if (query.getFilterCriteria() != null) {
+            wareHouseReportFilter((WareHouseReportFilterCriteria)query.getFilterCriteria(), cb, sqmQuery, root);
+        }
+
+    }
+
+
+    public static void genericReleaseReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+        genericWareHouseReport(query, cb, sqmQuery, root);
+
+        // Применяем фильтр
+        if (query.getFilterCriteria() != null) {
+            releaseReportFilter((ReleaseReportFilterCriteria)query.getFilterCriteria(), cb, sqmQuery, root);
+        }
+
+    }
+
+    public static void genericWorkShiftReplenishmentReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+        genericWareHouseReport(query, cb, sqmQuery, root);
+
+        // Применяем фильтр
+        if (query.getFilterCriteria() != null) {
+            workShiftReplenishmentReportFilter((WorkShiftReplenishmentReportFilterCriteria) query.getFilterCriteria(), cb, sqmQuery, root);
+        }
+
+
+    }
+
+
+
+    public static void genericReplenishmentReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+        genericWareHouseReport(query, cb, sqmQuery, root);
+
+
+
+    }
+
+
+    public static void genericShipmentReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+        genericWareHouseReport(query, cb, sqmQuery, root);
+
+    }
+
+
+
+    public static void genericInventarisationReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+
+        System.out.println("On genericInventarisationReport");
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+        genericWareHouseReport(query, cb, sqmQuery, root);
+
+    }
+
+
+
+    public static void genericFactorySiteReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+        genericReport(query, cb, sqmQuery, root);
+
+        // Применяем фильтр
+        if (query.getFilterCriteria() != null) {
+            factorySiteReportFilter((FactorySiteReportFilterCriteria) query.getFilterCriteria(), cb, sqmQuery, root);
+        }
+
+    }
+
+
+
+    public static void genericSupplyRequirementReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+        genericFactorySiteReport(query, cb, sqmQuery, root);
+
+    }
+
+
+
+    public static void genericWorkShiftReport(Query query, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+        System.out.println("at genericWorkShiftReport: " + query);
+        instanceFilter(query.getTargetEntity(), cb, sqmQuery, root);
+        genericFactorySiteReport(query, cb, sqmQuery, root);
+
+        // Применяем фильтр
+        if (query.getFilterCriteria() != null) {
+            workShiftReportFilter((WorkShiftReportFilterCriteria) query.getFilterCriteria(), cb, sqmQuery, root);
+        }
+
+    }
+
+
+
+
+    private static void reportFilter(ReportFilterCriteria filterCriteria, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (filterCriteria.getCreatedDate() != null) {
+            ComparisonUnit<Date> date = filterCriteria.getCreatedDate();
+            Predicate datePredicate;
+            List<ComparisonContainer<Date>> containers = date instanceof ComparisonContainer<Date> ? List.of((ComparisonContainer<Date>)date) : ((ComparisonSequence<Date>)date).getContainers();
+            for (ComparisonContainer<Date> container : containers) {
+                switch (container.getSign()) {
+                    case GREATER:
+                        datePredicate = cb.greaterThan(root.get("createdAt"), container.getValue());
+                        break;
+                    case LESS:
+                        datePredicate = cb.lessThan(root.get("createdAt"), container.getValue());
+                        break;
+                    case EQUAL:
+                        datePredicate = cb.equal(root.get("createdAt"), container.getValue());
+                        break;
+                    case GREATEREQUAL:
+                        datePredicate = cb.greaterThanOrEqualTo(root.get("createdAt"), container.getValue());
+                        break;
+                    case LESSEQUAL:
+                        datePredicate = cb.lessThanOrEqualTo(root.get("createdAt"), container.getValue());
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unsupported sign: " + container.getSign());
+                }
+                predicates.add(datePredicate);
+            }
+        }
+        if(filterCriteria.getIsDeleted() != null){
+            if (filterCriteria.getIsDeleted()) {
+                predicates.add(cb.isNotNull(root.get("deletedAt")));
+                if (filterCriteria.getDeletedDate() != null) {
+                    ComparisonContainer<Date> date = filterCriteria.getDeletedDate();
+                    Predicate datePredicate;
+                    switch (date.getSign()) {
+                        case GREATER:
+                            datePredicate = cb.greaterThan(root.get("deletedAt"), date.getValue());
+                            break;
+                        case LESS:
+                            datePredicate = cb.lessThan(root.get("deletedAt"), date.getValue());
+                            break;
+                        case EQUAL:
+                            datePredicate = cb.equal(root.get("deletedAt"), date.getValue());
+                            break;
+                        case GREATEREQUAL:
+                            datePredicate = cb.greaterThanOrEqualTo(root.get("deletedAt"), date.getValue());
+                            break;
+                        case LESSEQUAL:
+                            datePredicate = cb.lessThanOrEqualTo(root.get("deletedAt"), date.getValue());
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Unsupported sign: " + date.getSign());
+                    }
+                    predicates.add(datePredicate);
+                }
+            } else {
+                predicates.add(cb.isNull(root.get("deletedAt")));
+            }
+        }
+
+
+//            if (filterCriteria.getStatus() != null) {
+//                Predicate statusPredicate = cb.equal(root.get("status"), filterCriteria.getStatus());
+//                predicates.add(statusPredicate);
+//            }
+
+        if (filterCriteria.getDepartmentId() != null) {
+            Predicate departmentPredicate = cb.equal(root.get("department").get("id"), filterCriteria.getDepartmentId());
+            predicates.add(departmentPredicate);
+        }
+
+        sqmQuery.where(predicates.toArray(new Predicate[0]));
+    }
+
+    // Метод для создания спецификации сортировки
+    private static void reportSort(ReportSortCriteria sortCriteria, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+
+        List<ReportSortCriteria.SortBy> sorts = sortCriteria.getSortBy();
+        List<ReportSortCriteria.SortType> types = sortCriteria.getSortType();
+        assert sorts.size() != types.size() : "Invalid ReportSortCriteria: sorts.size() != types.size()";
+        for (int i = 0; i < sorts.size(); i++) {
+            switch (sorts.get(i)){
+                case CREATED:
+                    if (types.get(i) == ReportSortCriteria.SortType.DESCENDING) {
+                        sqmQuery.orderBy(cb.desc(root.get("createdAt")));
+                    } else {
+                        sqmQuery.orderBy(cb.asc(root.get("createdAt")));
+                    }
+                    break;
+                case DELETED:
+                    if (types.get(i) == ReportSortCriteria.SortType.DESCENDING) {
+                        sqmQuery.orderBy(cb.desc(root.get("deletedAt")));
+                    } else {
+                        sqmQuery.orderBy(cb.asc(root.get("deletedAt")));
+                    }
+                    break;
+            }
+
+        }
+
+
+
+
+    }
+
+    private static void wareHouseReportFilter(WareHouseReportFilterCriteria filterCriteria, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+
+        Root<WareHouseReportModel> root1 = cb.treat(root, WareHouseReportModel.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (filterCriteria.getWarehouseId() != null) {
+            Predicate warehousePredicate = cb.equal(root1.get("wareHouse").get("id"), filterCriteria.getWarehouseId());
+            predicates.add(warehousePredicate);
+        }
+
+        sqmQuery.where(predicates.toArray(new Predicate[0]));
+
+    }
+
+//    private Specification<ReportModel> wareHouseReportSort(WareHouseReportSortCriteria sortCriteria) {
+//        // Ваша реализация сортировки для отчета
+//    }
+
+    private static void releaseReportFilter(ReleaseReportFilterCriteria filterCriteria, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+
+        Root<ReleaseReportModel> root1 = cb.treat(root, ReleaseReportModel.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (filterCriteria.getTargetFactorySiteId() != null) {
+            Predicate factorySitePredicate = cb.equal(root1.get("supplyReqReport").get("factorySite").get("id"), filterCriteria.getTargetFactorySiteId());
+            predicates.add(factorySitePredicate);
+        }
+
+        if (filterCriteria.getSupplyReqReportId() != null) {
+            Predicate supplyReqReportPredicate = cb.equal(root1.get("supplyReqReport").get("id"), filterCriteria.getSupplyReqReportId());
+            predicates.add(supplyReqReportPredicate);
+        }
+
+        sqmQuery.where(predicates.toArray(new Predicate[0]));
+
+    }
+//    private Specification<ReportModel> releaseReportSort(ReleaseReportSortCriteria sortCriteria) {
+//        // Ваша реализация сортировки для отчета о выпуске
+//    }
+
+//    private Specification<ReportModel> workShiftReplenishmentReportSort(WorkShiftReplenishmentReportSortCriteria sortCriteria) {
+//    }
+
+    private static void workShiftReplenishmentReportFilter(WorkShiftReplenishmentReportFilterCriteria filterCriteria, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+
+        List<Predicate> predicates = new ArrayList<>();
+        Root<WorkShiftR11tReportModel> root1 = cb.treat(root, WorkShiftR11tReportModel.class);
+        if (filterCriteria.getTargetFactorySiteId() != null) {
+            Predicate factorySitePredicate = cb.equal(root1.get("workShiftReport").get("factorySite").get("id"), filterCriteria.getTargetFactorySiteId());
+            predicates.add(factorySitePredicate);
+        }
+
+        if (filterCriteria.getWorkShiftReportId() != null) {
+            Predicate workShiftReportPredicate = cb.equal(root1.get("workShiftReport").get("id"), filterCriteria.getWorkShiftReportId());
+            predicates.add(workShiftReportPredicate);
+        }
+
+        sqmQuery.where(predicates.toArray(new Predicate[0]));
+
+    }
+//    private Specification<ReportModel> replenishmentReportSort(ReplenishmentReportSortCriteria sortCriteria) {
+//    }
+//
+//    private Specification<ReportModel> replenishmentReportFilter(ReplenishmentReportFilterCriteria filterCriteria) {
+//    }
+
+
+//    private Specification<ReportModel> shipmentReportSort(ShipmentReportSortCriteria sortCriteria) {
+//    }
+//
+//    private Specification<ReportModel> shipmentReportFilter(ShipmentReportFilterCriteria filterCriteria) {
+//    }
+//
+//    private Specification<ReportModel> inventarisationReportSort(InventarisationReportSortCriteria sortCriteria) {
+//    }
+//
+//    private Specification<ReportModel> inventarisationReportFilter(InventarisationReportFilterCriteria filterCriteria) {
+//    }
+
+//    private Specification<ReportModel> factorySiteReportSort(FactorySiteReportSortCriteria sortCriteria) {
+//    }
+
+    private static void factorySiteReportFilter(FactorySiteReportFilterCriteria filterCriteria, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+
+        Root<FactorySiteReportModel> root1 = cb.treat(root, FactorySiteReportModel.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (filterCriteria.getFactorySiteId() != null) {
+            Predicate factorySitePredicate = cb.equal(root1.get("factorySite").get("id"), filterCriteria.getFactorySiteId());
+            predicates.add(factorySitePredicate);
+        }
+
+        sqmQuery.where(predicates.toArray(new Predicate[0]));
+
+    }
+
+    @SneakyThrows
+    public static Specification<ReportModel> getSpec(Query domainQuery) {
+
+        return (root, mainQuery, cb) -> {
+            System.out.println("Getting spec to: " + domainQuery);
+            SqmSubQuery<ReportModel> gen0subquery = (SqmSubQuery) mainQuery.subquery(ReportModel.class);
+            SqmRoot<ReportModel> gen0root = gen0subquery.from(ReportModel.class);
+            gen0root.alias("gen0root");
+            gen0subquery.select(gen0root);
+            if (domainQuery.getTargetEntity() == SupplyRequirementReport.class) ReportSpecificationFactory.genericSupplyRequirementReport(domainQuery, cb, gen0subquery, gen0root); else
+            if (domainQuery.getTargetEntity() == WorkShiftReport.class) ReportSpecificationFactory.genericWorkShiftReport(domainQuery, cb, gen0subquery, gen0root); else
+            if (domainQuery.getTargetEntity() == FactorySiteReport.class) ReportSpecificationFactory.genericFactorySiteReport(domainQuery, cb, gen0subquery, gen0root); else
+            if (domainQuery.getTargetEntity() == InventarisationReport.class) ReportSpecificationFactory.genericInventarisationReport(domainQuery, cb, gen0subquery, gen0root); else
+            if (domainQuery.getTargetEntity() == ShipmentReport.class) ReportSpecificationFactory.genericShipmentReport(domainQuery, cb, gen0subquery, gen0root); else
+            if (domainQuery.getTargetEntity() == ReplenishmentReport.class) ReportSpecificationFactory.genericReplenishmentReport(domainQuery, cb, gen0subquery, gen0root); else
+            if (domainQuery.getTargetEntity() == WorkShiftReplenishmentReport.class) ReportSpecificationFactory.genericWorkShiftReplenishmentReport(domainQuery, cb, gen0subquery, gen0root); else
+            if (domainQuery.getTargetEntity() == ReleaseReport.class) ReportSpecificationFactory.genericReleaseReport(domainQuery, cb, gen0subquery, gen0root); else
+            if (domainQuery.getTargetEntity() == WareHouseReport.class) ReportSpecificationFactory.genericWareHouseReport(domainQuery, cb, gen0subquery, gen0root); else
+            if (domainQuery.getTargetEntity() == Report.class) ReportSpecificationFactory.genericReport(domainQuery, cb, gen0subquery, gen0root); else
+                throw new UnsupportedOperationException("");
+
+            System.out.println("Ограничения gen0 запроса: " + gen0subquery.getRestriction());
+
+            getPagingSpecification(domainQuery, cb, (SqmSelectStatement) mainQuery, (SqmRoot) root, gen0subquery);
+            System.out.println("Ограничения основного запроса: " + mainQuery.getRestriction());
+            return mainQuery.getRestriction();
+        };
+    }
+
+//    private Specification<ReportModel> supplyRequirementReportSort(SupplyRequirementReportSortCriteria sortCriteria) {
+//    }
+
+//    private Specification<ReportModel> supplyRequirementReportFilter(SupplyRequirementReportFilterCriteria filterCriteria) {
+//
+//    }
+
+//    private Specification<ReportModel> workShiftReportSort(WorkShiftReportSortCriteria sortCriteria) {
+//    }
+
+    private static void workShiftReportFilter(WorkShiftReportFilterCriteria filterCriteria, CriteriaBuilder cb, SqmSubQuery sqmQuery, SqmRoot root) {
+        System.out.println("adding workShiftReportFilter: " + filterCriteria.toString());
+        Root<WorkShiftReportModel> root1 = cb.treat(root, WorkShiftReportModel.class);
+
+
+        if (filterCriteria.getHasLosses() != null) {
+            if (filterCriteria.getHasLosses()){
+                Predicate predicate = cb.isNotNull(root1.get("losses").get("id"));
+                sqmQuery.where(predicate);
+            }else{
+                Predicate predicate = cb.isNull(root1.get("losses").get("id"));
+                sqmQuery.where(predicate);
+            }
+        }
+
+        if (filterCriteria.getHasRemains() != null) {
+            if (filterCriteria.getHasRemains()) {
+                Predicate predicate = cb.isNotNull(root1.get("remains").get("id"));
+                sqmQuery.where(predicate);
+            }else {
+                Predicate predicate = cb.isNull(root1.get("remains").get("id"));
+                sqmQuery.where(predicate);
+            }
+        }
+
+    }
+
+
+}

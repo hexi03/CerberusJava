@@ -46,6 +46,7 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
         FactorySiteReportFilterCriteria filter = FactorySiteReportFilterCriteria
                 .builder()
                 .createdDate(new ComparisonContainer<>(treshold, ComparisonContainer.Sign.GREATEREQUAL))
+                .isDeleted(false)
                 //.status(ReportStatus.ACTIVE)
                 .departmentId(factorySite.getParentDepartment().getId())
                 .factorySiteId(factorySite.getId())
@@ -56,6 +57,7 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
     public List<WareHouseReport> getReports(WareHouse wareHouse) {
         WareHouseReportFilterCriteria filter = WareHouseReportFilterCriteria
                 .builder()
+                .isDeleted(false)
                 //.status(ReportStatus.ACTIVE)
                 .departmentId(wareHouse.getParentDepartment().getId())
                 .warehouseId(wareHouse.getId())
@@ -66,6 +68,7 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
     private List<WorkShiftReport> getWorkShiftReportsWithLosses(FactorySite factorySite) {
         WorkShiftReportFilterCriteria filter = WorkShiftReportFilterCriteria
                 .builder()
+                .isDeleted(false)
                 .hasLosses(true)
                 //.createdDate(new ComparisonContainer<>(treshold, ComparisonContainer.Sign.GREATEREQUAL))
                 //.status(ReportStatus.ACTIVE)
@@ -79,6 +82,7 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
     private List<WorkShiftReport> getWorkShiftReportsWithRemains(FactorySite factorySite) {
         WorkShiftReportFilterCriteria filter = WorkShiftReportFilterCriteria
                 .builder()
+                .isDeleted(false)
                 .hasRemains(true)
                 //.createdDate(new ComparisonContainer<>(treshold, ComparisonContainer.Sign.GREATEREQUAL))
                 //.status(ReportStatus.ACTIVE)

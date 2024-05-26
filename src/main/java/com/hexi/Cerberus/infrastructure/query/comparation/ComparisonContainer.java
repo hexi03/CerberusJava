@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class ComparisonContainer<T> {
+public class ComparisonContainer<T> implements ComparisonUnit<T> {
     public final T value;
     public final Sign sign;
     public enum Sign {
@@ -16,3 +16,5 @@ public class ComparisonContainer<T> {
         LESSEQUAL
     }
 }
+
+

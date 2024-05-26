@@ -31,6 +31,10 @@ public interface Report extends SecuredEntity, AggregateRoot {
         }
     }
 
+    Date getExpirationDate();
+
+    void setExpirationDate(Date date);
+
     ReportID getId();
 
     ReportStatus getStatus();

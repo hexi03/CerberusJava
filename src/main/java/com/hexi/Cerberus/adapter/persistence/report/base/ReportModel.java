@@ -97,6 +97,17 @@ public class ReportModel implements Report {
         this.createdAt = date;
     }
 
+
+    @Override
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    @Override
+    public void setExpirationDate(Date date) {
+        this.expirationDate = date;
+    }
+
     @Override
     public ReportID getId() {
         return new ReportID(id);

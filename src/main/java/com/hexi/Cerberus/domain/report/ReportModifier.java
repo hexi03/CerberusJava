@@ -2,6 +2,7 @@ package com.hexi.Cerberus.domain.report;
 
 import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
+import com.hexi.Cerberus.config.CerberusParameters;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
@@ -73,8 +74,9 @@ public class ReportModifier {
                 item -> cmd.getItems().get(item.getId()),
                 Integer::sum
         ));
-
-        supplyRequirementReport.setCreatedAt(new Date());
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
+        supplyRequirementReport.setCreatedAt(createdAt);
+        supplyRequirementReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         supplyRequirementReport.setCreator(creator.get());
         supplyRequirementReport.setTargetWareHouses(targetWareHouses);
         supplyRequirementReport.setRequirements(reqMap);
@@ -107,8 +109,9 @@ public class ReportModifier {
                                         Integer::sum
                                 )
                         );
-
-        inventarisationReport.setCreatedAt(new Date());
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
+        inventarisationReport.setCreatedAt(createdAt);
+        inventarisationReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         inventarisationReport.setCreator(creator.get());
         inventarisationReport.setItems(itMap);
     }
@@ -135,8 +138,9 @@ public class ReportModifier {
                 item -> cmd.getItems().get(item.getId()),
                 Integer::sum
         ));
-
-        shipmentReport.setCreatedAt(new Date());
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
+        shipmentReport.setCreatedAt(createdAt);
+        shipmentReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         shipmentReport.setCreator(creator.get());
         shipmentReport.setItems(itMap);
     }
@@ -167,8 +171,9 @@ public class ReportModifier {
                 item -> cmd.getItems().get(item.getId()),
                 Integer::sum
         ));
-
-        releaseReport.setCreatedAt(new Date());
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
+        releaseReport.setCreatedAt(createdAt);
+        releaseReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         releaseReport.setCreator(creator.get());
         releaseReport.setSupplyReqReportId(SRQReport.get());
         releaseReport.setItems(reqMap);
@@ -194,6 +199,9 @@ public class ReportModifier {
                 item -> cmd.getItems().get(item.getId()),
                 Integer::sum
         ));
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
+        replenishmentReport.setCreatedAt(createdAt);
+        replenishmentReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         replenishmentReport.setCreatedAt(new Date());
         replenishmentReport.setCreator(creator.get());
         replenishmentReport.setItems(itemMap);
@@ -223,8 +231,9 @@ public class ReportModifier {
                 item -> cmd.getItems().get(item.getId()),
                 Integer::sum
         ));
-
-        workShiftReplenishmentReport.setCreatedAt(new Date());
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
+        workShiftReplenishmentReport.setCreatedAt(createdAt);
+        workShiftReplenishmentReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         workShiftReplenishmentReport.setCreator(creator.get());
         workShiftReplenishmentReport.setWorkShiftReport(WHReport.get());
         workShiftReplenishmentReport.setItems(reqMap);
@@ -312,8 +321,9 @@ public class ReportModifier {
                 item -> cmd.getUnclaimedRemains().get(item.getId()),
                 Integer::sum
         ));
-
-        workShiftReport.setCreatedAt(new Date());
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
+        workShiftReport.setCreatedAt(createdAt);
+        workShiftReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         workShiftReport.setCreator(creator.get());
         workShiftReport.setProduced(producedMap);
         workShiftReport.setLosses(lossesMap);

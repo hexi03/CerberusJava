@@ -168,12 +168,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                             item -> cmd.getUnclaimedRemains().get(item.getId()),
                             Integer::sum
                     ));
-
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         return new WorkShiftReportModel(
                 new ReportID(),
                 factorySite.get(),
-                new Date(),
-                new Date(new Date().getTime() + CerberusParameters.expirationDuration),
+                createdAt,
+                new Date(createdAt.getTime() + CerberusParameters.expirationDuration),
                 wareHouses,
                 produced_map,
                 losses_map,
@@ -242,12 +242,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         item -> cmd.getUnclaimedRemains().get(item.getId()),
                         Integer::sum
                 ));
-
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         return new WorkShiftR11tReportModel(
                 new ReportID(),
                 wareHouse.get(),
-                new Date(),
-                new Date(new Date().getTime() + CerberusParameters.expirationDuration),
+                createdAt,
+                new Date(createdAt.getTime() + CerberusParameters.expirationDuration),
                 (WorkShiftReportModel)whReport.get(),
                 items_map,
                 unclaimedRemainsMap,
@@ -283,12 +283,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         item -> cmd.getItems().get(item.getId()),
                         Integer::sum
                 ));
-
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         return new ReplenishmentReportModel(
                 new ReportID(),
                 wareHouse.get(),
-                new Date(),
-                new Date(new Date().getTime() + CerberusParameters.expirationDuration),
+                createdAt,
+                new Date(createdAt.getTime() + CerberusParameters.expirationDuration),
                 items_map,
                 ((UserModel)creator.get()));
 
@@ -329,12 +329,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         item -> cmd.getItems().get(item.getId()),
                         Integer::sum
                 ));
-
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         return new ReleaseReportModel(
                 new ReportID(),
                 wareHouse.get(),
-                new Date(),
-                new Date(new Date().getTime() + CerberusParameters.expirationDuration),
+                createdAt,
+                new Date(createdAt.getTime() + CerberusParameters.expirationDuration),
                 (SupplyRequirementReportModel) sqReport.get(),
                 items_map,
                 ((UserModel)creator.get()));
@@ -368,12 +368,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         item -> cmd.getItems().get(item.getId()),
                         Integer::sum
                 ));
-
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         return new ShipmentReportModel(
                 new ReportID(),
                 wareHouse.get(),
-                new Date(),
-                new Date(new Date().getTime() + CerberusParameters.expirationDuration),
+                createdAt,
+                new Date(createdAt.getTime() + CerberusParameters.expirationDuration),
                 items_map,
                 ((UserModel)creator.get()));
 
@@ -407,12 +407,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         item -> cmd.getItems().get(item.getId()),
                         Integer::sum
                 ));
-
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         return new InventarisationReportModel(
                 new ReportID(),
                 wareHouse.get(),
-                new Date(),
-                new Date(new Date().getTime() + CerberusParameters.expirationDuration),
+                createdAt,
+                new Date(createdAt.getTime() + CerberusParameters.expirationDuration),
                 items_map, ((UserModel)creator.get()));
     }
 
@@ -460,12 +460,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         item -> cmd.getItems().get(item.getId()),
                         Integer::sum
                 ));
-
+        Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         return new SupplyRequirementReportModel(
                 new ReportID(),
                 factorySite.get(),
-                new Date(),
-                new Date(new Date().getTime() + CerberusParameters.expirationDuration),
+                createdAt,
+                new Date(createdAt.getTime() + CerberusParameters.expirationDuration),
                 wareHouses,
                 items_map,
                 ((UserModel)creator.get()));

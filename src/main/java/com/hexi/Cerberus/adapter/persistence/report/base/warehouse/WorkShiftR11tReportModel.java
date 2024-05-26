@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 @Entity
 @Access(AccessType.FIELD)
-public class WorkShiftR11tReportModel extends WareHouseReportModel implements ItemStorageOperationReport, WorkShiftReplenishmentReport {
+public class WorkShiftR11tReportModel extends WareHouseReportModel implements WorkShiftReplenishmentReport {
     @ManyToOne(cascade = CascadeType.ALL)
     WorkShiftReportModel workShiftReport;
     @ManyToMany(cascade = CascadeType.ALL)

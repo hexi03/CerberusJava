@@ -8,6 +8,7 @@ import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -16,6 +17,7 @@ public abstract class UpdateReportCmd implements Command {
     CommandId id;
     ReportID reportId;
     UserID creatorId;
+    Date createdAt;
 
 
     @Override

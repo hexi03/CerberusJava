@@ -17,10 +17,14 @@ import com.hexi.Cerberus.infrastructure.entity.Entity;
 import com.hexi.Cerberus.infrastructure.query.PagingCriteria;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonContainer;
+import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonSequence;
+import com.hexi.Cerberus.infrastructure.query.comparation.ComparisonUnit;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.*;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
+import org.hibernate.query.sqm.tree.select.SqmSubQuery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -92,17 +96,39 @@ public class ReportSpecificationFactory {
         return Specification.where(null);
     }
 
+//    public static Specification<ReportModel> getPgsqlTidPointingSpecification(ReportID key, PagingCriteria.Direction dir) {
+//        return (root, query, criteriaBuilder) -> {
+//            // Создаем подзапрос для получения tid записи с указанным key
+//
+//            Subquery<String> subquery = query.subquery(String.class);
+//            // Определяем Root для Subquery
+//            Root<ReportModel> subqueryRoot = subquery.from(ReportModel.class);
+//            subquery.select(criteriaBuilder.function("get_ctid", String.class, subqueryRoot.get("id"))).where(criteriaBuilder.equal(subqueryRoot.get("id"), key));
+//
+//            // Возвращаем условие для выбора записей с tid больше полученного tid из подзапроса
+//
+//
+//
+//
+//            if (dir == PagingCriteria.Direction.FORWARD)
+//                return criteriaBuilder.greaterThan(criteriaBuilder.function("get_ctid", String.class, root.get("id")), subquery);
+//            else
+//                return criteriaBuilder.lessThan(criteriaBuilder.function("get_ctid", String.class, root.get("id")), subquery);
+//
+//        };
+//    }
+
 
     public static Specification<ReportModel> getPgsqlTidPointingSpecification(ReportID key, PagingCriteria.Direction dir) {
         return (root, query, criteriaBuilder) -> {
-                // Создаем подзапрос для получения tid записи с указанным key
+            // Создаем подзапрос для получения tid записи с указанным key
 
-            Subquery<String> subquery = query.subquery(String.class);
+            SqmSubQuery<String> subquery = (SqmSubQuery<String>) query.subquery(String.class);
             // Определяем Root для Subquery
             Root<ReportModel> subqueryRoot = subquery.from(ReportModel.class);
             subquery.select(criteriaBuilder.function("get_ctid", String.class, subqueryRoot.get("id"))).where(criteriaBuilder.equal(subqueryRoot.get("id"), key));
 
-            // Возвращаем условие для выбора записей с tid больше полученного tid из подзапроса
+
 
             if (dir == PagingCriteria.Direction.FORWARD)
                 return criteriaBuilder.greaterThan(criteriaBuilder.function("get_ctid", String.class, root.get("id")), subquery);
@@ -287,55 +313,63 @@ public class ReportSpecificationFactory {
             List<Predicate> predicates = new ArrayList<>();
 
             if (filterCriteria.getCreatedDate() != null) {
-                ComparisonContainer<Date> date = filterCriteria.getCreatedDate();
+                ComparisonUnit<Date> date = filterCriteria.getCreatedDate();
                 Predicate datePredicate;
-                switch (date.getSign()) {
-                    case GREATER:
-                        datePredicate = criteriaBuilder.greaterThan(root.get("createdAt"), date.getValue());
-                        break;
-                    case LESS:
-                        datePredicate = criteriaBuilder.lessThan(root.get("createdAt"), date.getValue());
-                        break;
-                    case EQUAL:
-                        datePredicate = criteriaBuilder.equal(root.get("createdAt"), date.getValue());
-                        break;
-                    case GREATEREQUAL:
-                        datePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), date.getValue());
-                        break;
-                    case LESSEQUAL:
-                        datePredicate = criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), date.getValue());
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unsupported sign: " + date.getSign());
+                List<ComparisonContainer<Date>> containers = date instanceof ComparisonContainer<Date> ? List.of((ComparisonContainer<Date>)date) : ((ComparisonSequence<Date>)date).getContainers();
+                for (ComparisonContainer<Date> container : containers) {
+                    switch (container.getSign()) {
+                        case GREATER:
+                            datePredicate = criteriaBuilder.greaterThan(root.get("createdAt"), container.getValue());
+                            break;
+                        case LESS:
+                            datePredicate = criteriaBuilder.lessThan(root.get("createdAt"), container.getValue());
+                            break;
+                        case EQUAL:
+                            datePredicate = criteriaBuilder.equal(root.get("createdAt"), container.getValue());
+                            break;
+                        case GREATEREQUAL:
+                            datePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), container.getValue());
+                            break;
+                        case LESSEQUAL:
+                            datePredicate = criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), container.getValue());
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Unsupported sign: " + container.getSign());
+                    }
+                    predicates.add(datePredicate);
                 }
-                predicates.add(datePredicate);
             }
-
-            if (filterCriteria.getDeletedDate() != null) {
-                ComparisonContainer<Date> date = filterCriteria.getDeletedDate();
-                Predicate datePredicate;
-                switch (date.getSign()) {
-                    case GREATER:
-                        datePredicate = criteriaBuilder.greaterThan(root.get("deletedAt"), date.getValue());
-                        break;
-                    case LESS:
-                        datePredicate = criteriaBuilder.lessThan(root.get("deletedAt"), date.getValue());
-                        break;
-                    case EQUAL:
-                        datePredicate = criteriaBuilder.equal(root.get("deletedAt"), date.getValue());
-                        break;
-                    case GREATEREQUAL:
-                        datePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("deletedAt"), date.getValue());
-                        break;
-                    case LESSEQUAL:
-                        datePredicate = criteriaBuilder.lessThanOrEqualTo(root.get("deletedAt"), date.getValue());
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unsupported sign: " + date.getSign());
+            if(filterCriteria.getIsDeleted() != null){
+                if (filterCriteria.getIsDeleted()) {
+                    predicates.add(criteriaBuilder.isNotNull(root.get("deletedAt")));
+                    if (filterCriteria.getDeletedDate() != null) {
+                        ComparisonContainer<Date> date = filterCriteria.getDeletedDate();
+                        Predicate datePredicate;
+                        switch (date.getSign()) {
+                            case GREATER:
+                                datePredicate = criteriaBuilder.greaterThan(root.get("deletedAt"), date.getValue());
+                                break;
+                            case LESS:
+                                datePredicate = criteriaBuilder.lessThan(root.get("deletedAt"), date.getValue());
+                                break;
+                            case EQUAL:
+                                datePredicate = criteriaBuilder.equal(root.get("deletedAt"), date.getValue());
+                                break;
+                            case GREATEREQUAL:
+                                datePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("deletedAt"), date.getValue());
+                                break;
+                            case LESSEQUAL:
+                                datePredicate = criteriaBuilder.lessThanOrEqualTo(root.get("deletedAt"), date.getValue());
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Unsupported sign: " + date.getSign());
+                        }
+                        predicates.add(datePredicate);
+                    }
+                } else {
+                    predicates.add(criteriaBuilder.isNull(root.get("deletedAt")));
                 }
-                predicates.add(datePredicate);
             }
-
 
 
 //            if (filterCriteria.getStatus() != null) {
@@ -494,7 +528,7 @@ public class ReportSpecificationFactory {
         if (domainQuery.getTargetEntity() == ReleaseReport.class) res =   ( ReportSpecificationFactory.genericReleaseReport(domainQuery)); else
         if (domainQuery.getTargetEntity() == WareHouseReport.class) res =  ( ReportSpecificationFactory.genericWareHouseReport(domainQuery)); else
         if (domainQuery.getTargetEntity() == Report.class) res =  ( ReportSpecificationFactory.genericReport(domainQuery)); else
-        throw new ExecutionControl.NotImplementedException("");
+            throw new ExecutionControl.NotImplementedException("");
 
         res = res.and(getPagingSpecification(domainQuery));
         return res;
@@ -543,3 +577,4 @@ public class ReportSpecificationFactory {
 
 
 }
+

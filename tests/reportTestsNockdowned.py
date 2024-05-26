@@ -268,6 +268,23 @@ class TestReportAPI(unittest.TestCase):
         self.assertEqual(fetch_r.status_code, 200)
 
 
+
+        fetch_1_json = [report_inventarisation, report_release, report_replenish, report_shipment, report_wsreplenish]
+        print("fetch_warehouse_generic_limit 3: ")
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 3, "typeCriteria": "warehouse_generic", "locationSpecificId" : self.wh1["id"]["id"]}, headers=self.headers)
+        print("     " , fetch_r.json())
+        self.assertEqual(fetch_r.status_code, 200)
+
+
+        key1 = fetch_r.json()[-1]["id"]["id"]
+        fetch_1_json = [report_inventarisation, report_release, report_replenish, report_shipment, report_wsreplenish]
+        print("fetch_warehouse_generic_limit_3_key: " + key1)
+        fetch_r = requests.get(consts.API_REPORT_PREFIX + "fetch", params = {"count": 3, "typeCriteria": "warehouse_generic", "key": key1, "locationSpecificId" : self.wh1["id"]["id"]}, headers=self.headers)
+        print("     " , fetch_r.json())
+        self.assertEqual(fetch_r.status_code, 200)
+
+
+
         
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestReportAPI)

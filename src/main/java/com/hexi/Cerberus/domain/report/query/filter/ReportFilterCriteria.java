@@ -11,7 +11,8 @@ import java.util.Date;
 @SuperBuilder
 @Getter
 public class ReportFilterCriteria extends FilterCriteria {
-    ComparisonContainer<Date> createdDate;
+    ComparisonUnit<Date> createdDate;
+    Boolean isDeleted;
     ComparisonContainer<Date> deletedDate;
 //    ReportStatus status;
     DepartmentID departmentId;

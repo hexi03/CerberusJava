@@ -74,6 +74,24 @@ public class ExtendedPGSQLDialect extends PostgreSQLDialect {
                 }
         );
 
+
+
+        functionRegistry.register(
+                "row_number",
+                new AbstractSqmSelfRenderingFunctionDescriptor( "row_number", StandardArgumentsValidators.exactly( 0 ), StandardFunctionReturnTypeResolvers.invariant( basicTypeRegistry.resolve( StandardBasicTypes.BIG_INTEGER ) ), null ) {
+
+                    @Override
+                    public void render(
+                            SqlAppender sqlAppender,
+                            List<? extends SqlAstNode> arguments,
+                            ReturnableType<?> returnType,
+                            SqlAstTranslator<?> walker) {
+
+                        sqlAppender.appendSql( "ROW_NUMBER() OVER ()" );
+                    }
+                }
+        );
+
 //        functionRegistry.register(
 //                "get_ctid",
 //

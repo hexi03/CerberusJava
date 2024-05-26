@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Access(AccessType.FIELD)
-public class ReleaseReportModel extends WareHouseReportModel implements ItemStorageOperationReport, ReleaseReport {
+public class ReleaseReportModel extends WareHouseReportModel implements ReleaseReport {
     @ManyToOne(cascade = CascadeType.ALL)
     SupplyRequirementReportModel supplyReqReport;
     @ManyToMany(cascade = CascadeType.ALL)

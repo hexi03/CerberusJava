@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @SuperBuilder
@@ -15,6 +16,7 @@ import java.util.List;
 public abstract class CreateReportCmd implements Command {
     CommandId id;
     UserID creatorId;
+    Date createdAt;
 
     @Override
     public CommandId getId() {
