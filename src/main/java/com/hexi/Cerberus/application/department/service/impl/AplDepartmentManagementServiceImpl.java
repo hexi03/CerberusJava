@@ -14,6 +14,8 @@ import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +35,14 @@ public class AplDepartmentManagementServiceImpl implements DepartmentManagementS
     public final DepartmentDomainToDtoMapper departmentDomainToDtoMapper;
 
     @Override
+    @PostAuthorize("returnObject.orElse(null) == null or hasPermission(returnObject.get(), 'READ')")
     public Optional<DepartmentDetailsDTO> displayBy(DepartmentID id) {
         Optional<Department> department = departmentRepository.findById(id);
         return department.map(departmentDomainToDtoMapper::departmentToDetailsDTO);
     }
 
     @Override
+    @PostFilter("hasPermission(returnObject, 'READ')")
     public List<DepartmentDetailsDTO> displayAllBy(Query query) {
         return ((List<Department>)departmentRepository.findAllWithQuery(query)).stream()
                 .map(departmentDomainToDtoMapper::departmentToDetailsDTO)
@@ -46,6 +50,7 @@ public class AplDepartmentManagementServiceImpl implements DepartmentManagementS
     }
 
     @Override
+    @PostFilter("hasPermission(returnObject, 'READ')")
     public List<DepartmentDetailsDTO> displayAll() {
         return ((List<Department>)departmentRepository.findAll()).stream()
                 .map(departmentDomainToDtoMapper::departmentToDetailsDTO)
