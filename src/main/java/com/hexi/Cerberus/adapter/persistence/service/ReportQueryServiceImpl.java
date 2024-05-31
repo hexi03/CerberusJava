@@ -11,6 +11,9 @@ import com.hexi.Cerberus.adapter.persistence.report.base.warehouse.WorkShiftR11t
 import com.hexi.Cerberus.domain.helpers.ItemMapHelper;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.report.ReportID;
+import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
+import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
+import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.report.service.ReportQueryService;
 import com.hexi.Cerberus.domain.report.warehouse.ReleaseReport;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
@@ -19,6 +22,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -31,8 +35,11 @@ public class ReportQueryServiceImpl implements ReportQueryService {
     @PersistenceContext
     EntityManager entityManager;
 
+    @Autowired
+    ReportRepository reportRepository;
+
     @Override
-    public Map<ReportID,Map<ItemID, Integer>> findUnsatisfiedByReplenishedProducedWorkShiftReports(WareHouse targetWareHouse) {
+    public List<AbstractMap.SimpleImmutableEntry<WorkShiftReport,Map<ItemID, Integer>>> findUnsatisfiedByReplenishedProducedWorkShiftReports(WareHouse targetWareHouse) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> wsrpQuery = cb.createTupleQuery();
         Root<WorkShiftReportModel> wsrpRoot = wsrpQuery.from(WorkShiftReportModel.class);
@@ -84,11 +91,17 @@ public class ReportQueryServiceImpl implements ReportQueryService {
 
         HashMap<ReportID,Map<ItemID, Integer>> wsReps = new HashMap<>(wsrpie);
         wsr11trpie.entrySet().forEach(wsr11rentry -> wsReps.merge(wsr11rentry.getKey(), wsr11rentry.getValue(), (map, map2) -> ItemMapHelper.filterNonZero(ItemMapHelper.MergeDictionariesWithSub(map,map2))));
-        return wsReps;
+
+        Map<ReportID,WorkShiftReport> reps =
+                ((List<WorkShiftReport>)reportRepository
+                        .findAllById(wsReps.keySet())
+                ).stream()
+                        .collect(Collectors.toMap(o -> o.getId(), o -> o));
+        return wsReps.entrySet().stream().map(entry -> new AbstractMap.SimpleImmutableEntry<WorkShiftReport,Map<ItemID, Integer>>(reps.get(entry.getKey()), entry.getValue())).collect(Collectors.toList());
 
     }
     @Override
-    public Map<ReportID,Map<ItemID, Integer>> findUnsatisfiedByReplenishedUnclaimedRemainsWorkShiftReports(WareHouse targetWareHouse) {
+    public List<AbstractMap.SimpleImmutableEntry<WorkShiftReport,Map<ItemID, Integer>>> findUnsatisfiedByReplenishedUnclaimedRemainsWorkShiftReports(WareHouse targetWareHouse) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> wsrpQuery = cb.createTupleQuery();
         Root<WorkShiftReportModel> wsrpRoot = wsrpQuery.from(WorkShiftReportModel.class);
@@ -138,11 +151,17 @@ public class ReportQueryServiceImpl implements ReportQueryService {
 
         HashMap<ReportID,Map<ItemID, Integer>> wsReps = new HashMap<>(wsrpie);
         wsr11trpie.entrySet().forEach(wsr11rentry -> wsReps.merge(wsr11rentry.getKey(), wsr11rentry.getValue(), (map, map2) -> ItemMapHelper.filterNonZero(ItemMapHelper.MergeDictionariesWithSub(map,map2))));
-        return wsReps;
+        Map<ReportID,WorkShiftReport> reps =
+                ((List<WorkShiftReport>)reportRepository
+                        .findAllById(wsReps.keySet())
+                        ).stream()
+                        .collect(Collectors.toMap(o -> o.getId(), o -> o));
+        return wsReps.entrySet().stream().map(entry -> new AbstractMap.SimpleImmutableEntry<WorkShiftReport,Map<ItemID, Integer>>(reps.get(entry.getKey()), entry.getValue())).collect(Collectors.toList());
+
     }
 
     @Override
-    public Map<ReportID,Map<ItemID, Integer>> findUnsatisfiedSupplyRequirementReports(WareHouse targetWareHouse) {
+    public List<AbstractMap.SimpleImmutableEntry<SupplyRequirementReport,Map<ItemID, Integer>>> findUnsatisfiedSupplyRequirementReports(WareHouse targetWareHouse) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> srrQuery = cb.createTupleQuery();
         Root<SupplyRequirementReportModel> srrRoot = srrQuery.from(SupplyRequirementReportModel.class);
@@ -192,7 +211,13 @@ public class ReportQueryServiceImpl implements ReportQueryService {
 
         HashMap<ReportID,Map<ItemID, Integer>> wsReps = new HashMap<>(srrie);
         rrie.entrySet().forEach(wsr11rentry -> wsReps.merge(wsr11rentry.getKey(), wsr11rentry.getValue(), (map, map2) -> ItemMapHelper.filterNonZero(ItemMapHelper.MergeDictionariesWithSub(map,map2))));
-        return wsReps;
+        Map<ReportID,SupplyRequirementReport> reps =
+                ((List<SupplyRequirementReport>)reportRepository
+                        .findAllById(wsReps.keySet())
+                ).stream()
+                        .collect(Collectors.toMap(o -> o.getId(), o -> o));
+        return wsReps.entrySet().stream().map(entry -> new AbstractMap.SimpleImmutableEntry<SupplyRequirementReport ,Map<ItemID, Integer>>(reps.get(entry.getKey()), entry.getValue())).collect(Collectors.toList());
+
     }
 
 

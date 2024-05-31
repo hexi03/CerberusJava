@@ -35,14 +35,14 @@ public class AplDepartmentManagementServiceImpl implements DepartmentManagementS
     public final DepartmentDomainToDtoMapper departmentDomainToDtoMapper;
 
     @Override
-    @PostAuthorize("returnObject.orElse(null) == null or hasPermission(returnObject.get(), 'READ')")
+    //@PostAuthorize("returnObject.orElse(null) == null or hasPermission(returnObject.get(), 'READ')")
     public Optional<DepartmentDetailsDTO> displayBy(DepartmentID id) {
         Optional<Department> department = departmentRepository.findById(id);
         return department.map(departmentDomainToDtoMapper::departmentToDetailsDTO);
     }
 
     @Override
-    @PostFilter("hasPermission(returnObject, 'READ')")
+    //@PostFilter("hasPermission(returnObject, 'READ')")
     public List<DepartmentDetailsDTO> displayAllBy(Query query) {
         return ((List<Department>)departmentRepository.findAllWithQuery(query)).stream()
                 .map(departmentDomainToDtoMapper::departmentToDetailsDTO)
@@ -50,7 +50,7 @@ public class AplDepartmentManagementServiceImpl implements DepartmentManagementS
     }
 
     @Override
-    @PostFilter("hasPermission(returnObject, 'READ')")
+    //@PostFilter("hasPermission(returnObject, 'READ')")
     public List<DepartmentDetailsDTO> displayAll() {
         return ((List<Department>)departmentRepository.findAll()).stream()
                 .map(departmentDomainToDtoMapper::departmentToDetailsDTO)

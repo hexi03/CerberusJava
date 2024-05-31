@@ -1,18 +1,20 @@
 package com.hexi.Cerberus.domain.service.warnings;
 
 import com.hexi.Cerberus.domain.item.Item;
+import com.hexi.Cerberus.domain.item.ItemID;
+import com.hexi.Cerberus.domain.report.ReportID;
+import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.infrastructure.StateWarning;
+import lombok.Getter;
 
 import java.util.Map;
-
+@Getter
 public class WorkShiftRemainsWarning implements StateWarning {
-    Map<Item, Integer> remains;
-    public WorkShiftRemainsWarning(Map<Item, Integer> remains) {
+    ReportID rep;
+    Map<ItemID, Integer> remains;
+    public WorkShiftRemainsWarning(ReportID rep, Map<ItemID, Integer> remains) {
         this.remains = remains;
+        this.rep = rep;
     }
 
-    @Override
-    public String getMessage() {
-        return "WorkShiftRemainsWarning: " + remains.toString();
-    }
 }

@@ -1,19 +1,20 @@
 package com.hexi.Cerberus.domain.service.warnings;
 
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
+import com.hexi.Cerberus.domain.item.Item;
+import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.infrastructure.StateWarning;
+import lombok.Getter;
 
+import java.util.Map;
+@Getter
 public class UnsatisfiedSupplyRequirementReportWarning implements StateWarning {
-    FactorySite factorySite;
     ReportID rep;
-    public UnsatisfiedSupplyRequirementReportWarning(ReportID rep) {
-        this.factorySite = factorySite;
-        this.rep = rep;
-    }
+    Map<ItemID, Integer> items;
 
-    @Override
-    public String getMessage() {
-        return "UnsatisfiedSupplyRequirementReportWarning: " + rep;
+    public UnsatisfiedSupplyRequirementReportWarning(ReportID rep, Map<ItemID, Integer> items) {
+        this.rep = rep;
+        this.items = items;
     }
 }

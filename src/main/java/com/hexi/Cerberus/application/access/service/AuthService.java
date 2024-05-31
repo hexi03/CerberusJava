@@ -2,6 +2,7 @@ package com.hexi.Cerberus.application.access.service;
 
 import com.hexi.Cerberus.domain.access.UserCredentials;
 import com.hexi.Cerberus.domain.user.User;
+import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
 import com.hexi.Cerberus.infrastructure.service.JwtTokenUtils;
 import io.jsonwebtoken.Claims;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.AbstractMap;
 import java.util.Optional;
 
 @Service
@@ -52,14 +54,14 @@ public class AuthService {
         return jwtTokenUtils.getUsername(token);
     }
 
-    public Optional<String> authUser(UserCredentials userCredentials) {
+    public Optional<AbstractMap.SimpleImmutableEntry<UserID,String>> authUser(UserCredentials userCredentials) {
         log.info(String.format("authUser(%s,%s)", userCredentials.getEmail(),userCredentials.getPassword()));
         Optional<User> user = userRepository.findByEmail(userCredentials.getEmail());
         if (user.isEmpty()) return Optional.empty();
         log.info(String.format("DTO пароль пользователя %s: %s", userCredentials.getEmail(), userCredentials.getPassword()));
         if (!passwordEncoder.matches(userCredentials.getPassword(), user.get().getPasswordHash()))
             return Optional.empty();
-        return Optional.of(generateToken(user.get()));
+        return Optional.of(new AbstractMap.SimpleImmutableEntry<UserID,String>(user.get().getId(),generateToken(user.get())));
     }
 
     public String getPasswordHash(String password) {

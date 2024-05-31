@@ -14,6 +14,8 @@ import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,18 +24,23 @@ import java.util.stream.Collectors;
 
 public class WorkShiftReportModel extends FactorySiteReportModel implements WorkShiftReport {
     @ManyToMany(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "work_shift_report_target_warehouse_assoc")
     List<WareHouseModel> targetWareHouses;
     @ManyToMany(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "work_shift_report_produced_product_entry_assoc")
     Collection<ProductEntry> produced = new ArrayList<>();
     @JoinTable(name = "work_shift_report_losses_item_entry_assoc")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToMany(cascade = CascadeType.ALL)
     Collection<ItemEntry> losses = new ArrayList<>();
     @JoinTable(name = "work_shift_report_remains_item_entry_assoc")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToMany(cascade = CascadeType.ALL)
     Collection<ItemEntry> remains = new ArrayList<>();
     @JoinTable(name = "work_shift_report_unclaimed_remains_item_entry_assoc")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToMany(cascade = CascadeType.ALL)
     Collection<ItemEntry> unclaimedRemains = new ArrayList<>();
 

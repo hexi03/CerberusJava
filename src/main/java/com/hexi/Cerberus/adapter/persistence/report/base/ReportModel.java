@@ -8,6 +8,8 @@ import com.hexi.Cerberus.domain.report.query.filter.ReportStatus;
 import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.*;
 
@@ -17,7 +19,8 @@ import java.util.*;
 public class ReportModel implements Report {
     @EmbeddedId
     ReportID id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     DepartmentModel department;
     @Temporal(TemporalType.TIMESTAMP)
     Date createdAt;
@@ -28,7 +31,8 @@ public class ReportModel implements Report {
     @Temporal(TemporalType.TIMESTAMP)
     Date deletedAt;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     UserModel creator;
 
     @Transient

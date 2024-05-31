@@ -7,13 +7,19 @@ import lombok.Getter;
 
 import java.util.Map;
 @Getter
-public class InventarisationReportProblem implements StateProblem {
-    ReportID rep;
-    Map<ItemID, Integer> differrence;
-    public InventarisationReportProblem(ReportID id, Map<ItemID, Integer> differrence) {
-        this.differrence = differrence;
-        rep = id;
+public class WorkShiftReplenishedTooMuchReportProblem implements StateProblem {
+
+
+    public enum By{
+        Produced,
+        UnclaimedRemains
     }
+    ReportID rep; By by;
+    Map<ItemID, Integer> differrence;
 
-
-   }
+    public WorkShiftReplenishedTooMuchReportProblem(ReportID rep, By by, Map<ItemID, Integer> differrence) {
+        this.rep = rep;
+        this.by = by;
+        this.differrence = differrence;
+    }
+}

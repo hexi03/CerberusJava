@@ -9,6 +9,8 @@ import com.hexi.Cerberus.domain.user.UserID;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = CreateReportDTO.DISCRIMINATOR)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = UpdateInventarisationReportDTO.class, name = Consts.REPORT_WH_INVENTARISATION),
@@ -27,4 +29,6 @@ public abstract class UpdateReportDTO {
     ReportID id;
     @Setter
     UserID creatorId;
+
+    Date createdAt;
 }

@@ -9,6 +9,8 @@ import com.hexi.Cerberus.domain.report.warehouse.WareHouseReport;
 import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 import java.util.Optional;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @Access(AccessType.FIELD)
 public abstract class WareHouseReportModel extends ReportModel implements WareHouseReport {
     @ManyToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     WareHouseModel wareHouse;
 
     protected WareHouseReportModel() {

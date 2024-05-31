@@ -11,6 +11,8 @@ import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 import java.util.Optional;
@@ -21,6 +23,7 @@ import java.util.Optional;
 
 public class FactorySiteReportModel extends ReportModel implements FactorySiteReport {
     @ManyToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     FactorySiteModel factorySite;
 
     protected FactorySiteReportModel() {

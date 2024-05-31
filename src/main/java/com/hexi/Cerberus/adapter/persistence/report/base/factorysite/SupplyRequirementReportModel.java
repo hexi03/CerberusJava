@@ -11,6 +11,8 @@ import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,9 +21,11 @@ import java.util.stream.Collectors;
 @Access(AccessType.FIELD)
 public class SupplyRequirementReportModel extends FactorySiteReportModel implements SupplyRequirementReport {
     @ManyToMany(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "supply_requirement_report_target_warehouse_assoc")
     List<WareHouseModel> targetWareHouses;
     @ManyToMany(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "supply_requirement_report_requirements_item_entry_assoc")
     Collection<ItemEntry> requirements = new ArrayList<>();
 

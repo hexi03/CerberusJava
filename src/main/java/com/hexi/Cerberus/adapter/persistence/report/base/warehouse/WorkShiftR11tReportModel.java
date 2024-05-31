@@ -11,6 +11,8 @@ import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.warehouse.WorkShiftReplenishmentReport;
 import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,12 +20,15 @@ import java.util.stream.Collectors;
 @Access(AccessType.FIELD)
 public class WorkShiftR11tReportModel extends WareHouseReportModel implements WorkShiftReplenishmentReport {
     @ManyToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     WorkShiftReportModel workShiftReport;
     @ManyToMany(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "work_shift_repl_report_items_product_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();
     //Невостребованные остатки на возврат
     @ManyToMany(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "work_shift_repl_report_unclaimed_remains_item_entry_assoc")
     Collection<ItemEntry> unclaimedRemains = new ArrayList<>();
 

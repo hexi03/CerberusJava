@@ -7,6 +7,7 @@ import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.item.service.ItemRegistriesQueryService;
+import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.factorysite.FactorySiteReport;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.query.filter.FactorySiteReportFilterCriteria;
@@ -117,17 +118,14 @@ public class FactorySiteStateServiceImpl implements FactorySiteStateService {
         //Есть потери РМ
 
         List<WorkShiftReport> reportsWithLosses = getWorkShiftReportsWithLosses(factorySite);
-        if(!reportsWithLosses.isEmpty())
-            for (WorkShiftReport rep : reportsWithLosses)
-                warnings.add(new WorkShiftLossesWarning(rep.getLosses()));
+        for (WorkShiftReport rep : reportsWithLosses)
+            warnings.add(new WorkShiftLossesWarning(rep.getId(),rep.getLosses().entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getId(), entry -> entry.getValue()))));
 
         //Есть остатки на территории FS
         List<WorkShiftReport> reportsWithRemains = getWorkShiftReportsWithRemains(factorySite);
-
-
-            for (WorkShiftReport rep : reportsWithRemains) {
-                warnings.add(new WorkShiftRemainsWarning(rep.getRemains()));
-            }
+        for (WorkShiftReport rep : reportsWithRemains) {
+            warnings.add(new WorkShiftRemainsWarning(rep.getId(),rep.getRemains().entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getId(), entry -> entry.getValue()))));
+        }
 
         return warnings;
     }

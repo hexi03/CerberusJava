@@ -6,8 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class AuthResponse {
-    public final UserID userId;
+public class TokenResponse {
     public final String token;
 
 }

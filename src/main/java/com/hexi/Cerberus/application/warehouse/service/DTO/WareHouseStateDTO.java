@@ -1,5 +1,7 @@
 package com.hexi.Cerberus.application.warehouse.service.DTO;
 
+import com.hexi.Cerberus.application.mapper.DTO.StateProblemDTO;
+import com.hexi.Cerberus.application.mapper.DTO.StateWarningDTO;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.infrastructure.StateProblem;
@@ -15,9 +17,9 @@ import java.util.Map;
 @Data
 public class WareHouseStateDTO {
     @Singular
-    List<String> problems;
+    List<StateProblemDTO> problems;
     @Singular
-    List<String> warnings;
+    List<StateWarningDTO> warnings;
 
     Map<ItemID, Integer> items;
 }

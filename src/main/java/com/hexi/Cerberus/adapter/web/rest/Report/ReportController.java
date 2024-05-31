@@ -104,7 +104,7 @@ public class ReportController {
                 CreateSupplyRequirementReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .factorySiteId(dto.getFactorySiteId())
                         .targetWareHouseIds(dto.getTargetWareHouseIds())
                         .items(dto.getItems()).build()
@@ -117,7 +117,7 @@ public class ReportController {
                 CreateReleaseReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .supplyReqReportId(dto.getSupplyReqReportId())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
@@ -130,7 +130,7 @@ public class ReportController {
                 CreateInventarisationReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         ).getId();
@@ -142,7 +142,7 @@ public class ReportController {
                 CreateReplenishmentReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         ).getId();
@@ -154,7 +154,7 @@ public class ReportController {
                 CreateShipmentReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         ).getId();
@@ -166,7 +166,7 @@ public class ReportController {
                 CreateWorkShiftReplenishmentReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .wareHouseId(dto.getWareHouseId())
                         .workShiftReportId(dto.getWorkShiftReportId())
                         .unclaimedRemains(dto.getUnclaimedRemains())
@@ -180,7 +180,7 @@ public class ReportController {
                 CreateWorkShiftReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .factorySiteId(dto.getFactorySiteId())
                         .targetWareHouseIds(dto.getTargetWareHouseIds())
                         .remains(dto.getRemains())
@@ -232,7 +232,7 @@ public class ReportController {
                 UpdateSupplyRequirementReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .reportId(dto.getId())
                         .factorySiteId(dto.getFactorySiteId())
                         .targetWareHouseIds(dto.getTargetWareHouseIds())
@@ -246,7 +246,7 @@ public class ReportController {
                 UpdateReleaseReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .reportId(dto.getId())
                         .supplyReqReportId(dto.getSupplyReqReportId())
                         .wareHouseId(dto.getWareHouseId())
@@ -260,7 +260,7 @@ public class ReportController {
                 UpdateInventarisationReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .reportId(dto.getId())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
@@ -273,7 +273,7 @@ public class ReportController {
                 UpdateReplenishmentReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .reportId(dto.getId())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
@@ -287,7 +287,7 @@ public class ReportController {
                         .builder()
                         .reportId(dto.getId())
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .wareHouseId(dto.getWareHouseId())
                         .items(dto.getItems()).build()
         );
@@ -299,7 +299,7 @@ public class ReportController {
                 UpdateWorkShiftReplenishmentReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .reportId(dto.getId())
                         .wareHouseId(dto.getWareHouseId())
                         .workShiftReportId(dto.getWorkShiftReportId())
@@ -314,7 +314,7 @@ public class ReportController {
                 UpdateWorkShiftReportCmd
                         .builder()
                         .id(CommandId.generate())
-                        .creatorId(dto.getCreatorId())
+                        .creatorId(dto.getCreatorId()).createdAt(dto.getCreatedAt())
                         .reportId(dto.getId())
                         .factorySiteId(dto.getFactorySiteId())
                         .targetWareHouseIds(dto.getTargetWareHouseIds())

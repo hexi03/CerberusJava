@@ -1,5 +1,7 @@
 package com.hexi.Cerberus.application.factorysite.service.DTO;
 
+import com.hexi.Cerberus.application.mapper.DTO.StateProblemDTO;
+import com.hexi.Cerberus.application.mapper.DTO.StateWarningDTO;
 import com.hexi.Cerberus.infrastructure.StateProblem;
 import com.hexi.Cerberus.infrastructure.StateWarning;
 import lombok.Builder;
@@ -12,7 +14,7 @@ import java.util.List;
 @Builder
 public class FactorySiteStateDTO {
     @Singular
-    List<String> problems;
+    List<StateProblemDTO> problems;
     @Singular
-    List<String> warnings;
+    List<StateWarningDTO> warnings;
 }

@@ -9,6 +9,8 @@ import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.warehouse.InventarisationReport;
 import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @Access(AccessType.FIELD)
 public class InventarisationReportModel extends WareHouseReportModel implements InventarisationReport {
     @ManyToMany(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "inventarisation_report_items_item_entry_assoc")
     Collection<ItemEntry> items = new ArrayList<>();
 

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = CreateReportDTO.DISCRIMINATOR)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CreateInventarisationReportDTO.class, name = Consts.REPORT_WH_INVENTARISATION),
@@ -25,6 +27,8 @@ public abstract class CreateReportDTO {
     public static final String DISCRIMINATOR = "type";
     @Setter
     UserID creatorId;
+
+    Date createdAt;
 
 
 }
