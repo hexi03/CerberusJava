@@ -1,16 +1,16 @@
 package com.hexi.Cerberus.domain.helpers;
 
-import com.hexi.Cerberus.domain.item.ItemID;
+import com.hexi.Cerberus.domain.product.ProductID;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ItemMapHelper {
-    public static Map<ItemID, Integer> MergeDictionariesWithSum(Map<ItemID, Integer> a, Map<ItemID, Integer> b) {
-        List<Map.Entry<ItemID, Integer>> generic = a.entrySet().stream().collect(Collectors.toList());
+
+public class ProductMapHelper{
+    public static Map<ProductID, Integer> MergeDictionariesWithSum(Map<ProductID, Integer> a, Map<ProductID, Integer> b) {
+        List<Map.Entry<ProductID, Integer>> generic = a.entrySet().stream().collect(Collectors.toList());
         generic.addAll(b.entrySet());
 
         return generic.stream().collect(Collectors.toMap(
@@ -20,31 +20,28 @@ public class ItemMapHelper {
         ));
     }
 
-    public static Map<ItemID, Integer> MergeDictionariesWithSub(Map<ItemID, Integer> a, Map<ItemID, Integer> b) {
+    public static Map<ProductID, Integer> MergeDictionariesWithSub(Map<ProductID, Integer> a, Map<ProductID, Integer> b) {
         b = new HashMap<>(b);
-        for (ItemID key : b.keySet()) {
+        for (ProductID key : b.keySet()) {
             b.put(key, -b.get(key));
         }
         return MergeDictionariesWithSum(a, b);
     }
 
 
-    public static Map<ItemID, Integer> filterPos(Map<ItemID, Integer> map) {
+    public static Map<ProductID, Integer> filterPos(Map<ProductID, Integer> map) {
         return map.entrySet().stream().filter(entry -> entry.getValue() > 0).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
     }
 
-    public static Map<ItemID, Integer> filterNeg(Map<ItemID, Integer> map) {
+    public static Map<ProductID, Integer> filterNeg(Map<ProductID, Integer> map) {
         return map.entrySet().stream().filter(entry -> entry.getValue() < 0).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
     }
 
-    public static Map<ItemID, Integer> filterZero(Map<ItemID, Integer> map) {
+    public static Map<ProductID, Integer> filterZero(Map<ProductID, Integer> map) {
         return map.entrySet().stream().filter(entry -> entry.getValue() == 0).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
     }
-    public static Map<ItemID, Integer> filterNonZero(Map<ItemID, Integer> map) {
+    public static Map<ProductID, Integer> filterNonZero(Map<ProductID, Integer> map) {
         return map.entrySet().stream().filter(entry -> entry.getValue() != 0).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
     }
 
 }
-
-
-

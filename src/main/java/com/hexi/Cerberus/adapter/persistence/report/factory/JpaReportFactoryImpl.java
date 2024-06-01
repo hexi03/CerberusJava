@@ -11,12 +11,16 @@ import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.config.CerberusParameters;
 import com.hexi.Cerberus.domain.factorysite.repository.FactorySiteRepository;
+import com.hexi.Cerberus.domain.helpers.ItemMapHelper;
+import com.hexi.Cerberus.domain.helpers.ProductMapHelper;
+import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportFactory;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.command.create.*;
+import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
@@ -104,8 +108,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
         if (cmd.getProduced() == null)
             produced_map = new HashMap<>();
         else
-            produced_map = cmd
-                .getProduced()
+            produced_map = ProductMapHelper.filterPos(cmd.getProduced())
                 .keySet()
                 .stream()
                 .map(productRepository::findById)
@@ -122,8 +125,8 @@ public class JpaReportFactoryImpl implements ReportFactory {
         if (cmd.getLosses() == null)
             losses_map = new HashMap<>();
         else
-            losses_map = cmd
-                    .getLosses()
+            losses_map =
+                    ItemMapHelper.filterPos(cmd.getLosses())
                     .keySet()
                     .stream()
                     .map(itemID -> itemRepository.findById(itemID))
@@ -138,26 +141,26 @@ public class JpaReportFactoryImpl implements ReportFactory {
         if (cmd.getRemains() == null)
             remains_map = new HashMap<>();
         else
-            remains_map = cmd
-                .getRemains()
-                .keySet()
-                .stream()
-                .map(itemID -> itemRepository.findById(itemID))
-                .filter(Optional::isPresent)
-                .map(optional -> (ItemModel) optional.get())
-                    .collect(Collectors.toMap(
-                            Function.identity(),
-                            item -> cmd.getRemains().get(item.getId()),
-                            Integer::sum
-                    ));
+            remains_map =
+                    ItemMapHelper.filterPos(cmd.getRemains())
+                    .keySet()
+                    .stream()
+                    .map(itemID -> itemRepository.findById(itemID))
+                    .filter(Optional::isPresent)
+                    .map(optional -> (ItemModel) optional.get())
+                        .collect(Collectors.toMap(
+                                Function.identity(),
+                                item -> cmd.getRemains().get(item.getId()),
+                                Integer::sum
+                        ));
 
 
         Map<ItemModel, Integer>  unclaimed_remains_map;
         if (cmd.getUnclaimedRemains() == null)
             unclaimed_remains_map = new HashMap<>();
         else
-            unclaimed_remains_map = cmd
-                    .getUnclaimedRemains()
+            unclaimed_remains_map =
+                    ItemMapHelper.filterPos(cmd.getUnclaimedRemains())
                     .keySet()
                     .stream()
                     .map(itemID -> itemRepository.findById(itemID))
@@ -187,7 +190,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
     private Report createWorkShiftReplenishmentReport(CreateWorkShiftReplenishmentReportCmd cmd) {
         Optional<FactorySiteModel> factorySite;
         Optional<WareHouseModel> wareHouse;
-        Map<ItemModel, Integer> items_map;
+
 
         Optional<ReportModel> whReport = reportRepository.findById(cmd.getWorkShiftReportId());
         whReport.orElseThrow(() -> new RuntimeException(
@@ -213,8 +216,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
-        items_map = cmd
-                .getItems()
+        Map<ItemModel, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+        items_map =
+                ItemMapHelper.filterPos(cmd.getItems())
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
@@ -230,18 +237,18 @@ public class JpaReportFactoryImpl implements ReportFactory {
         if (cmd.getUnclaimedRemains() == null)
             unclaimedRemainsMap = new HashMap<>();
         else
-            unclaimedRemainsMap = cmd
-                .getUnclaimedRemains()
-                .keySet()
-                .stream()
-                .map(itemID -> itemRepository.findById(itemID))
-                .filter(Optional::isPresent)
-                .map(optional -> (ItemModel) optional.get())
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        item -> cmd.getUnclaimedRemains().get(item.getId()),
-                        Integer::sum
-                ));
+            unclaimedRemainsMap =
+                    ItemMapHelper.filterPos(cmd.getUnclaimedRemains())
+                    .keySet()
+                    .stream()
+                    .map(itemID -> itemRepository.findById(itemID))
+                    .filter(Optional::isPresent)
+                    .map(optional -> (ItemModel) optional.get())
+                    .collect(Collectors.toMap(
+                            Function.identity(),
+                            item -> cmd.getUnclaimedRemains().get(item.getId()),
+                            Integer::sum
+                    ));
         Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         return new WorkShiftR11tReportModel(
                 new ReportID(),
@@ -257,7 +264,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
 
     private Report createReplenishmentReport(CreateReplenishmentReportCmd cmd) {
         Optional<WareHouseModel> wareHouse;
-        Map<ItemModel, Integer> items_map;
 
         wareHouse = wareHouseRepository.findById(cmd.getWareHouseId());
         wareHouse.orElseThrow(() -> new RuntimeException(
@@ -270,9 +276,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 "Error while creating report: " +
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
-
-        items_map = cmd
-                .getItems()
+        Map<ItemModel, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+        items_map =
+                ItemMapHelper.filterPos(cmd.getItems())
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
@@ -297,7 +306,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
     private Report createReleaseReport(CreateReleaseReportCmd cmd) {
 
         Optional<WareHouseModel> wareHouse;
-        Map<ItemModel, Integer> items_map;
 
         Optional<ReportModel> sqReport = reportRepository.findById(cmd.getSupplyReqReportId());
         sqReport.orElseThrow(() -> new RuntimeException(
@@ -316,9 +324,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 "Error while creating report: " +
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
-
-        items_map = cmd
-                .getItems()
+        Map<ItemModel, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+        items_map =
+                ItemMapHelper.filterPos(cmd.getItems())
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
@@ -343,7 +354,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
 
     private Report createShipmentReport(CreateShipmentReportCmd cmd) {
         Optional<WareHouseModel> wareHouse;
-        Map<ItemModel, Integer> items_map;
 
         wareHouse = wareHouseRepository.findById(cmd.getWareHouseId());
         wareHouse.orElseThrow(() -> new RuntimeException(
@@ -355,9 +365,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 "Error while creating report: " +
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
-
-        items_map = cmd
-                .getItems()
+        Map<ItemModel, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+        items_map =
+                ItemMapHelper.filterPos(cmd.getItems())
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
@@ -381,7 +394,7 @@ public class JpaReportFactoryImpl implements ReportFactory {
 
     private Report createInventarisationReport(CreateInventarisationReportCmd cmd) {
         Optional<WareHouseModel> wareHouse;
-        Map<ItemModel, Integer> items_map;
+
 
         wareHouse = wareHouseRepository.findById(cmd.getWareHouseId());
         wareHouse.orElseThrow(() -> new RuntimeException(
@@ -394,9 +407,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 "Error while creating report: " +
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
-
-        items_map = cmd
-                .getItems()
+        Map<ItemModel, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+        items_map =
+                ItemMapHelper.filterPos(cmd.getItems())
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))
@@ -419,7 +435,6 @@ public class JpaReportFactoryImpl implements ReportFactory {
     private Report createSupplyRequirementReport(CreateSupplyRequirementReportCmd cmd) {
         Optional<FactorySiteModel> factorySite;
         List<WareHouseModel> wareHouses;
-        Map<ItemModel, Integer> items_map;
 
         factorySite = factorySiteRepository.findById(cmd.getFactorySiteId());
         factorySite.orElseThrow(() -> new RuntimeException(
@@ -447,9 +462,12 @@ public class JpaReportFactoryImpl implements ReportFactory {
                 "Error while creating report: " +
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
-
-        items_map = cmd
-                .getItems()
+        Map<ItemModel, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+        items_map =
+                ItemMapHelper.filterPos(cmd.getItems())
                 .keySet()
                 .stream()
                 .map(itemID -> itemRepository.findById(itemID))

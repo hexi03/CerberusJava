@@ -109,4 +109,14 @@ public class WorkShiftR11tReportModel extends WareHouseReportModel implements Wo
     public WorkShiftReport getWorkShiftReport() {
         return (WorkShiftReport) workShiftReport;
     }
+
+    @Override
+    public void setUnclaimedRemains(Map<Item, Integer> unclaimedRemainsMap) {
+        this.unclaimedRemains = unclaimedRemainsMap.entrySet()
+                .stream()
+                .map(entry -> new ItemEntry((ItemModel)entry.getKey(), entry.getValue()))
+                .collect(
+                        Collectors.toList()
+                );
+    }
 }

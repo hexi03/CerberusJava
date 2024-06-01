@@ -22,4 +22,6 @@ public interface WorkShiftReplenishmentReport extends WareHouseReport, ItemReple
     default Map<Item, Integer> getSummaryReplenish(){
         return Stream.concat(getItems().entrySet().stream(), getUnclaimedRemains().entrySet().stream()).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue(), Integer::sum));
     }
+
+    void setUnclaimedRemains(Map<Item, Integer> unclaimedRemainsMap);
 }

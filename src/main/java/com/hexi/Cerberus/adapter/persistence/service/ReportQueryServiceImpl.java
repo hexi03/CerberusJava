@@ -16,6 +16,7 @@ import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.report.service.ReportQueryService;
 import com.hexi.Cerberus.domain.report.warehouse.ReleaseReport;
+import com.hexi.Cerberus.domain.report.warehouse.WorkShiftReplenishmentReport;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -218,6 +219,28 @@ public class ReportQueryServiceImpl implements ReportQueryService {
                         .collect(Collectors.toMap(o -> o.getId(), o -> o));
         return wsReps.entrySet().stream().map(entry -> new AbstractMap.SimpleImmutableEntry<SupplyRequirementReport ,Map<ItemID, Integer>>(reps.get(entry.getKey()), entry.getValue())).collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<ReleaseReport> findRelatedReleaseReports(WareHouse wareHouse, ReportID supReqRepId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<ReleaseReportModel> rrQuery = cb.createQuery(ReleaseReportModel.class);
+        Root<ReleaseReportModel> rrRoot = rrQuery.from(ReleaseReportModel.class);
+        rrQuery.select(rrRoot);
+        rrQuery.where(cb.equal(rrRoot.get("wareHouse").get("id"),wareHouse.getId()));
+        rrQuery.where(cb.equal(rrRoot.get("supplyReqReport").get("id"),supReqRepId));
+        return entityManager.createQuery(rrQuery).getResultList().stream().collect(Collectors.toList());
+    }
+
+    @Override
+    public List<WorkShiftReplenishmentReport> findRelatedWorkShiftReplenishmentReports(WareHouse wareHouse, ReportID wsReplRepId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<WorkShiftR11tReportModel> wsrrQuery = cb.createQuery(WorkShiftR11tReportModel.class);
+        Root<WorkShiftR11tReportModel> wsrrRoot = wsrrQuery.from(WorkShiftR11tReportModel.class);
+        wsrrQuery.select(wsrrRoot);
+        wsrrQuery.where(cb.equal(wsrrRoot.get("wareHouse").get("id"),wareHouse.getId()));
+        wsrrQuery.where(cb.equal(wsrrRoot.get("workShiftReport").get("id"),wsReplRepId));
+        return entityManager.createQuery(wsrrQuery).getResultList().stream().collect(Collectors.toList());
     }
 
 

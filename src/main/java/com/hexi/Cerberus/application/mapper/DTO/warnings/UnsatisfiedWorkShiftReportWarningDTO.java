@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 @Getter
 @Setter
@@ -20,12 +21,14 @@ public class UnsatisfiedWorkShiftReportWarningDTO extends StateWarningDTO {
     ReportID rep;
     By by;
     Map<ItemID, Integer> items;
+    List<ReportID> affectedReportIds;
 
-    public UnsatisfiedWorkShiftReportWarningDTO(ReportID rep, By by, Map<ItemID, Integer> items) {
+    public UnsatisfiedWorkShiftReportWarningDTO(ReportID rep, By by, Map<ItemID, Integer> items, List<ReportID> affectedReportIds) {
         super(UnsatisfiedWorkShiftReportWarning);
         this.rep = rep;
         this.by = by;
         this.items = items;
+        this.affectedReportIds = affectedReportIds;
     }
 
     public UnsatisfiedWorkShiftReportWarningDTO() {

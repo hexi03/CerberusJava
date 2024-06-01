@@ -6,6 +6,7 @@ import com.hexi.Cerberus.domain.report.ReportID;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 @Getter
 @Setter
@@ -13,11 +14,13 @@ public class UnsatisfiedSupplyRequirementReportWarningDTO extends StateWarningDT
     private static final String UnsatisfiedSupplyRequirementReportWarning = "UnsatisfiedSupplyRequirementReportWarning";
     ReportID rep;
     Map<ItemID, Integer> items;
+    List<ReportID> affectedReportIds;
 
-    public UnsatisfiedSupplyRequirementReportWarningDTO(ReportID rep, Map<ItemID, Integer> items) {
+    public UnsatisfiedSupplyRequirementReportWarningDTO(ReportID rep, Map<ItemID, Integer> items, List<ReportID> affectedReportIds) {
         super(UnsatisfiedSupplyRequirementReportWarning);
         this.rep = rep;
         this.items = items;
+        this.affectedReportIds = affectedReportIds;
     }
 
     public UnsatisfiedSupplyRequirementReportWarningDTO() {

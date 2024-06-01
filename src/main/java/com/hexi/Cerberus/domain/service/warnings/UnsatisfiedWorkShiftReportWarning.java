@@ -8,6 +8,7 @@ import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.infrastructure.StateWarning;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Map;
 @Getter
 public class UnsatisfiedWorkShiftReportWarning implements StateWarning {
@@ -18,10 +19,11 @@ public class UnsatisfiedWorkShiftReportWarning implements StateWarning {
     ReportID rep;
     By by;
     Map<ItemID, Integer> items;
-
-    public UnsatisfiedWorkShiftReportWarning(ReportID rep, By by, Map<ItemID, Integer> items) {
+    List<ReportID> affectedReportIds;
+    public UnsatisfiedWorkShiftReportWarning(ReportID rep, By by, Map<ItemID, Integer> items, List<ReportID> affectedReportIds) {
         this.rep = rep;
         this.by = by;
         this.items = items;
+        this.affectedReportIds = affectedReportIds;
     }
 }

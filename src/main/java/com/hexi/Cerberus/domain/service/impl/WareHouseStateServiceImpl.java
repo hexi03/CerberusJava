@@ -1,5 +1,6 @@
 package com.hexi.Cerberus.domain.service.impl;
 
+import com.hexi.Cerberus.adapter.persistence.report.base.warehouse.WorkShiftR11tReportModel;
 import com.hexi.Cerberus.domain.helpers.ItemMapHelper;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
@@ -13,10 +14,7 @@ import com.hexi.Cerberus.domain.report.query.sort.InventarisationReportSortCrite
 import com.hexi.Cerberus.domain.report.query.sort.ReportSortCriteria;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;
 import com.hexi.Cerberus.domain.report.service.ReportQueryService;
-import com.hexi.Cerberus.domain.report.warehouse.InventarisationReport;
-import com.hexi.Cerberus.domain.report.warehouse.ItemRelease;
-import com.hexi.Cerberus.domain.report.warehouse.ItemReplenish;
-import com.hexi.Cerberus.domain.report.warehouse.WareHouseReport;
+import com.hexi.Cerberus.domain.report.warehouse.*;
 import com.hexi.Cerberus.domain.service.WareHouseStateService;
 import com.hexi.Cerberus.domain.service.problems.InvalidStorageStateProblem;
 import com.hexi.Cerberus.domain.service.problems.InventarisationReportProblem;
@@ -263,11 +261,18 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
         List<AbstractMap.SimpleImmutableEntry<SupplyRequirementReport, Map<ItemID, Integer>>> unsatisfiedSupplyRequirementReportsPos =
                 findUnsatisfiedSupplyRequirementReports(wareHouse)
                         .stream()
-                        .filter(reportIDMapEntry -> ItemMapHelper.filterPos(reportIDMapEntry.getValue()).size() > 0)
+                        .map(entry -> new AbstractMap.SimpleImmutableEntry<SupplyRequirementReport, Map<ItemID, Integer>>(entry.getKey(),ItemMapHelper.filterPos(entry.getValue())))
+                        .filter(reportIDMapEntry -> reportIDMapEntry.getValue().size() > 0)
                         .collect(Collectors.toList());
         if(!unsatisfiedSupplyRequirementReportsPos.isEmpty())
             for (AbstractMap.SimpleImmutableEntry<SupplyRequirementReport, Map<ItemID, Integer>> rep : unsatisfiedSupplyRequirementReportsPos)
-                warnings.add(new UnsatisfiedSupplyRequirementReportWarning(rep.getKey().getId(), rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue()))));
+                warnings.add(
+                        new UnsatisfiedSupplyRequirementReportWarning(
+                                rep.getKey().getId(),
+                                rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue())),
+                                findRelatedReleaseReports(wareHouse, rep.getKey().getId()).stream().map(rep1 -> rep1.getId()).collect(Collectors.toList())
+                        )
+                );
 
 
         // Предупреждение: Нет отчета или недостаточно о поступлении при наличии отчета о завершении рабочей смены с пополнением
@@ -275,21 +280,37 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
         List<AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>>> unsatisfiedWorkShiftByProducedReportsPos =
                 findUnsatisfiedByReplenishedProducedWorkShiftReports(wareHouse)
                         .stream()
-                        .filter(reportIDMapEntry -> ItemMapHelper.filterPos(reportIDMapEntry.getValue()).size() > 0)
+                        .map(entry -> new AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>>(entry.getKey(),ItemMapHelper.filterPos(entry.getValue())))
+                        .filter(reportIDMapEntry -> reportIDMapEntry.getValue().size() > 0)
                         .collect(Collectors.toList());
         if(!unsatisfiedWorkShiftByProducedReportsPos.isEmpty())
             for (AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>> rep : unsatisfiedWorkShiftByProducedReportsPos)
-                warnings.add(new UnsatisfiedWorkShiftReportWarning(rep.getKey().getId(), UnsatisfiedWorkShiftReportWarning.By.Produced, rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue()))));
+                warnings.add(
+                        new UnsatisfiedWorkShiftReportWarning(
+                                rep.getKey().getId(),
+                                UnsatisfiedWorkShiftReportWarning.By.Produced,
+                                rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue())),
+                                findRelatedWorkShiftReplenishmentReports(wareHouse, rep.getKey().getId()).stream().map(rep1 -> rep1.getId()).collect(Collectors.toList())
+                        )
+                );
 
 
         List<AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>>> unsatisfiedWorkShiftByUnclaimedRemainsReportsPos =
                 findUnsatisfiedByReplenishedUnclaimedRemainsWorkShiftReports(wareHouse)
                         .stream()
-                        .filter(reportIDMapEntry -> ItemMapHelper.filterPos(reportIDMapEntry.getValue()).size() > 0)
+                        .map(entry -> new AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>>(entry.getKey(),ItemMapHelper.filterPos(entry.getValue())))
+                        .filter(reportIDMapEntry -> reportIDMapEntry.getValue().size() > 0)
                         .collect(Collectors.toList());
         if(!unsatisfiedWorkShiftByUnclaimedRemainsReportsPos.isEmpty())
             for (AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>> rep : unsatisfiedWorkShiftByUnclaimedRemainsReportsPos)
-                warnings.add(new UnsatisfiedWorkShiftReportWarning(rep.getKey().getId(), UnsatisfiedWorkShiftReportWarning.By.UnclaimedRemains, rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue()))));
+                warnings.add(
+                        new UnsatisfiedWorkShiftReportWarning(
+                                rep.getKey().getId(),
+                                UnsatisfiedWorkShiftReportWarning.By.UnclaimedRemains,
+                                rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue())),
+                                findRelatedWorkShiftReplenishmentReports(wareHouse, rep.getKey().getId()).stream().map(rep1 -> rep1.getId()).collect(Collectors.toList())
+                        )
+                );
 
 
 
@@ -297,22 +318,6 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
         return warnings;
     }
 
-//    private List<WorkShiftReport> (WareHouse wareHouse) {
-//        return null;
-//    }
-
-    public List<AbstractMap.SimpleImmutableEntry<WorkShiftReport,Map<ItemID, Integer>>>  findUnsatisfiedByReplenishedProducedWorkShiftReports(WareHouse wareHouse) {
-        return reportQueryService.findUnsatisfiedByReplenishedProducedWorkShiftReports(wareHouse);
-    }
-    public List<AbstractMap.SimpleImmutableEntry<SupplyRequirementReport,Map<ItemID, Integer>>>  findUnsatisfiedSupplyRequirementReports(WareHouse wareHouse) {
-        return reportQueryService.findUnsatisfiedSupplyRequirementReports(wareHouse);
-    }
-    public List<AbstractMap.SimpleImmutableEntry<WorkShiftReport,Map<ItemID, Integer>>>  findUnsatisfiedByReplenishedUnclaimedRemainsWorkShiftReports(WareHouse wareHouse) {
-        return reportQueryService.findUnsatisfiedByReplenishedUnclaimedRemainsWorkShiftReports(wareHouse);
-    }
-//    private List<SupplyRequirementReport> getUnsatisfiedSupplyRequirementReports(WareHouse wareHouse) {
-//        return null;
-//    }
 
     private List<StateProblem> getProblems(WareHouse wareHouse) {
         List<StateProblem> problems = new ArrayList<>();
@@ -334,31 +339,54 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
         List<AbstractMap.SimpleImmutableEntry<SupplyRequirementReport, Map<ItemID, Integer>>> unsatisfiedSupplyRequirementReportsPos =
                 findUnsatisfiedSupplyRequirementReports(wareHouse)
                         .stream()
-                        .filter(reportIDMapEntry -> ItemMapHelper.filterNeg(reportIDMapEntry.getValue()).size() > 0)
+                        .map(entry -> new AbstractMap.SimpleImmutableEntry<SupplyRequirementReport, Map<ItemID, Integer>>(entry.getKey(),ItemMapHelper.filterNeg(entry.getValue())))
+                        .filter(reportIDMapEntry -> reportIDMapEntry.getValue().size() > 0)
                         .collect(Collectors.toList());
         if(!unsatisfiedSupplyRequirementReportsPos.isEmpty())
             for (AbstractMap.SimpleImmutableEntry<SupplyRequirementReport, Map<ItemID, Integer>> rep : unsatisfiedSupplyRequirementReportsPos)
-                problems.add(new ReleasedTooMuchReportProblem(rep.getKey().getId(), rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue()))));
+                problems.add(
+                        new ReleasedTooMuchReportProblem(
+                                rep.getKey().getId(),
+                                rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue())),
+                                findRelatedReleaseReports(wareHouse, rep.getKey().getId()).stream().map(rep1 -> rep1.getId()).collect(Collectors.toList())
+                        )
+                );
 
 
         List<AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>>> unsatisfiedWorkShiftByProducedReportsPos =
                 findUnsatisfiedByReplenishedProducedWorkShiftReports(wareHouse)
                         .stream()
-                        .filter(reportIDMapEntry -> ItemMapHelper.filterNeg(reportIDMapEntry.getValue()).size() > 0)
+                        .map(entry -> new AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>>(entry.getKey(),ItemMapHelper.filterNeg(entry.getValue())))
+                        .filter(reportIDMapEntry -> reportIDMapEntry.getValue().size() > 0)
                         .collect(Collectors.toList());
         if(!unsatisfiedWorkShiftByProducedReportsPos.isEmpty())
             for (AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>> rep : unsatisfiedWorkShiftByProducedReportsPos)
-                problems.add(new WorkShiftReplenishedTooMuchReportProblem(rep.getKey().getId(), WorkShiftReplenishedTooMuchReportProblem.By.Produced, rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue()))));
+                problems.add(
+                        new WorkShiftReplenishedTooMuchReportProblem(
+                                rep.getKey().getId(),
+                                WorkShiftReplenishedTooMuchReportProblem.By.Produced,
+                                rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue())),
+                                findRelatedWorkShiftReplenishmentReports(wareHouse, rep.getKey().getId()).stream().map(rep1 -> rep1.getId()).collect(Collectors.toList())
+                        )
+                );
 
 
         List<AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>>> unsatisfiedWorkShiftByUnclaimedRemainsReportsPos =
                 findUnsatisfiedByReplenishedUnclaimedRemainsWorkShiftReports(wareHouse)
                         .stream()
-                        .filter(reportIDMapEntry -> ItemMapHelper.filterNeg(reportIDMapEntry.getValue()).size() > 0)
+                        .map(entry -> new AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>>(entry.getKey(),ItemMapHelper.filterNeg(entry.getValue())))
+                        .filter(reportIDMapEntry -> reportIDMapEntry.getValue().size() > 0)
                         .collect(Collectors.toList());
         if(!unsatisfiedWorkShiftByUnclaimedRemainsReportsPos.isEmpty())
             for (AbstractMap.SimpleImmutableEntry<WorkShiftReport, Map<ItemID, Integer>> rep : unsatisfiedWorkShiftByUnclaimedRemainsReportsPos)
-                problems.add(new WorkShiftReplenishedTooMuchReportProblem(rep.getKey().getId(), WorkShiftReplenishedTooMuchReportProblem.By.UnclaimedRemains, rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue()))));
+                problems.add(
+                        new WorkShiftReplenishedTooMuchReportProblem(
+                                rep.getKey().getId(),
+                                WorkShiftReplenishedTooMuchReportProblem.By.UnclaimedRemains,
+                                rep.getValue().entrySet().stream().collect(Collectors.toMap(o -> o.getKey(),o -> o.getValue())),
+                                findRelatedWorkShiftReplenishmentReports(wareHouse, rep.getKey().getId()).stream().map(rep1 -> rep1.getId()).collect(Collectors.toList())
+                        )
+                );
 
         //Проблема: Данные инвентаризации не совпали с ожидаемыми
         System.out.println("Проверка отчетов об инвентаризации: ");
@@ -385,7 +413,23 @@ public class WareHouseStateServiceImpl implements WareHouseStateService {
         return problems;
     }
 
+    public List<AbstractMap.SimpleImmutableEntry<WorkShiftReport,Map<ItemID, Integer>>>  findUnsatisfiedByReplenishedProducedWorkShiftReports(WareHouse wareHouse) {
+        return reportQueryService.findUnsatisfiedByReplenishedProducedWorkShiftReports(wareHouse);
+    }
+    public List<AbstractMap.SimpleImmutableEntry<SupplyRequirementReport,Map<ItemID, Integer>>>  findUnsatisfiedSupplyRequirementReports(WareHouse wareHouse) {
+        return reportQueryService.findUnsatisfiedSupplyRequirementReports(wareHouse);
+    }
+    public List<AbstractMap.SimpleImmutableEntry<WorkShiftReport,Map<ItemID, Integer>>>  findUnsatisfiedByReplenishedUnclaimedRemainsWorkShiftReports(WareHouse wareHouse) {
+        return reportQueryService.findUnsatisfiedByReplenishedUnclaimedRemainsWorkShiftReports(wareHouse);
+    }
 
+    public List<ReleaseReport>  findRelatedReleaseReports(WareHouse wareHouse, ReportID supReqRepId) {
+        return reportQueryService.findRelatedReleaseReports(wareHouse,supReqRepId);
+    }
+
+    public List<WorkShiftReplenishmentReport>  findRelatedWorkShiftReplenishmentReports(WareHouse wareHouse, ReportID wsReplRepId) {
+        return reportQueryService.findRelatedWorkShiftReplenishmentReports(wareHouse,wsReplRepId);
+    }
 
 
 }

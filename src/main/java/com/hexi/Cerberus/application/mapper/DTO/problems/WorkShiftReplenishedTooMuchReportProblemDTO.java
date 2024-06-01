@@ -6,6 +6,7 @@ import com.hexi.Cerberus.domain.report.ReportID;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 @Getter
 @Setter
@@ -20,12 +21,14 @@ public class WorkShiftReplenishedTooMuchReportProblemDTO extends StateProblemDTO
     }
     ReportID rep; By by;
     Map<ItemID, Integer> differrence;
+    List<ReportID> affectedReportIds;
 
-    public WorkShiftReplenishedTooMuchReportProblemDTO(ReportID rep, By by, Map<ItemID, Integer> differrence) {
+    public WorkShiftReplenishedTooMuchReportProblemDTO(ReportID rep, By by, Map<ItemID, Integer> differrence, List<ReportID> affectedReportIds) {
         super(WorkShiftReplenishedTooMuchReportProblem);
         this.rep = rep;
         this.by = by;
         this.differrence = differrence;
+        this.affectedReportIds = affectedReportIds;
     }
 
     public WorkShiftReplenishedTooMuchReportProblemDTO() {

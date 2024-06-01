@@ -1,9 +1,13 @@
 package com.hexi.Cerberus.domain.report;
 
 import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
+
+import com.hexi.Cerberus.adapter.persistence.product.base.ProductModel;
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.config.CerberusParameters;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
+import com.hexi.Cerberus.domain.helpers.ItemMapHelper;
+import com.hexi.Cerberus.domain.helpers.ProductMapHelper;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.product.Product;
@@ -20,10 +24,7 @@ import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -60,26 +61,28 @@ public class ReportModifier {
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
-        List<Item> reqs =
-                cmd
-                        .getItems()
-                        .keySet()
-                        .stream()
-                        .map(itemRepository::findById)
-                        .filter(Optional::isPresent)
-                        .map(item -> (Item) item.get())
-                        .toList();
-        Map<Item, Integer> reqMap = reqs.stream().collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getItems().get(item.getId()),
-                Integer::sum
-        ));
+        Map<Item, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+            items_map =
+                    ItemMapHelper.filterPos(cmd.getItems())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getItems().get(item.getId()),
+                                    Integer::sum
+                            ));
         Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         supplyRequirementReport.setCreatedAt(createdAt);
         supplyRequirementReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         supplyRequirementReport.setCreator(creator.get());
         supplyRequirementReport.setTargetWareHouses(targetWareHouses);
-        supplyRequirementReport.setRequirements(reqMap);
+        supplyRequirementReport.setRequirements(items_map);
 
     }
 
@@ -91,29 +94,27 @@ public class ReportModifier {
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
-        List<Item> items =
-                cmd
-                        .getItems()
-                        .keySet()
-                        .stream()
-                        .map(itemRepository::findById)
-                        .filter(Optional::isPresent)
-                        .map(item -> (Item) item.get())
-                        .toList();
-        Map<Item, Integer> itMap =
-                items
-                        .stream()
-                        .collect(Collectors.toMap(
-                                        Function.identity(),
-                                        item -> cmd.getItems().get(item.getId()),
-                                        Integer::sum
-                                )
-                        );
+        Map<Item, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+            items_map =
+                    ItemMapHelper.filterPos(cmd.getItems())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getItems().get(item.getId()),
+                                    Integer::sum
+                            ));
         Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         inventarisationReport.setCreatedAt(createdAt);
         inventarisationReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         inventarisationReport.setCreator(creator.get());
-        inventarisationReport.setItems(itMap);
+        inventarisationReport.setItems(items_map);
     }
 
     public void updateBy(ShipmentReport shipmentReport, UpdateShipmentReportCmd cmd) {
@@ -124,25 +125,27 @@ public class ReportModifier {
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
-        List<Item> items =
-                cmd
-                        .getItems()
-                        .keySet()
-                        .stream()
-                        .map(itemRepository::findById)
-                        .filter(Optional::isPresent)
-                        .map(item -> (Item) item.get())
-                        .toList();
-        Map<Item, Integer> itMap = items.stream().collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getItems().get(item.getId()),
-                Integer::sum
-        ));
+        Map<Item, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+            items_map =
+                    ItemMapHelper.filterPos(cmd.getItems())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getItems().get(item.getId()),
+                                    Integer::sum
+                            ));
         Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         shipmentReport.setCreatedAt(createdAt);
         shipmentReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         shipmentReport.setCreator(creator.get());
-        shipmentReport.setItems(itMap);
+        shipmentReport.setItems(items_map);
     }
 
 
@@ -157,26 +160,28 @@ public class ReportModifier {
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
-        List<Item> reqs =
-                cmd
-                        .getItems()
-                        .keySet()
-                        .stream()
-                        .map(itemRepository::findById)
-                        .filter(Optional::isPresent)
-                        .map(item -> (Item) item.get())
-                        .toList();
-        Map<Item, Integer> reqMap = reqs.stream().collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getItems().get(item.getId()),
-                Integer::sum
-        ));
+        Map<Item, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+            items_map =
+                    ItemMapHelper.filterPos(cmd.getItems())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getItems().get(item.getId()),
+                                    Integer::sum
+                            ));
         Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         releaseReport.setCreatedAt(createdAt);
         releaseReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         releaseReport.setCreator(creator.get());
         releaseReport.setSupplyReqReportId(SRQReport.get());
-        releaseReport.setItems(reqMap);
+        releaseReport.setItems(items_map);
     }
 
     public void updateBy(ReplenishmentReport replenishmentReport, UpdateReplenishmentReportCmd cmd) {
@@ -186,25 +191,28 @@ public class ReportModifier {
                 "Error while creating report: " +
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
-        List<Item> items = cmd
-                .getItems()
-                .keySet()
-                .stream()
-                .map(itemRepository::findById)
-                .filter(Optional::isPresent)
-                .map(item -> (Item) item.get())
-                .toList();
-        Map<Item, Integer> itemMap = items.stream().collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getItems().get(item.getId()),
-                Integer::sum
-        ));
+        Map<Item, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+            items_map =
+                    ItemMapHelper.filterPos(cmd.getItems())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getItems().get(item.getId()),
+                                    Integer::sum
+                            ));
         Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         replenishmentReport.setCreatedAt(createdAt);
         replenishmentReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         replenishmentReport.setCreatedAt(new Date());
         replenishmentReport.setCreator(creator.get());
-        replenishmentReport.setItems(itemMap);
+        replenishmentReport.setItems(items_map);
     }
 
 
@@ -218,25 +226,46 @@ public class ReportModifier {
                 "Error while creating report: " +
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
-        List<Item> reqs = cmd
-                .getItems()
-                .keySet()
-                .stream()
-                .map(itemRepository::findById)
-                .filter(Optional::isPresent)
-                .map(item -> (Item) item.get())
-                .toList();
-        Map<Item, Integer> reqMap = reqs.stream().collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getItems().get(item.getId()),
-                Integer::sum
-        ));
+        Map<Item, Integer> items_map;
+        if (cmd.getItems() == null)
+            items_map = new HashMap<>();
+        else
+            items_map =
+                    ItemMapHelper.filterPos(cmd.getItems())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getItems().get(item.getId()),
+                                    Integer::sum
+                            ));
+        Map<Item, Integer> unclaimedRemainsMap;
+
+        if (cmd.getUnclaimedRemains() == null)
+            unclaimedRemainsMap = new HashMap<>();
+        else
+            unclaimedRemainsMap =
+                    ItemMapHelper.filterPos(cmd.getUnclaimedRemains())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getUnclaimedRemains().get(item.getId()),
+                                    Integer::sum
+                            ));
         Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         workShiftReplenishmentReport.setCreatedAt(createdAt);
         workShiftReplenishmentReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         workShiftReplenishmentReport.setCreator(creator.get());
         workShiftReplenishmentReport.setWorkShiftReport(WHReport.get());
-        workShiftReplenishmentReport.setItems(reqMap);
+        workShiftReplenishmentReport.setItems(items_map);
+        workShiftReplenishmentReport.setUnclaimedRemains(unclaimedRemainsMap);
 
     }
 
@@ -265,71 +294,82 @@ public class ReportModifier {
                         String.format("Invalid creator id: %s", cmd.getCreatorId().toString())
         ));
 
-        Map<Product, Integer> producedMap= cmd
-                .getProduced()
-                .keySet()
-                .stream()
-                .map(productRepository::findById)
-                .filter(Optional::isPresent)
-                .map(item -> (Product) item.get())
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        item -> cmd.getProduced().get(item.getId()),
-                        Integer::sum
-                ));
+        Map<Product, Integer> produced_map;
+        if (cmd.getProduced() == null)
+            produced_map = new HashMap<>();
+        else
+            produced_map = ProductMapHelper.filterPos(cmd.getProduced())
+                    .keySet()
+                    .stream()
+                    .map(productRepository::findById)
+                    .filter(Optional::isPresent)
+                    .map(optional -> (Product)optional.get())
+                    .collect(Collectors.toMap(
+                            Function.identity(),
+                            item -> cmd.getProduced().get(item.getId()),
+                            Integer::sum
+                    ));
 
 
-        List<Item> losses = cmd
-                .getLosses()
-                .keySet()
-                .stream()
-                .map(itemRepository::findById)
-                .filter(Optional::isPresent)
-                .map(item -> (Item) item.get())
-                .toList();
-        Map<Item, Integer> lossesMap = losses.stream().collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getLosses().get(item.getId()),
-                Integer::sum
-        ));
+        Map<Item, Integer> losses_map;
+        if (cmd.getLosses() == null)
+            losses_map = new HashMap<>();
+        else
+            losses_map =
+                    ItemMapHelper.filterPos(cmd.getLosses())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getLosses().get(item.getId()),
+                                    Integer::sum
+                            ));
+        Map<Item, Integer>  remains_map;
+        if (cmd.getRemains() == null)
+            remains_map = new HashMap<>();
+        else
+            remains_map =
+                    ItemMapHelper.filterPos(cmd.getRemains())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getRemains().get(item.getId()),
+                                    Integer::sum
+                            ));
 
-        List<Item> remains = cmd
-                .getRemains()
-                .keySet()
-                .stream()
-                .map(itemRepository::findById)
-                .filter(Optional::isPresent)
-                .map(item -> (Item) item.get())
-                .toList();
-        Map<Item, Integer> remainsMap = remains.stream().collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getRemains().get(item.getId()),
-                Integer::sum
-        ));
 
-
-
-        Map<Item, Integer> unclaimed_remains = cmd
-                .getUnclaimedRemains()
-                .keySet()
-                .stream()
-                .map(itemRepository::findById)
-                .filter(Optional::isPresent)
-                .map(item -> (Item) item.get())
-                .collect(Collectors.toMap(
-                Function.identity(),
-                item -> cmd.getUnclaimedRemains().get(item.getId()),
-                Integer::sum
-        ));
+        Map<Item, Integer>  unclaimed_remains_map;
+        if (cmd.getUnclaimedRemains() == null)
+            unclaimed_remains_map = new HashMap<>();
+        else
+            unclaimed_remains_map =
+                    ItemMapHelper.filterPos(cmd.getUnclaimedRemains())
+                            .keySet()
+                            .stream()
+                            .map(itemID -> itemRepository.findById(itemID))
+                            .filter(Optional::isPresent)
+                            .map(optional -> (Item) optional.get())
+                            .collect(Collectors.toMap(
+                                    Function.identity(),
+                                    item -> cmd.getUnclaimedRemains().get(item.getId()),
+                                    Integer::sum
+                            ));
         Date createdAt = cmd.getCreatedAt() == null ? new Date() : cmd.getCreatedAt();
         workShiftReport.setCreatedAt(createdAt);
         workShiftReport.setExpirationDate(new Date(createdAt.getTime() + CerberusParameters.expirationDuration));
         workShiftReport.setCreator(creator.get());
-        workShiftReport.setProduced(producedMap);
-        workShiftReport.setLosses(lossesMap);
-        workShiftReport.setRemains(remainsMap);
+        workShiftReport.setProduced(produced_map);
+        workShiftReport.setLosses(losses_map);
+        workShiftReport.setRemains(remains_map);
         workShiftReport.setTargetWareHouses(targetWareHouses);
-        workShiftReport.setUnclaimedRemains(unclaimed_remains);
+        workShiftReport.setUnclaimedRemains(unclaimed_remains_map);
 
     }
 }
