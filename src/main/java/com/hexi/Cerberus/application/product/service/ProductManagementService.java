@@ -3,8 +3,8 @@ package com.hexi.Cerberus.application.product.service;
 import com.hexi.Cerberus.application.product.service.DTO.ProductDetailsDTO;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.product.ProductID;
-import com.hexi.Cerberus.domain.product.command.CreateProductCmd;
-import com.hexi.Cerberus.domain.product.command.UpdateProductCmd;
+import com.hexi.Cerberus.application.product.service.command.CreateProductCmd;
+import com.hexi.Cerberus.application.product.service.command.UpdateProductCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 

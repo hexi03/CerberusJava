@@ -1,6 +1,6 @@
 package com.hexi.Cerberus.domain.user;
 
-import com.hexi.Cerberus.domain.user.command.UpdateUserDetailsCmd;
+import com.hexi.Cerberus.application.user.service.command.UpdateUserDetailsCmd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

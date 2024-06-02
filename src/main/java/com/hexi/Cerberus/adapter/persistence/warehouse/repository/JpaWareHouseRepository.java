@@ -1,7 +1,6 @@
 package com.hexi.Cerberus.adapter.persistence.warehouse.repository;
 
 import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
-import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.hexi.Cerberus.infrastructure.query.Query;

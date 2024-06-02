@@ -3,14 +3,12 @@ package com.hexi.Cerberus.domain.product;
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
-import com.hexi.Cerberus.domain.product.command.UpdateProductCmd;
+import com.hexi.Cerberus.application.product.service.command.UpdateProductCmd;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 

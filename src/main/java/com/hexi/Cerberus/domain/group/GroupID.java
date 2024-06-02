@@ -1,11 +1,7 @@
 package com.hexi.Cerberus.domain.group;
 
-import com.hexi.Cerberus.domain.department.DepartmentID;
-import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
 import com.hexi.Cerberus.infrastructure.entity.EntityID;
 import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.UUID;

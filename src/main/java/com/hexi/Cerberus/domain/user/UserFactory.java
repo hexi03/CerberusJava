@@ -1,8 +1,6 @@
 package com.hexi.Cerberus.domain.user;
 
-import com.hexi.Cerberus.domain.user.command.CreateUserCmd;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.hexi.Cerberus.application.user.service.command.CreateUserCmd;
 import org.springframework.stereotype.Component;
 
 @Component

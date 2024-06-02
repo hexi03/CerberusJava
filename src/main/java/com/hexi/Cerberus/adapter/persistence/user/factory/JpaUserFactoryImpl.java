@@ -4,7 +4,7 @@ import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.user.UserFactory;
 import com.hexi.Cerberus.domain.user.UserID;
-import com.hexi.Cerberus.domain.user.command.CreateUserCmd;
+import com.hexi.Cerberus.application.user.service.command.CreateUserCmd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

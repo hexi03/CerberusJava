@@ -7,15 +7,13 @@ import com.hexi.Cerberus.domain.department.Department;
 import com.hexi.Cerberus.domain.department.DepartmentFactory;
 import com.hexi.Cerberus.domain.department.DepartmentID;
 import com.hexi.Cerberus.domain.department.DepartmentUpdater;
-import com.hexi.Cerberus.domain.department.command.CreateDepartmentCmd;
-import com.hexi.Cerberus.domain.department.command.UpdateDepartmentDetailsCmd;
+import com.hexi.Cerberus.application.department.service.command.CreateDepartmentCmd;
+import com.hexi.Cerberus.application.department.service.command.UpdateDepartmentDetailsCmd;
 import com.hexi.Cerberus.domain.department.repository.DepartmentRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
 

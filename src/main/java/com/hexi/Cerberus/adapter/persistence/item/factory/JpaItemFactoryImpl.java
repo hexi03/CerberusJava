@@ -5,7 +5,7 @@ import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemFactory;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.item.Unit;
-import com.hexi.Cerberus.domain.item.command.CreateItemCmd;
+import com.hexi.Cerberus.application.item.service.command.CreateItemCmd;
 
 public class JpaItemFactoryImpl implements ItemFactory {
     public Item from(CreateItemCmd cmd) {

@@ -1,6 +1,5 @@
 package com.hexi.Cerberus.domain.factorysite;
 
-import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.infrastructure.StateProblem;
 import com.hexi.Cerberus.infrastructure.StateWarning;
 import lombok.Builder;

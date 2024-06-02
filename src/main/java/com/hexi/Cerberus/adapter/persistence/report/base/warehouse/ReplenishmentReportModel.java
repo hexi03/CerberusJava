@@ -7,7 +7,6 @@ import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.warehouse.ReplenishmentReport;
-import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;

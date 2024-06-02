@@ -6,7 +6,6 @@ import com.hexi.Cerberus.domain.access.BehavioredPermissionGrantingStrategy;
 import com.hexi.Cerberus.infrastructure.security.AclSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.acls.AclPermissionEvaluator;
@@ -17,7 +16,6 @@ import org.springframework.security.acls.jdbc.LookupStrategy;
 import org.springframework.security.acls.model.AclCache;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

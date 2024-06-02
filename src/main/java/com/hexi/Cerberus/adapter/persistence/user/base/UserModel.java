@@ -8,12 +8,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.experimental.SuperBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity

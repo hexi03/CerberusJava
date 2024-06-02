@@ -1,12 +1,13 @@
 package com.hexi.Cerberus.adapter.web.rest.Department;
 
 
-import com.hexi.Cerberus.application.department.service.DTO.*;
-
+import com.hexi.Cerberus.application.department.service.DTO.CreateDepartmentDTO;
+import com.hexi.Cerberus.application.department.service.DTO.DepartmentDetailsDTO;
+import com.hexi.Cerberus.application.department.service.DTO.UpdateDepartmentDTO;
 import com.hexi.Cerberus.application.department.service.DepartmentManagementService;
 import com.hexi.Cerberus.domain.department.DepartmentID;
-import com.hexi.Cerberus.domain.department.command.CreateDepartmentCmd;
-import com.hexi.Cerberus.domain.department.command.UpdateDepartmentDetailsCmd;
+import com.hexi.Cerberus.application.department.service.command.CreateDepartmentCmd;
+import com.hexi.Cerberus.application.department.service.command.UpdateDepartmentDetailsCmd;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.AllArgsConstructor;

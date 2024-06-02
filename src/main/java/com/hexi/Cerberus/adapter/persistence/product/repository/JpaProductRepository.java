@@ -2,7 +2,6 @@ package com.hexi.Cerberus.adapter.persistence.product.repository;
 
 import com.hexi.Cerberus.adapter.persistence.product.base.ProductModel;
 import com.hexi.Cerberus.domain.item.ItemID;
-import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.product.ProductID;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
 import com.hexi.Cerberus.infrastructure.query.Query;

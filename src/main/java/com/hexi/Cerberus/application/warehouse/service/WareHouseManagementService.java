@@ -1,10 +1,9 @@
 package com.hexi.Cerberus.application.warehouse.service;
 
 import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseDetailsDTO;
-import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
-import com.hexi.Cerberus.domain.warehouse.command.CreateWareHouseCmd;
-import com.hexi.Cerberus.domain.warehouse.command.UpdateWareHouseDetailsCmd;
+import com.hexi.Cerberus.application.warehouse.service.command.CreateWareHouseCmd;
+import com.hexi.Cerberus.application.warehouse.service.command.UpdateWareHouseDetailsCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 

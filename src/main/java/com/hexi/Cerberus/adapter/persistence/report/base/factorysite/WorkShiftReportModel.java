@@ -11,7 +11,6 @@ import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
-import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;

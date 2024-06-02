@@ -1,6 +1,6 @@
 package com.hexi.Cerberus.domain.group;
 
-import com.hexi.Cerberus.domain.group.command.UpdateGroupDetailsCmd;
+import com.hexi.Cerberus.application.group.service.command.UpdateGroupDetailsCmd;
 import org.springframework.stereotype.Component;
 
 @Component

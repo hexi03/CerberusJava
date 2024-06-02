@@ -1,22 +1,13 @@
 package com.hexi.Cerberus.adapter.persistence.config;
 
 import org.hibernate.boot.model.FunctionContributions;
-import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
-import org.hibernate.dialect.function.SqlFunction;
-import org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver;
-import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo;
-import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.query.ReturnableType;
 import org.hibernate.query.hql.HqlInterpretationException;
-import org.hibernate.query.spi.QueryEngine;
 import org.hibernate.query.sqm.function.AbstractSqmSelfRenderingFunctionDescriptor;
-import org.hibernate.query.sqm.function.FunctionKind;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
-import org.hibernate.query.sqm.produce.function.*;
-import org.hibernate.query.sqm.tree.SqmTypedNode;
-import org.hibernate.query.sqm.tree.from.SqmRoot;
+import org.hibernate.query.sqm.produce.function.StandardArgumentsValidators;
+import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.sql.ast.SqlAstTranslator;
 import org.hibernate.sql.ast.spi.SqlAppender;
 import org.hibernate.sql.ast.tree.SqlAstNode;
@@ -25,13 +16,8 @@ import org.hibernate.sql.ast.tree.expression.Expression;
 import org.hibernate.sql.ast.tree.update.Assignable;
 import org.hibernate.type.BasicTypeRegistry;
 import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.spi.TypeConfiguration;
 
-import java.lang.reflect.Type;
-import java.sql.Types;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 public class ExtendedPGSQLDialect extends PostgreSQLDialect {
 

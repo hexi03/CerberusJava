@@ -10,7 +10,6 @@ import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 import com.hexi.Cerberus.domain.report.warehouse.ReleaseReport;
-import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;

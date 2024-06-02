@@ -1,7 +1,6 @@
 package com.hexi.Cerberus.domain.department;
 
 import com.google.common.collect.ImmutableCollection;
-import com.google.errorprone.annotations.Immutable;
 import com.hexi.Cerberus.domain.department.event.FactorySiteRegisteredEvent;
 import com.hexi.Cerberus.domain.department.event.WareHouseRegisteredEvent;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
@@ -11,8 +10,6 @@ import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.aggregate.AggregateRoot;
 import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
-import com.hexi.Cerberus.infrastructure.messaging.Message;
-import lombok.experimental.SuperBuilder;
 
 import java.util.*;
 

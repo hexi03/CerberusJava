@@ -1,8 +1,6 @@
 package com.hexi.Cerberus.domain.department.event;
 
 import com.hexi.Cerberus.domain.department.DepartmentID;
-import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
-import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.event.DomainEvent;
 import com.hexi.Cerberus.infrastructure.event.EventId;

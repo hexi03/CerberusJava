@@ -3,11 +3,9 @@ package com.hexi.Cerberus.domain.service.impl;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteState;
 import com.hexi.Cerberus.domain.helpers.ItemMapHelper;
-import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.item.service.ItemRegistriesQueryService;
-import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.factorysite.FactorySiteReport;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.query.filter.FactorySiteReportFilterCriteria;
@@ -30,7 +28,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 

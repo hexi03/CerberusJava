@@ -1,10 +1,9 @@
 package com.hexi.Cerberus.application.item.service;
 
 import com.hexi.Cerberus.application.item.service.DTO.ItemDetailsDTO;
-import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
-import com.hexi.Cerberus.domain.item.command.CreateItemCmd;
-import com.hexi.Cerberus.domain.item.command.UpdateItemCmd;
+import com.hexi.Cerberus.application.item.service.command.CreateItemCmd;
+import com.hexi.Cerberus.application.item.service.command.UpdateItemCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 

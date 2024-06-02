@@ -1,6 +1,6 @@
 package com.hexi.Cerberus.domain.report;
 
-import com.hexi.Cerberus.domain.report.command.create.CreateReportCmd;
+import com.hexi.Cerberus.application.report.service.command.create.CreateReportCmd;
 import org.springframework.stereotype.Component;
 
 @Component

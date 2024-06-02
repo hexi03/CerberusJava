@@ -1,17 +1,10 @@
 package com.hexi.Cerberus.config;
 
 
-import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.cache.support.CompositeCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-
-import java.net.URL;
-import java.util.Collections;
 
 //@EnableCaching
 @Configuration

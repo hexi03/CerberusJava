@@ -1,6 +1,6 @@
 package com.hexi.Cerberus.domain.product;
 
-import com.hexi.Cerberus.domain.product.command.CreateProductCmd;
+import com.hexi.Cerberus.application.product.service.command.CreateProductCmd;
 import org.springframework.stereotype.Component;
 
 @Component

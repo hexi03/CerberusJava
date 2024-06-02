@@ -6,14 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.FilterChainProxy;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.context.SecurityContextHolderFilter;
-import org.springframework.security.web.savedrequest.RequestCacheAwareFilter;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;

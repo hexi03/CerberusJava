@@ -7,7 +7,6 @@ import com.hexi.Cerberus.adapter.persistence.user.base.UserModel;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.domain.report.factorysite.FactorySiteReport;
-import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -2,7 +2,6 @@ package com.hexi.Cerberus.adapter.persistence.warehouse.base;
 
 import com.hexi.Cerberus.adapter.persistence.department.base.DepartmentModel;
 import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
-import com.hexi.Cerberus.adapter.persistence.report.base.warehouse.WareHouseReportModel;
 import com.hexi.Cerberus.domain.department.Department;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
@@ -11,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Collection;
-import java.util.UUID;
 
 @Entity
 @Table(name = "warehouse")

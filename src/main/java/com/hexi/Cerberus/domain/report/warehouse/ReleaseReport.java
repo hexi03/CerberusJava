@@ -1,6 +1,5 @@
 package com.hexi.Cerberus.domain.report.warehouse;
 
-import com.hexi.Cerberus.application.report.service.DTO.details.ReportDetails;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.report.Report;
 import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;

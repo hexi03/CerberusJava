@@ -1,0 +1,162 @@
+@startuml
+ skinparam linetype ortho
+ package "com.hexi.Cerberus" {
+  package "com.hexi.Cerberus.application" {
+   package "com.hexi.Cerberus.application.mapper" {
+   }
+   package "com.hexi.Cerberus.application.user" {
+   }
+   package "com.hexi.Cerberus.application.item" {
+   }
+   package "com.hexi.Cerberus.application.product" {
+   }
+   package "com.hexi.Cerberus.application.department" {
+   }
+   package "com.hexi.Cerberus.application.access" {
+   }
+   package "com.hexi.Cerberus.application.factorysite" {
+   }
+   package "com.hexi.Cerberus.application.warehouse" {
+   }
+   package "com.hexi.Cerberus.application.group" {
+   }
+   package "com.hexi.Cerberus.application.report" {
+   }
+  }
+  package "com.hexi.Cerberus.adapter" {
+   package "com.hexi.Cerberus.adapter.persistence" {
+   }
+   package "com.hexi.Cerberus.adapter.web" {
+   }
+   package "com.hexi.Cerberus.adapter.messaging" {
+   }
+  }
+  package "com.hexi.Cerberus.domain" {
+   package "com.hexi.Cerberus.domain.user" {
+   }
+   package "com.hexi.Cerberus.domain.item" {
+   }
+   package "com.hexi.Cerberus.domain.product" {
+   }
+   package "com.hexi.Cerberus.domain.service" {
+   }
+   package "com.hexi.Cerberus.domain.department" {
+   }
+   package "com.hexi.Cerberus.domain.access" {
+   }
+   package "com.hexi.Cerberus.domain.factorysite" {
+   }
+   package "com.hexi.Cerberus.domain.warehouse" {
+   }
+   package "com.hexi.Cerberus.domain.group" {
+   }
+   package "com.hexi.Cerberus.domain.report" {
+   }
+   package "com.hexi.Cerberus.domain.helpers" {
+   }
+  }
+ }
+
+"com.hexi.Cerberus.adapter.persistence" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.adapter.persistence" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.adapter.persistence" --> "com.hexi.Cerberus.domain.group"
+"com.hexi.Cerberus.adapter.persistence" --> "com.hexi.Cerberus.domain.helpers"
+"com.hexi.Cerberus.adapter.persistence" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.adapter.persistence" --> "com.hexi.Cerberus.domain.product"
+"com.hexi.Cerberus.adapter.persistence" --> "com.hexi.Cerberus.domain.report"
+"com.hexi.Cerberus.adapter.persistence" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.adapter.persistence" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.application.access"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.application.department"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.application.factorysite"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.application.group"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.application.item"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.application.product"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.application.report"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.application.user"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.application.warehouse"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.domain.access"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.domain.group"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.domain.product"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.domain.report"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.adapter.web" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.application.access" --> "com.hexi.Cerberus.domain.access"
+"com.hexi.Cerberus.application.access" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.application.access" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.application.access" --> "com.hexi.Cerberus.domain.group"
+"com.hexi.Cerberus.application.access" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.application.access" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.application.department" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.application.department" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.application.department" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.application.factorysite" --> "com.hexi.Cerberus.application.mapper"
+"com.hexi.Cerberus.application.factorysite" --> "com.hexi.Cerberus.application.warehouse"
+"com.hexi.Cerberus.application.factorysite" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.application.factorysite" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.application.factorysite" --> "com.hexi.Cerberus.domain.service"
+"com.hexi.Cerberus.application.factorysite" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.application.group" --> "com.hexi.Cerberus.domain.group"
+"com.hexi.Cerberus.application.group" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.application.item" --> "com.hexi.Cerberus.application.group"
+"com.hexi.Cerberus.application.item" --> "com.hexi.Cerberus.application.product"
+"com.hexi.Cerberus.application.item" --> "com.hexi.Cerberus.domain.group"
+"com.hexi.Cerberus.application.item" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.application.item" --> "com.hexi.Cerberus.domain.product"
+"com.hexi.Cerberus.application.mapper" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.application.mapper" --> "com.hexi.Cerberus.domain.report"
+"com.hexi.Cerberus.application.product" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.application.product" --> "com.hexi.Cerberus.domain.product"
+"com.hexi.Cerberus.application.report" --> "com.hexi.Cerberus.adapter.web"
+"com.hexi.Cerberus.application.report" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.application.report" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.application.report" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.application.report" --> "com.hexi.Cerberus.domain.product"
+"com.hexi.Cerberus.application.report" --> "com.hexi.Cerberus.domain.report"
+"com.hexi.Cerberus.application.report" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.application.report" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.application.user" --> "com.hexi.Cerberus.domain.group"
+"com.hexi.Cerberus.application.user" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.application.warehouse" --> "com.hexi.Cerberus.application.mapper"
+"com.hexi.Cerberus.application.warehouse" --> "com.hexi.Cerberus.application.user"
+"com.hexi.Cerberus.application.warehouse" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.application.warehouse" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.application.warehouse" --> "com.hexi.Cerberus.domain.service"
+"com.hexi.Cerberus.application.warehouse" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.application.warehouse" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.domain.access" --> "com.hexi.Cerberus.domain.group"
+"com.hexi.Cerberus.domain.department" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.domain.department" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.domain.factorysite" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.domain.factorysite" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.domain.group" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.domain.helpers" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.domain.helpers" --> "com.hexi.Cerberus.domain.product"
+"com.hexi.Cerberus.domain.item" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.domain.product" --> "com.hexi.Cerberus.adapter.persistence"
+"com.hexi.Cerberus.domain.product" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.domain.report" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.domain.report" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.domain.report" --> "com.hexi.Cerberus.domain.helpers"
+"com.hexi.Cerberus.domain.report" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.domain.report" --> "com.hexi.Cerberus.domain.product"
+"com.hexi.Cerberus.domain.report" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.domain.report" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.application.department"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.application.group"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.domain.factorysite"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.domain.group"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.domain.helpers"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.domain.item"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.domain.report"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.domain.user"
+"com.hexi.Cerberus.domain.service" --> "com.hexi.Cerberus.domain.warehouse"
+"com.hexi.Cerberus.domain.user" --> "com.hexi.Cerberus.domain.group"
+"com.hexi.Cerberus.domain.warehouse" --> "com.hexi.Cerberus.domain.department"
+"com.hexi.Cerberus.domain.warehouse" --> "com.hexi.Cerberus.domain.item"
+@enduml
+

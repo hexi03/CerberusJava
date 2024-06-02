@@ -7,11 +7,10 @@ import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.product.ProductFactory;
 import com.hexi.Cerberus.domain.product.ProductID;
-import com.hexi.Cerberus.domain.product.command.CreateProductCmd;
+import com.hexi.Cerberus.application.product.service.command.CreateProductCmd;
 import lombok.RequiredArgsConstructor;
 
 import java.util.AbstractMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;

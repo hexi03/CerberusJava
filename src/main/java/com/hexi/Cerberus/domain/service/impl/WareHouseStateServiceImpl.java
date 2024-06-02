@@ -1,6 +1,5 @@
 package com.hexi.Cerberus.domain.service.impl;
 
-import com.hexi.Cerberus.adapter.persistence.report.base.warehouse.WorkShiftR11tReportModel;
 import com.hexi.Cerberus.domain.helpers.ItemMapHelper;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
@@ -19,9 +18,9 @@ import com.hexi.Cerberus.domain.service.WareHouseStateService;
 import com.hexi.Cerberus.domain.service.problems.InvalidStorageStateProblem;
 import com.hexi.Cerberus.domain.service.problems.InventarisationReportProblem;
 import com.hexi.Cerberus.domain.service.problems.ReleasedTooMuchReportProblem;
+import com.hexi.Cerberus.domain.service.problems.WorkShiftReplenishedTooMuchReportProblem;
 import com.hexi.Cerberus.domain.service.warnings.UnsatisfiedSupplyRequirementReportWarning;
 import com.hexi.Cerberus.domain.service.warnings.UnsatisfiedWorkShiftReportWarning;
-import com.hexi.Cerberus.domain.service.problems.WorkShiftReplenishedTooMuchReportProblem;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseState;

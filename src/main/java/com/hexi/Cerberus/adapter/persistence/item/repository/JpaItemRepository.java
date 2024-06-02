@@ -1,7 +1,6 @@
 package com.hexi.Cerberus.adapter.persistence.item.repository;
 
 import com.hexi.Cerberus.adapter.persistence.item.base.ItemModel;
-import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.infrastructure.query.Query;

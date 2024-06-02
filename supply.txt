@@ -1,0 +1,25 @@
+.*/(.*).java:import (.*)\.(.*);
+\1 -> \2
+
+.*/(.*).java:package (.*);
+\1 -> \2
+
+
+
+
+grep -r "import com.hexi.Cerberus" src/ > imports_full.txt
+grep -r "package " src/ > packages_full.txt
+
+
+
+@startuml
+    package \"Package 1\" {
+        [Component 1]
+        [Component 2]
+        }
+    package \"Package 2\" {
+        [Component 3]
+        }
+    [Component 1] --> [Component 3]
+    [Component 2] --> [Component 3]
+@enduml"

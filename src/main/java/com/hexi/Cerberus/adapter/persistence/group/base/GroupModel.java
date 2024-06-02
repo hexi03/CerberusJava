@@ -6,12 +6,10 @@ import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.domain.user.User;
 import jakarta.persistence.*;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity

@@ -1,9 +1,6 @@
 package com.hexi.Cerberus.domain.report;
 
-import com.hexi.Cerberus.adapter.persistence.factorysite.base.FactorySiteModel;
-
-import com.hexi.Cerberus.adapter.persistence.product.base.ProductModel;
-import com.hexi.Cerberus.adapter.persistence.warehouse.base.WareHouseModel;
+import com.hexi.Cerberus.application.report.service.command.update.*;
 import com.hexi.Cerberus.config.CerberusParameters;
 import com.hexi.Cerberus.domain.factorysite.FactorySite;
 import com.hexi.Cerberus.domain.helpers.ItemMapHelper;
@@ -12,7 +9,6 @@ import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.domain.product.Product;
 import com.hexi.Cerberus.domain.product.repository.ProductRepository;
-import com.hexi.Cerberus.domain.report.command.update.*;
 import com.hexi.Cerberus.domain.report.factorysite.SupplyRequirementReport;
 import com.hexi.Cerberus.domain.report.factorysite.WorkShiftReport;
 import com.hexi.Cerberus.domain.report.repository.ReportRepository;

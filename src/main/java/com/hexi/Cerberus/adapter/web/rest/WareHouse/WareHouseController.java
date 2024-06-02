@@ -1,6 +1,5 @@
 package com.hexi.Cerberus.adapter.web.rest.WareHouse;
 
-import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteStateDTO;
 import com.hexi.Cerberus.application.warehouse.service.AplWareHouseStateService;
 import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseCreateDTO;
 import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseDetailsDTO;
@@ -8,12 +7,9 @@ import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseStateDTO;
 import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseUpdateDetailsDTO;
 import com.hexi.Cerberus.application.warehouse.service.WareHouseDomainToDtoMapper;
 import com.hexi.Cerberus.application.warehouse.service.WareHouseManagementService;
-import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
-import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
-import com.hexi.Cerberus.domain.warehouse.command.CreateWareHouseCmd;
-import com.hexi.Cerberus.domain.warehouse.command.UpdateWareHouseDetailsCmd;
-
+import com.hexi.Cerberus.application.warehouse.service.command.CreateWareHouseCmd;
+import com.hexi.Cerberus.application.warehouse.service.command.UpdateWareHouseDetailsCmd;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.AllArgsConstructor;
@@ -24,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @DrivingAdapter
 @RequestMapping("/api/warehouse")

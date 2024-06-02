@@ -1,6 +1,6 @@
 package com.hexi.Cerberus.domain.department;
 
-import com.hexi.Cerberus.domain.department.command.UpdateDepartmentDetailsCmd;
+import com.hexi.Cerberus.application.department.service.command.UpdateDepartmentDetailsCmd;
 import org.springframework.stereotype.Component;
 
 @Component

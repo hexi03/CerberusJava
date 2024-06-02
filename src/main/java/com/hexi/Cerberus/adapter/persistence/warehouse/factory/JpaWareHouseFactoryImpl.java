@@ -6,7 +6,7 @@ import com.hexi.Cerberus.domain.department.repository.DepartmentRepository;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseFactory;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
-import com.hexi.Cerberus.domain.warehouse.command.CreateWareHouseCmd;
+import com.hexi.Cerberus.application.warehouse.service.command.CreateWareHouseCmd;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;

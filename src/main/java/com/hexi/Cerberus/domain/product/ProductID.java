@@ -1,9 +1,7 @@
 package com.hexi.Cerberus.domain.product;
 
-import com.hexi.Cerberus.domain.department.DepartmentID;
 import com.hexi.Cerberus.infrastructure.entity.EntityID;
 import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.UUID;

@@ -1,10 +1,9 @@
 package com.hexi.Cerberus.application.user.service;
 
 import com.hexi.Cerberus.application.user.service.DTO.UserDetailsDTO;
-import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.user.UserID;
-import com.hexi.Cerberus.domain.user.command.CreateUserCmd;
-import com.hexi.Cerberus.domain.user.command.UpdateUserDetailsCmd;
+import com.hexi.Cerberus.application.user.service.command.CreateUserCmd;
+import com.hexi.Cerberus.application.user.service.command.UpdateUserDetailsCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 

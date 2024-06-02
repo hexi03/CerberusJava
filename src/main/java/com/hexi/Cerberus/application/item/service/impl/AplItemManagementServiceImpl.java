@@ -1,17 +1,14 @@
 package com.hexi.Cerberus.application.item.service.impl;
 
-import com.hexi.Cerberus.application.group.service.DTO.GroupDetailsDTO;
 import com.hexi.Cerberus.application.item.service.DTO.ItemDetailsDTO;
 import com.hexi.Cerberus.application.item.service.ItemDomainToDTOMapper;
 import com.hexi.Cerberus.application.item.service.ItemManagementService;
-import com.hexi.Cerberus.domain.group.Group;
-import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemFactory;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.item.ItemUpdater;
-import com.hexi.Cerberus.domain.item.command.CreateItemCmd;
-import com.hexi.Cerberus.domain.item.command.UpdateItemCmd;
+import com.hexi.Cerberus.application.item.service.command.CreateItemCmd;
+import com.hexi.Cerberus.application.item.service.command.UpdateItemCmd;
 import com.hexi.Cerberus.domain.item.repository.ItemRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;

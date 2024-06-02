@@ -1,9 +1,5 @@
 package com.hexi.Cerberus.adapter.persistence.item.base;
 
-import com.hexi.Cerberus.domain.item.Item;
-import com.hexi.Cerberus.domain.item.ItemID;
-import com.hexi.Cerberus.domain.product.Product;
-import com.hexi.Cerberus.domain.product.ProductID;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

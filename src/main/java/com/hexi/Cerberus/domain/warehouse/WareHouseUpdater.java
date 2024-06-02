@@ -1,6 +1,6 @@
 package com.hexi.Cerberus.domain.warehouse;
 
-import com.hexi.Cerberus.domain.warehouse.command.UpdateWareHouseDetailsCmd;
+import com.hexi.Cerberus.application.warehouse.service.command.UpdateWareHouseDetailsCmd;
 import org.springframework.stereotype.Component;
 
 @Component

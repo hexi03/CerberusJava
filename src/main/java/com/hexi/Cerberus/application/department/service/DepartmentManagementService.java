@@ -2,8 +2,8 @@ package com.hexi.Cerberus.application.department.service;
 
 import com.hexi.Cerberus.application.department.service.DTO.DepartmentDetailsDTO;
 import com.hexi.Cerberus.domain.department.DepartmentID;
-import com.hexi.Cerberus.domain.department.command.CreateDepartmentCmd;
-import com.hexi.Cerberus.domain.department.command.UpdateDepartmentDetailsCmd;
+import com.hexi.Cerberus.application.department.service.command.CreateDepartmentCmd;
+import com.hexi.Cerberus.application.department.service.command.UpdateDepartmentDetailsCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 

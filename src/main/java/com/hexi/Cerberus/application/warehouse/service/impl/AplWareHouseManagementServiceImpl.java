@@ -1,17 +1,14 @@
 package com.hexi.Cerberus.application.warehouse.service.impl;
 
-import com.hexi.Cerberus.application.user.service.DTO.UserDetailsDTO;
 import com.hexi.Cerberus.application.warehouse.service.DTO.WareHouseDetailsDTO;
 import com.hexi.Cerberus.application.warehouse.service.WareHouseDomainToDtoMapper;
 import com.hexi.Cerberus.application.warehouse.service.WareHouseManagementService;
-import com.hexi.Cerberus.domain.user.User;
-import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.domain.warehouse.WareHouse;
 import com.hexi.Cerberus.domain.warehouse.WareHouseFactory;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseUpdater;
-import com.hexi.Cerberus.domain.warehouse.command.CreateWareHouseCmd;
-import com.hexi.Cerberus.domain.warehouse.command.UpdateWareHouseDetailsCmd;
+import com.hexi.Cerberus.application.warehouse.service.command.CreateWareHouseCmd;
+import com.hexi.Cerberus.application.warehouse.service.command.UpdateWareHouseDetailsCmd;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;

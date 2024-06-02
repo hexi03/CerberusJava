@@ -1,14 +1,14 @@
 package com.hexi.Cerberus.adapter.web.rest.Report;
 
 import com.hexi.Cerberus.application.report.service.DTO.create.*;
-import com.hexi.Cerberus.application.report.service.DTO.details.*;
+import com.hexi.Cerberus.application.report.service.DTO.details.ReportDetails;
 import com.hexi.Cerberus.application.report.service.DTO.update.*;
 import com.hexi.Cerberus.application.report.service.ReportManagementService;
+import com.hexi.Cerberus.application.report.service.command.create.*;
+import com.hexi.Cerberus.application.report.service.command.update.*;
 import com.hexi.Cerberus.application.user.service.DTO.UserDetailsDTO;
 import com.hexi.Cerberus.application.user.service.UserManagementService;
 import com.hexi.Cerberus.domain.report.ReportID;
-import com.hexi.Cerberus.domain.report.command.create.*;
-import com.hexi.Cerberus.domain.report.command.update.*;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;

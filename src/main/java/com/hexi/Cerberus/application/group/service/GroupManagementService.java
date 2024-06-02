@@ -1,8 +1,9 @@
 package com.hexi.Cerberus.application.group.service;
 
 import com.hexi.Cerberus.application.group.service.DTO.GroupDetailsDTO;
+import com.hexi.Cerberus.application.group.service.command.*;
 import com.hexi.Cerberus.domain.group.GroupID;
-import com.hexi.Cerberus.domain.group.command.*;
+
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 

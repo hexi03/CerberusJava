@@ -1,7 +1,5 @@
 package com.hexi.Cerberus.domain.service.warnings;
 
-import com.hexi.Cerberus.domain.factorysite.FactorySite;
-import com.hexi.Cerberus.domain.item.Item;
 import com.hexi.Cerberus.domain.item.ItemID;
 import com.hexi.Cerberus.domain.report.ReportID;
 import com.hexi.Cerberus.infrastructure.StateWarning;

@@ -1,17 +1,19 @@
 package com.hexi.Cerberus.adapter.web.rest.Registry;
 
-import com.hexi.Cerberus.application.product.service.DTO.*;
 import com.hexi.Cerberus.application.item.service.DTO.CreateItemDTO;
 import com.hexi.Cerberus.application.item.service.DTO.ItemDetailsDTO;
 import com.hexi.Cerberus.application.item.service.DTO.UpdateItemDTO;
-import com.hexi.Cerberus.application.product.service.ProductManagementService;
 import com.hexi.Cerberus.application.item.service.ItemManagementService;
-import com.hexi.Cerberus.domain.item.command.UpdateItemCmd;
-import com.hexi.Cerberus.domain.product.ProductID;
-import com.hexi.Cerberus.domain.product.command.CreateProductCmd;
-import com.hexi.Cerberus.domain.product.command.UpdateProductCmd;
+import com.hexi.Cerberus.application.product.service.DTO.CreateProductDTO;
+import com.hexi.Cerberus.application.product.service.DTO.ProductDetailsDTO;
+import com.hexi.Cerberus.application.product.service.DTO.UpdateProductDTO;
+import com.hexi.Cerberus.application.product.service.ProductManagementService;
 import com.hexi.Cerberus.domain.item.ItemID;
-import com.hexi.Cerberus.domain.item.command.CreateItemCmd;
+import com.hexi.Cerberus.application.item.service.command.CreateItemCmd;
+import com.hexi.Cerberus.application.item.service.command.UpdateItemCmd;
+import com.hexi.Cerberus.domain.product.ProductID;
+import com.hexi.Cerberus.application.product.service.command.CreateProductCmd;
+import com.hexi.Cerberus.application.product.service.command.UpdateProductCmd;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.AllArgsConstructor;

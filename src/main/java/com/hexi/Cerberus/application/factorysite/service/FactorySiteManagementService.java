@@ -2,9 +2,9 @@ package com.hexi.Cerberus.application.factorysite.service;
 
 import com.hexi.Cerberus.application.factorysite.service.DTO.FactorySiteDetailsDTO;
 import com.hexi.Cerberus.domain.factorysite.FactorySiteID;
-import com.hexi.Cerberus.domain.factorysite.command.CreateFactorySiteCmd;
-import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteDetailsCmd;
-import com.hexi.Cerberus.domain.factorysite.command.UpdateFactorySiteSupplyCmd;
+import com.hexi.Cerberus.application.factorysite.service.command.CreateFactorySiteCmd;
+import com.hexi.Cerberus.application.factorysite.service.command.UpdateFactorySiteDetailsCmd;
+import com.hexi.Cerberus.application.factorysite.service.command.UpdateFactorySiteSupplyCmd;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 
