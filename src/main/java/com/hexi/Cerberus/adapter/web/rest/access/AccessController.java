@@ -10,6 +10,7 @@ import com.hexi.Cerberus.domain.group.GroupID;
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.entity.EntityID;
+import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,22 +35,22 @@ public class AccessController {
     public ResponseEntity<Void> modifyAccess(@RequestBody ModifyAccessRequest dto) {
 
         EntityID resourceId;
-        switch (dto.getResourceId()) {
+        switch (dto.getResourceType()) {
             case "department":
-                resourceId = new DepartmentID(UUID.fromString(dto.getResourceId()));
+                resourceId = new DepartmentID(dto.getResourceId());
                 break;
             case "factorySite":
-                resourceId = new FactorySiteID(UUID.fromString(dto.getResourceId()));
+                resourceId = new FactorySiteID(dto.getResourceId());
                 break;
             case "wareHouse":
-                resourceId = new WareHouseID(UUID.fromString(dto.getResourceId()));
+                resourceId = new WareHouseID(dto.getResourceId());
                 break;
             default:
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.status(422).build();
         }
 
 
-        GroupID accessorId = new GroupID(UUID.fromString(dto.getResourceId()));
+        UUIDBasedEntityID accessorId = dto.getAccessorId();
 //        switch (dto.getResourceId()){
 //            case "user":
 //                accessorId = new UserID(UUID.fromString(dto.getResourceId()));
@@ -60,9 +61,9 @@ public class AccessController {
 //            default:
 //                return ResponseEntity.notFound().build();
 //        }
-
+        log.info("Raw permissions: " + dto.getPermissions());
         List<String> permissions =
-                dto.getPremissions()
+                dto.getPermissions()
                         .stream()
 //                        .map(s -> {switch (s) {
 //                            case "READ":
@@ -73,7 +74,7 @@ public class AccessController {
 //                                return null;
 //                        }}).filter(permission -> permission != null)
 
-                        .filter(permission -> permission == "READ" || permission == "MODIFY")
+                        .filter(permission -> permission.equals("READ")  || permission.equals("MODIFY"))
                         .collect(Collectors.toList());
 
         try {
@@ -86,6 +87,7 @@ public class AccessController {
                             .build()
             );
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();

@@ -1,5 +1,8 @@
 package com.hexi.Cerberus.config;
 
+import com.hexi.Cerberus.domain.access.UUIDBasedAuthToken;
+import com.hexi.Cerberus.domain.user.UserID;
+import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
 import com.hexi.Cerberus.infrastructure.service.JwtTokenUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -109,11 +112,13 @@ public class JwtRequestFilter extends AbstractAuthenticationProcessingFilter {
         System.out.println("JWT аутентификация");
         String authHeader = request.getHeader("Authorization");
         String username = null;
+        UserID userId = null;
         String jwt = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             try {
                 username = jwtTokenUtils.getUsername(jwt);
+                userId = jwtTokenUtils.getPrincipalId(jwt);
             } catch (ExpiredJwtException e) {
                 System.out.println("Время жизни токена вышло");
             } catch (SignatureException e) {
@@ -121,10 +126,10 @@ public class JwtRequestFilter extends AbstractAuthenticationProcessingFilter {
             }
         }
         System.out.println("Username: " + username);
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    username,
-                    "",
+        System.out.println("UserID: " + userId);
+        if (userId != null && username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UUIDBasedAuthToken token = new UUIDBasedAuthToken(
+                    new UUIDBasedEntityID(userId.getId()),
                     jwtTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
             );
             //SecurityContextHolder.getContextHolderStrategy().getDeferredContext().get().setAuthentication(token);

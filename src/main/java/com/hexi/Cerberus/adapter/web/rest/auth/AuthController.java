@@ -7,9 +7,11 @@ import com.hexi.Cerberus.application.access.service.AuthService;
 import com.hexi.Cerberus.domain.access.UserCredentials;
 import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
+import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,8 +45,8 @@ public class AuthController {
     @PostMapping("/updateToken")
     public ResponseEntity<TokenResponse> update() {
         log.info("Try to update!!!");
-        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        String jwtToken = authService.generateToken((String)token.getPrincipal());
+        AbstractAuthenticationToken token = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        String jwtToken = authService.generateToken((UUIDBasedEntityID) token.getPrincipal());
         if (jwtToken != null) {
             return ResponseEntity.ok(new TokenResponse(jwtToken));
         } else

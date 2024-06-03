@@ -9,6 +9,7 @@ import com.hexi.Cerberus.application.report.service.command.update.*;
 import com.hexi.Cerberus.application.user.service.DTO.UserDetailsDTO;
 import com.hexi.Cerberus.application.user.service.UserManagementService;
 import com.hexi.Cerberus.domain.report.ReportID;
+import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
@@ -16,7 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,9 +75,8 @@ public class ReportController {
         log.info(dto.toString());
 
         if (dto.getCreatorId() == null){
-            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-            Optional<UserDetailsDTO> userDetails = userManagementService.displayByEmail((String)token.getPrincipal());
-            dto.setCreatorId(userDetails.get().getId());
+            AbstractAuthenticationToken token = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            dto.setCreatorId(new UserID((UUIDBasedEntityID) token.getPrincipal()));
         }
 
         if (dto instanceof CreateSupplyRequirementReportDTO) {
@@ -199,9 +199,8 @@ public class ReportController {
         log.info(dto.toString());
 
         if (dto.getCreatorId() == null){
-            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-            Optional<UserDetailsDTO> userDetails = userManagementService.displayByEmail((String)token.getPrincipal());
-            dto.setCreatorId(userDetails.get().getId());
+            AbstractAuthenticationToken token = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            dto.setCreatorId(new UserID((UUIDBasedEntityID) token.getPrincipal()));
         }
 
         if (dto instanceof UpdateSupplyRequirementReportDTO) {

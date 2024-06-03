@@ -232,8 +232,7 @@ public class ReportQueryServiceImpl implements ReportQueryService {
         CriteriaQuery<ReleaseReportModel> rrQuery = cb.createQuery(ReleaseReportModel.class);
         Root<ReleaseReportModel> rrRoot = rrQuery.from(ReleaseReportModel.class);
         rrQuery.select(rrRoot);
-        rrQuery.where(cb.equal(rrRoot.get("wareHouse").get("id"),wareHouse.getId()));
-        rrQuery.where(cb.equal(rrRoot.get("supplyReqReport").get("id"),supReqRepId));
+        rrQuery.where(cb.and(cb.equal(rrRoot.get("wareHouse").get("id"),wareHouse.getId()),cb.equal(rrRoot.get("supplyReqReport").get("id"),supReqRepId)));
         return entityManager.createQuery(rrQuery).getResultList().stream().collect(Collectors.toList());
     }
 
@@ -243,8 +242,7 @@ public class ReportQueryServiceImpl implements ReportQueryService {
         CriteriaQuery<WorkShiftR11tReportModel> wsrrQuery = cb.createQuery(WorkShiftR11tReportModel.class);
         Root<WorkShiftR11tReportModel> wsrrRoot = wsrrQuery.from(WorkShiftR11tReportModel.class);
         wsrrQuery.select(wsrrRoot);
-        wsrrQuery.where(cb.equal(wsrrRoot.get("wareHouse").get("id"),wareHouse.getId()));
-        wsrrQuery.where(cb.equal(wsrrRoot.get("workShiftReport").get("id"),wsReplRepId));
+        wsrrQuery.where(cb.and(cb.equal(wsrrRoot.get("wareHouse").get("id"),wareHouse.getId()),cb.equal(wsrrRoot.get("workShiftReport").get("id"),wsReplRepId)));
         return entityManager.createQuery(wsrrQuery).getResultList().stream().collect(Collectors.toList());
     }
 

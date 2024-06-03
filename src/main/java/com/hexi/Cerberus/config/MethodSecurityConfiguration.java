@@ -3,6 +3,7 @@ package com.hexi.Cerberus.config;
 import com.hexi.Cerberus.domain.access.BehavioredAclPermissionEvaluator;
 import com.hexi.Cerberus.domain.access.BehavioredPermissionFactory;
 import com.hexi.Cerberus.domain.access.BehavioredPermissionGrantingStrategy;
+import com.hexi.Cerberus.domain.access.SecuredEntityRetrievalStrategy;
 import com.hexi.Cerberus.infrastructure.security.AclSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,9 @@ import javax.sql.DataSource;
 public class MethodSecurityConfiguration {
 
     // method security config wired in aclPermissionEvaluator
-    protected MethodSecurityExpressionHandler createExpressionHandler(AclPermissionEvaluator evaluator) {
+    @Bean
+    public MethodSecurityExpressionHandler aclExpressionHandler(BehavioredAclPermissionEvaluator evaluator) {
+        System.out.println("on createExpressionHandler");
         final DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setPermissionEvaluator(evaluator);
         return expressionHandler;
@@ -40,8 +43,9 @@ public class MethodSecurityConfiguration {
      * @return
      */
     @Bean
-    public AclPermissionEvaluator aclPermissionEvaluator(AclService service) {
+    public BehavioredAclPermissionEvaluator aclPermissionEvaluator(AclService service) {
         final BehavioredAclPermissionEvaluator aclPermissionEvaluator = new BehavioredAclPermissionEvaluator(service);
+        aclPermissionEvaluator.setObjectIdentityRetrievalStrategy(securedEntityRetrievalStrategy());
         return aclPermissionEvaluator;
     }
 
@@ -115,6 +119,11 @@ public class MethodSecurityConfiguration {
     @Bean
     public PermissionGrantingStrategy permissionGrantingStrategy() {
         return new BehavioredPermissionGrantingStrategy(new ConsoleAuditLogger());
+    }
+
+    @Bean
+    public SecuredEntityRetrievalStrategy securedEntityRetrievalStrategy() {
+        return new SecuredEntityRetrievalStrategy();
     }
 
     @Bean

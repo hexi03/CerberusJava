@@ -17,6 +17,8 @@ import com.hexi.Cerberus.application.group.service.command.UpdateGroupDetailsCmd
 import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.application.user.service.command.CreateUserCmd;
 import com.hexi.Cerberus.application.user.service.command.UpdateUserDetailsCmd;
+import com.hexi.Cerberus.domain.warehouse.exception.WareHouseAccessDeniedException;
+import com.hexi.Cerberus.domain.warehouse.exception.WareHouseNotFoundException;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.AllArgsConstructor;
@@ -159,4 +161,23 @@ public class UserGroupController {
     }
 
 
+//    @ExceptionHandler(UserNotFoundException.class)
+//    @ExceptionHandler(GroupNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleWareHouseNotFoundException(WareHouseNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+//    @ExceptionHandler(UserAccessDeniedException.class)
+//    @ExceptionHandler(GroupAccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<String> handleWareHouseAccessDeniedException(WareHouseAccessDeniedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleException(Exception ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

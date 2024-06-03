@@ -4,6 +4,7 @@ import com.hexi.Cerberus.domain.access.UserCredentials;
 import com.hexi.Cerberus.domain.user.User;
 import com.hexi.Cerberus.domain.user.UserID;
 import com.hexi.Cerberus.domain.user.repository.UserRepository;
+import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
 import com.hexi.Cerberus.infrastructure.service.JwtTokenUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -40,11 +41,11 @@ public class AuthService {
 
     public String generateToken(User user) {
         UserDetails userDetails = userGroupService.getUserDetails(user);
-        return jwtTokenUtils.generateToken(userDetails);
+        return jwtTokenUtils.generateToken(user.getId(),userDetails);
     }
 
-    public String generateToken(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
+    public String generateToken(UUIDBasedEntityID id) {
+        Optional<User> user = userRepository.findById(new UserID(id));
         if(user.isEmpty()) return null;
         return generateToken(user.get());
     }

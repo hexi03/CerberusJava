@@ -36,7 +36,7 @@ public class UserGroupService {
                 new org.springframework.security.core.userdetails.User(
                         user.getEmail(), //Email as Username
                         user.getPasswordHash(),
-                        user.getGroups().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList())
+                        user.getGroups().stream().map(role -> new SimpleGrantedAuthority(role.getId().getId().toString())).collect(Collectors.toList())
                 );
 
         return userDetails;

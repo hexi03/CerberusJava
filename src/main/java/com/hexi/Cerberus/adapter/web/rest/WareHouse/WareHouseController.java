@@ -10,6 +10,8 @@ import com.hexi.Cerberus.application.warehouse.service.WareHouseManagementServic
 import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.application.warehouse.service.command.CreateWareHouseCmd;
 import com.hexi.Cerberus.application.warehouse.service.command.UpdateWareHouseDetailsCmd;
+import com.hexi.Cerberus.domain.warehouse.exception.WareHouseAccessDeniedException;
+import com.hexi.Cerberus.domain.warehouse.exception.WareHouseNotFoundException;
 import com.hexi.Cerberus.infrastructure.adapter.DrivingAdapter;
 import com.hexi.Cerberus.infrastructure.command.CommandId;
 import lombok.AllArgsConstructor;
@@ -93,21 +95,21 @@ public class WareHouseController {
 
     }
 
-//    @ExceptionHandler(WareHouseNotFoundException.class)
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    public ResponseEntity<String> handleWareHouseNotFoundException(WareHouseNotFoundException ex) {
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-//    }
-//
-//    @ExceptionHandler(WareHouseAccessDeniedException.class)
-//    @ResponseStatus(HttpStatus.FORBIDDEN)
-//    public ResponseEntity<String> handleWareHouseAccessDeniedException(WareHouseAccessDeniedException ex) {
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-//    }
-//
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public ResponseEntity<String> handleException(Exception ex) {
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(WareHouseNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleWareHouseNotFoundException(WareHouseNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(WareHouseAccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<String> handleWareHouseAccessDeniedException(WareHouseAccessDeniedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleException(Exception ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

@@ -1,17 +1,15 @@
 package com.hexi.Cerberus.infrastructure.service;
 
+import com.hexi.Cerberus.domain.user.UserID;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,18 +26,18 @@ public class JwtTokenUtils {
     @Value("${params.jwt.lifetime}")
     private String jwtLifetime;
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserID userId, UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         List<String> rolesList = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         claims.put("roles", rolesList);
-
+        claims.put("username", userDetails.getUsername());
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + Duration.parse(jwtLifetime).toMillis());
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(userId.getId().toString())
                 .setIssuedAt(issuedDate)
                 .setExpiration(expiredDate)
                 .signWith(SignatureAlgorithm.HS256, secret)
@@ -53,7 +51,7 @@ public class JwtTokenUtils {
 //    }
 
     public String getUsername(String token) {
-        return getAllClaimsFromToken(token).getSubject();
+        return getAllClaimsFromToken(token).get("username", String.class);
     }
 
     public List<String> getRoles(String token) {
@@ -66,5 +64,9 @@ public class JwtTokenUtils {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public UserID getPrincipalId(String token) {
+        return new UserID(getAllClaimsFromToken(token).getSubject());
     }
 }

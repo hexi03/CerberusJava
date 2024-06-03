@@ -3,6 +3,7 @@ package com.hexi.Cerberus.application.department.service.impl;
 import com.hexi.Cerberus.application.department.service.DTO.DepartmentDetailsDTO;
 import com.hexi.Cerberus.application.department.service.DepartmentDomainToDtoMapper;
 import com.hexi.Cerberus.application.department.service.DepartmentManagementService;
+import com.hexi.Cerberus.domain.access.ACLSupply;
 import com.hexi.Cerberus.domain.department.Department;
 import com.hexi.Cerberus.domain.department.DepartmentFactory;
 import com.hexi.Cerberus.domain.department.DepartmentID;
@@ -14,9 +15,12 @@ import com.hexi.Cerberus.infrastructure.messaging.MessagePublisher;
 import com.hexi.Cerberus.infrastructure.query.Query;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,30 +35,41 @@ public class AplDepartmentManagementServiceImpl implements DepartmentManagementS
     public final DepartmentFactory departmentFactory;
     public final DepartmentUpdater departmentUpdater;
     public final DepartmentDomainToDtoMapper departmentDomainToDtoMapper;
+    public final ACLSupply aclSupply;
 
     @Override
-    //@PostAuthorize("returnObject.orElse(null) == null or hasPermission(returnObject.get(), 'READ')")
+
     public Optional<DepartmentDetailsDTO> displayBy(DepartmentID id) {
-        Optional<Department> department = departmentRepository.findById(id);
+//        Optional<Department> department = aclSupply.filterACL(departmentRepository.findById(id));
+//        return department.map(departmentDomainToDtoMapper::departmentToDetailsDTO);
+        Optional<Department> department = (departmentRepository.findById(id));
         return department.map(departmentDomainToDtoMapper::departmentToDetailsDTO);
     }
 
     @Override
-    //@PostFilter("hasPermission(returnObject, 'READ')")
+
     public List<DepartmentDetailsDTO> displayAllBy(Query query) {
+//        return aclSupply.filterACL((List<Department>)departmentRepository.findAllWithQuery(query)).stream()
+//                .map(departmentDomainToDtoMapper::departmentToDetailsDTO)
+//                .collect(Collectors.toList());
         return ((List<Department>)departmentRepository.findAllWithQuery(query)).stream()
                 .map(departmentDomainToDtoMapper::departmentToDetailsDTO)
                 .collect(Collectors.toList());
     }
 
+
     @Override
-    //@PostFilter("hasPermission(returnObject, 'READ')")
     public List<DepartmentDetailsDTO> displayAll() {
+//        return aclSupply.filterACL((List<Department>)departmentRepository.findAll()).stream()
+//                .map(departmentDomainToDtoMapper::departmentToDetailsDTO)
+//                .collect(Collectors.toList());
         return ((List<Department>)departmentRepository.findAll()).stream()
                 .map(departmentDomainToDtoMapper::departmentToDetailsDTO)
                 .collect(Collectors.toList());
 
     }
+
+
 
 
     @Override

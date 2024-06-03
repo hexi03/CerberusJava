@@ -31,7 +31,7 @@ public class ItemRegistriesQueryServiceImpl implements ItemRegistriesQueryServic
     EntityManager entityManager;
     @Override
     public Map<ItemID, Integer> getFactorySiteLostedOnSiteConsumables(FactorySite factorySite) {
-
+        System.out.println("getFactorySiteLostedOnSiteConsumables factorySiteId = " + factorySite.getId());
 
 //        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 //        // Создаем CriteriaQuery
@@ -105,9 +105,9 @@ public class ItemRegistriesQueryServiceImpl implements ItemRegistriesQueryServic
         Join<ProductModel, ItemEntry> ieJoin = pJoin.join("requirements");
         wsrpQuery.multiselect(ieJoin.get("item").get("id").alias("item_id"),
                 cb.sum(cb.prod(ieJoin.get("amount"), peJoin.get("amount"))).alias("amount"));
+        wsrpQuery.where(cb.and(cb.equal(wsrpRoot.get("factorySite").get("id"), factorySite.getId()),cb.isNull(wsrpRoot.get("deletedAt"))));
         wsrpQuery.groupBy(ieJoin.get("item").get("id"));
-        wsrpQuery.where(cb.equal(wsrpRoot.get("factorySite").get("id"), factorySite.getId()));
-        wsrpQuery.where(cb.isNull(wsrpRoot.get("deletedAt")));
+
 
 // Criteria query for wsrlieReq
         CriteriaQuery<Tuple> wsrlieQuery = cb.createTupleQuery();
@@ -115,9 +115,9 @@ public class ItemRegistriesQueryServiceImpl implements ItemRegistriesQueryServic
         Join<WorkShiftReportModel, ItemEntry> ieJoin1 = wsrlieRoot.join("losses");
         wsrlieQuery.multiselect(ieJoin1.get("item").get("id").alias("item_id"),
                 cb.sum(ieJoin1.get("amount")).alias("amount"));
+        wsrlieQuery.where(cb.and(cb.equal(wsrlieRoot.get("factorySite").get("id"), factorySite.getId()),cb.isNull(wsrlieRoot.get("deletedAt"))));
         wsrlieQuery.groupBy(ieJoin1.get("item").get("id"));
-        wsrlieQuery.where(cb.equal(wsrlieRoot.get("factorySite").get("id"), factorySite.getId()));
-        wsrlieQuery.where(cb.isNull(wsrlieRoot.get("deletedAt")));
+
 
 // Criteria query for wsrrieReq
         CriteriaQuery<Tuple> wsrrieQuery = cb.createTupleQuery();
@@ -125,27 +125,27 @@ public class ItemRegistriesQueryServiceImpl implements ItemRegistriesQueryServic
         Join<WorkShiftReportModel, ItemEntry> ieJoin2 = wsrrieRoot.join("remains");
         wsrrieQuery.multiselect(ieJoin2.get("item").get("id").alias("item_id"),
                 cb.sum(ieJoin2.get("amount")).alias("amount"));
+        wsrrieQuery.where(cb.and(cb.equal(wsrrieRoot.get("factorySite").get("id"), factorySite.getId()),cb.isNull(wsrrieRoot.get("deletedAt"))));
         wsrrieQuery.groupBy(ieJoin2.get("item").get("id"));
-        wsrrieQuery.where(cb.equal(wsrrieRoot.get("factorySite").get("id"), factorySite.getId()));
-        wsrrieQuery.where(cb.isNull(wsrrieRoot.get("deletedAt")));
+
 
         CriteriaQuery<Tuple> wsrurieQuery = cb.createTupleQuery();
         Root<WorkShiftReportModel> wsrurieRoot = wsrurieQuery.from(WorkShiftReportModel.class);
         Join<WorkShiftReportModel, ItemEntry> ieJoin2_1 = wsrurieRoot.join("unclaimedRemains");
         wsrurieQuery.multiselect(ieJoin2_1.get("item").get("id").alias("item_id"),
                 cb.sum(ieJoin2_1.get("amount")).alias("amount"));
+        wsrurieQuery.where(cb.and(cb.equal(wsrurieRoot.get("factorySite").get("id"), factorySite.getId()),cb.isNull(wsrurieRoot.get("deletedAt"))));
         wsrurieQuery.groupBy(ieJoin2_1.get("item").get("id"));
-        wsrurieQuery.where(cb.equal(wsrurieRoot.get("factorySite").get("id"), factorySite.getId()));
-        wsrurieQuery.where(cb.isNull(wsrurieRoot.get("deletedAt")));
+
 // Criteria query for rrieReq
         CriteriaQuery<Tuple> rrieQuery = cb.createTupleQuery();
         Root<ReleaseReportModel> rrieRoot = rrieQuery.from(ReleaseReportModel.class);
         Join<ReleaseReportModel, Item> ieJoin3 = rrieRoot.join("items");
         rrieQuery.multiselect(ieJoin3.get("item").get("id").alias("item_id"),
                 cb.sum(ieJoin3.get("amount")).alias("amount"));
+        rrieQuery.where(cb.and(cb.equal(rrieRoot.get("supplyReqReport").get("factorySite").get("id"), factorySite.getId()),cb.isNull(rrieRoot.get("deletedAt"))));
         rrieQuery.groupBy(ieJoin3.get("item").get("id"));
-        rrieQuery.where(cb.equal(rrieRoot.get("supplyReqReport").get("factorySite").get("id"), factorySite.getId()));
-        rrieQuery.where(cb.isNull(rrieRoot.get("deletedAt")));
+
 
 // Execute queries and collect results
         Map<ItemID, Integer> wsrpie = entityManager.createQuery(wsrpQuery).getResultStream()

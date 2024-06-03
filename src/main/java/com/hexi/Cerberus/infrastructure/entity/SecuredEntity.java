@@ -17,11 +17,15 @@ public interface SecuredEntity extends Entity {
     }
 
     default ObjectIdentity getObjectIdentity() {
-        return new ObjectIdentityImpl(this.getClass(), this.getId().toString());
+        return new ObjectIdentityImpl(this.getClass().getName(), this.getId().toString());
     }
 
     default void updatePermissions(MutableAclService aclService, Sid sid, List<Permission> perms) {
         ObjectIdentity oid = this.getObjectIdentity();
+        System.out.println("updatePermissions");
+        System.out.println(oid);
+        System.out.println(sid);
+        System.out.println(perms);
         MutableAcl acl = (MutableAcl) aclService.readAclById(oid);
 
 

@@ -16,8 +16,11 @@ import com.hexi.Cerberus.domain.warehouse.WareHouseID;
 import com.hexi.Cerberus.domain.warehouse.repository.WareHouseRepository;
 import com.hexi.Cerberus.infrastructure.entity.EntityID;
 import com.hexi.Cerberus.infrastructure.entity.SecuredEntity;
+import com.hexi.Cerberus.infrastructure.entity.UUIDBasedEntityID;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.Permission;
@@ -30,131 +33,84 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
+@Transactional
 public class AplEntityPermissionManagementServiceImpl implements EntityPermissionManagementService {
-    public final DepartmentRepository departmentRepository;
-    public final FactorySiteRepository factorySiteRepository;
-    public final WareHouseRepository wareHouseRepository;
-    public final PermissionRegistry permissionRegistry = PermissionRegistry.getInstance();
-
-    public final MutableAclService aclService;
+    private final DepartmentRepository departmentRepository;
+    private final FactorySiteRepository factorySiteRepository;
+    private final WareHouseRepository wareHouseRepository;
+    private final PermissionRegistry permissionRegistry = PermissionRegistry.getInstance();
+    private final MutableAclService aclService;
 
     @SneakyThrows
     @Override
-    public List<Permission> displayPermissions(EntityID resourceId, GroupID groupId) {
-        switch (resourceId) {
-            case DepartmentID depId:
-                Optional<Department> department = departmentRepository.findById(depId);
-                if (department.isEmpty())
-                    throw new Exception(String.format("There is no department with ID(%s)", resourceId.getId()));
-                return department.get().getPermissions(aclService, getSid(groupId));
-            case FactorySiteID facId:
-                Optional<FactorySite> factorySite = factorySiteRepository.findById(facId);
-                if (factorySite.isEmpty())
-                    throw new Exception(String.format("There is no department with ID(%s)", resourceId.getId()));
-                return factorySite.get().getPermissions(aclService, getSid(groupId));
-            case WareHouseID whId:
-                Optional<WareHouse> wareHouse = wareHouseRepository.findById(whId);
-                if (wareHouse.isEmpty())
-                    throw new Exception(String.format("There is no department with ID(%s)", resourceId.getId()));
-                return wareHouse.get().getPermissions(aclService, getSid(groupId));
-            default:
-
-                throw new Exception(String.format("Have no case for %s", resourceId.getClass().getName()));
-        }
-    }
-
-    private Sid getSid(GroupID accessorId) {
-        return new PrincipalSid(accessorId.getId().toString());
+    public List<Permission> displayPermissions(UUIDBasedEntityID resourceId, UUIDBasedEntityID groupId) {
+        return getEntity(resourceId)
+                .map(entity -> entity.getPermissions(aclService, getSid(groupId)))
+                .orElseThrow(() -> new Exception(String.format("There is no entity with ID(%s)", resourceId.getId())));
     }
 
     @Override
-    public List<AccessUnit> getAccessInfo(EntityID resourceId) throws Exception {
-        switch (resourceId) {
-            case DepartmentID depId:
-                Optional<Department> department = departmentRepository.findById(depId);
-                department.orElseThrow(() -> new Exception(String.format("There is no department with ID(%s)", resourceId.getId())));
-                return fetchAccessUnits(department.get());
-            case FactorySiteID facId:
-                Optional<FactorySite> factorySite = factorySiteRepository.findById(facId);
-                factorySite.orElseThrow(() -> new Exception(String.format("There is no factorySite with ID(%s)", resourceId.getId())));
-                return fetchAccessUnits(factorySite.get());
-            case WareHouseID whId:
-                Optional<WareHouse> wareHouse = wareHouseRepository.findById(whId);
-                wareHouse.orElseThrow(() -> new Exception(String.format("There is no wareHouse with ID(%s)", resourceId.getId())));
-                return fetchAccessUnits(wareHouse.get());
-            default:
-
-                throw new Exception(String.format("Have no case for %s", resourceId.getClass().getName()));
-        }
-    }
-
-    private List<AccessUnit> fetchAccessUnits(SecuredEntity entity) {
-        return entity
-                .getPermissions(aclService)
-                .entrySet()
-                .stream()
-                .map(
-                        sidListEntry ->
-                                AccessUnit
-                                        .builder()
-                                        .resourceId(entity.getId())
-                                        .accessorId(new GroupID(sidListEntry.getKey().toString()))
-                                        .permissions(
-                                                sidListEntry
-                                                        .getValue()
-                                                        .stream()
-                                                        .map(permission ->
-                                                                permission instanceof BehavioredPermissionFactory.BehavioredPermission ? permissionRegistry.getPermissionNamePure((BehavioredPermissionFactory.BehavioredPermission) permission) : permissionRegistry.getPermissionName(permission))
-                                                        .filter(s -> s.isPresent())
-                                                        .map(s -> s.get())
-                                                        .collect(Collectors.toList())
-                                        ).build()
-                ).toList();
+    public List<AccessUnit> getAccessInfo(UUIDBasedEntityID resourceId) throws Exception {
+        return getEntity(resourceId)
+                .map(this::fetchAccessUnits)
+                .orElseThrow(() -> new Exception(String.format("There is no entity with ID(%s)", resourceId.getId())));
     }
 
     @Override
     public void setPermissions(AccessUnit accessUnit) throws Exception {
-        List<Permission> permissions;
-        switch (accessUnit.getResourceId()) {
-            case DepartmentID depId:
-                Optional<Department> department = departmentRepository.findById(depId);
-                if (department.isEmpty())
-                    throw new Exception(String.format("There is no department with ID(%s)", accessUnit.getResourceId().getId()));
-                permissions = accessUnit.getPermissions().stream().map(s -> switch (s) {
-                            case "READ" -> BehavioredPermissionFactory.READ;
-                            case "MODIFY" -> BehavioredPermissionFactory.MODIFY_INHERITABLE;
-                            default -> throw new RuntimeException("Fake permission");
-                        }
-                ).collect(Collectors.toList());
-                department.get().updatePermissions(aclService, getSid(accessUnit.getAccessorId()), permissions);
-                return;
-            case FactorySiteID facId:
-                Optional<FactorySite> factorySite = factorySiteRepository.findById(facId);
-                if (factorySite.isEmpty())
-                    throw new Exception(String.format("There is no department with ID(%s)", accessUnit.getResourceId().getId()));
-                permissions = accessUnit.getPermissions().stream().map(s -> switch (s) {
-                            case "READ" -> BehavioredPermissionFactory.READ;
-                            case "MODIFY" -> BehavioredPermissionFactory.MODIFY;
-                            default -> throw new RuntimeException("Fake permission");
-                        }
-                ).collect(Collectors.toList());
-                factorySite.get().updatePermissions(aclService, getSid(accessUnit.getAccessorId()), permissions);
-                return;
-            case WareHouseID whId:
-                Optional<WareHouse> wareHouse = wareHouseRepository.findById(whId);
-                if (wareHouse.isEmpty())
-                    throw new Exception(String.format("There is no department with ID(%s)", accessUnit.getResourceId().getId()));
-                permissions = accessUnit.getPermissions().stream().map(s -> switch (s) {
-                            case "READ" -> BehavioredPermissionFactory.READ;
-                            case "MODIFY" -> BehavioredPermissionFactory.MODIFY;
-                            default -> throw new RuntimeException("Fake permission");
-                        }
-                ).collect(Collectors.toList());
-                wareHouse.get().updatePermissions(aclService, getSid(accessUnit.getAccessorId()), permissions);
-                return;
-            default:
+        System.out.println("setPermissions AccessUnit: " + accessUnit);
+        List<Permission> permissions = accessUnit.getPermissions().stream()
+                .map(this::mapPermission)
+                .collect(Collectors.toList());
 
-                throw new Exception(String.format("Have no case for %s", accessUnit.getResourceId().getClass().getName()));
+        getEntity(accessUnit.getResourceId())
+                .ifPresentOrElse(
+                        entity -> entity.updatePermissions(aclService, getSid(accessUnit.getAccessorId()), permissions),
+                        () -> {
+                                throw new RuntimeException(String.format("There is no entity with ID(%s)", accessUnit.getResourceId().getId()));
+
+                        }
+                );
+    }
+
+    private Sid getSid(UUIDBasedEntityID accessorId) {
+        return new PrincipalSid(accessorId.getId().toString());
+    }
+
+    private List<AccessUnit> fetchAccessUnits(SecuredEntity entity) {
+        return entity.getPermissions(aclService).entrySet().stream()
+                .map(sidListEntry -> AccessUnit.builder()
+                        .resourceId(entity.getId())
+                        .accessorId(new UUIDBasedEntityID(sidListEntry.getKey().toString()))
+                        .permissions(sidListEntry.getValue().stream()
+                                .map(permission -> permission instanceof BehavioredPermissionFactory.BehavioredPermission
+                                        ? permissionRegistry.getPermissionNamePure((BehavioredPermissionFactory.BehavioredPermission) permission)
+                                        : permissionRegistry.getPermissionName(permission))
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
+                                .collect(Collectors.toList()))
+                        .build())
+                .toList();
+    }
+
+    private Optional<SecuredEntity> getEntity(EntityID resourceId) {
+        if (resourceId instanceof DepartmentID) {
+            return departmentRepository.findById((DepartmentID) resourceId).map(e -> (SecuredEntity) e);
+        } else if (resourceId instanceof FactorySiteID) {
+            return factorySiteRepository.findById((FactorySiteID) resourceId).map(e -> (SecuredEntity) e);
+        } else if (resourceId instanceof WareHouseID) {
+            return wareHouseRepository.findById((WareHouseID) resourceId).map(e -> (SecuredEntity) e);
+        } else {
+            return Optional.empty();
         }
+    }
+
+    private Permission mapPermission(String permission) {
+        return switch (permission) {
+            case "READ" -> BehavioredPermissionFactory.READ;
+            case "MODIFY" -> BehavioredPermissionFactory.MODIFY;
+            default -> throw new RuntimeException("Invalid permission: " + permission);
+        };
     }
 }
